@@ -1,9 +1,11 @@
+require('dotenv').config();
 const express = require('express');
 const Agent = require('./lib/agent');
+const EmailService = require('./lib/email-service');
+const SMSService = require('./lib/sms-service');
 const { exec } = require('child_process');
 const util = require('util');
 const execPromise = util.promisify(exec);
-require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -45,6 +47,68 @@ app.use(express.static('public'));
 // Create agent instance
 const agent = new Agent();
 
+// Create email service instance
+let emailService = null;
+
+// Create SMS service instance
+let smsService = null;
+console.log('Environment check - EMAIL_USER:', process.env.EMAIL_USER);
+console.log('Environment check - EMAIL_PASS:', process.env.EMAIL_PASS ? `***${process.env.EMAIL_PASS.slice(-4)}` : 'NOT SET');
+console.log('Password length:', process.env.EMAIL_PASS ? process.env.EMAIL_PASS.length : 0);
+if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+  console.log('Initializing email service for:', process.env.EMAIL_USER);
+  emailService = new EmailService({
+    smtp: {
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: process.env.SMTP_PORT || 587,
+      secure: false,
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+      from: process.env.EMAIL_FROM || process.env.EMAIL_USER
+    },
+    imap: {
+      host: process.env.IMAP_HOST || 'imap.gmail.com',
+      port: process.env.IMAP_PORT || 993,
+      tls: true,
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+  
+  emailService.initialize().catch(err => {
+    console.error('Failed to initialize email service:', err);
+    console.error('Make sure you are using a Gmail App Password, not your regular password');
+    console.error('Generate one at: https://myaccount.google.com/apppasswords');
+    console.error('Email service will be disabled until authentication is fixed');
+    emailService = null; // Disable service on error
+  });
+} else {
+  console.log('Email service not configured. Missing EMAIL_USER or EMAIL_PASS');
+}
+
+// Initialize SMS service if credentials are provided
+console.log('Environment check - TWILIO_ACCOUNT_SID:', process.env.TWILIO_ACCOUNT_SID ? `***${process.env.TWILIO_ACCOUNT_SID.slice(-4)}` : 'NOT SET');
+console.log('Environment check - TWILIO_AUTH_TOKEN:', process.env.TWILIO_AUTH_TOKEN ? `***${process.env.TWILIO_AUTH_TOKEN.slice(-4)}` : 'NOT SET');
+console.log('Environment check - TWILIO_PHONE_NUMBER:', process.env.TWILIO_PHONE_NUMBER || 'NOT SET');
+
+if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
+  console.log('Initializing SMS service');
+  smsService = new SMSService({
+    accountSid: process.env.TWILIO_ACCOUNT_SID,
+    authToken: process.env.TWILIO_AUTH_TOKEN,
+    phoneNumber: process.env.TWILIO_PHONE_NUMBER
+  });
+  
+  smsService.initialize().catch(err => {
+    console.error('Failed to initialize SMS service:', err);
+    console.error('Make sure your Twilio credentials are correct');
+    console.error('SMS service will be disabled until authentication is fixed');
+    smsService = null; // Disable service on error
+  });
+} else {
+  console.log('SMS service not configured. Missing TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, or TWILIO_PHONE_NUMBER');
+}
+
 // Routes
 app.get('/', (req, res) => {
   res.send(`
@@ -53,7 +117,14 @@ app.get('/', (req, res) => {
     <head>
       <title>PartnerPlus Agent</title>
       <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 0; }
+        .header { background-color: #1976d2; color: white; padding: 15px 20px; margin-bottom: 20px; }
+        .nav { display: flex; align-items: center; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
+        .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
+        .nav a:hover { background-color: rgba(255,255,255,0.1); }
+        .nav a.active { background-color: rgba(255,255,255,0.2); }
+        .content { padding: 0 20px; }
         .chat-container { border: 1px solid #ccc; border-radius: 10px; padding: 20px; height: 400px; overflow-y: auto; margin-bottom: 20px; }
         .message { margin: 10px 0; padding: 10px; border-radius: 5px; }
         .user { background-color: #e3f2fd; text-align: right; }
@@ -66,8 +137,17 @@ app.get('/', (req, res) => {
       </style>
     </head>
     <body>
-      <h1>PartnerPlus AI Agent</h1>
-      <p>Chat with an AI agent that can use tools to help you!</p>
+      <div class="header">
+        <div class="nav">
+          <h1>PartnerPlus</h1>
+          <a href="/" class="active">AI Agent</a>
+          <a href="/email">Email Service</a>
+          <a href="/sms">SMS Service</a>
+        </div>
+      </div>
+      <div class="content">
+        <h2>AI Agent</h2>
+        <p>Chat with an AI agent that can use tools to help you!</p>
       <div id="chatContainer" class="chat-container"></div>
       <div class="input-container">
         <input type="text" id="messageInput" placeholder="Type your message..." />
@@ -142,6 +222,706 @@ app.post('/api/chat', async (req, res) => {
 app.post('/api/chat/clear', (req, res) => {
   agent.clearHistory();
   res.json({ success: true });
+});
+
+// Email API endpoints
+app.post('/api/email/send', async (req, res) => {
+  if (!emailService) {
+    return res.status(503).json({ error: 'Email service not configured' });
+  }
+
+  try {
+    const { to, subject, text, html } = req.body;
+    
+    if (!to || !subject || !text) {
+      return res.status(400).json({ error: 'Missing required fields: to, subject, text' });
+    }
+
+    const result = await emailService.sendEmail(to, subject, text, html);
+    res.json(result);
+  } catch (error) {
+    console.error('Email send error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/email/inbox', async (req, res) => {
+  if (!emailService) {
+    return res.status(503).json({ error: 'Email service not configured' });
+  }
+
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const emails = await emailService.getInbox(limit);
+    res.json({ emails });
+  } catch (error) {
+    console.error('Email inbox error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/email/refresh', async (req, res) => {
+  if (!emailService) {
+    return res.status(503).json({ error: 'Email service not configured' });
+  }
+
+  try {
+    const emails = await emailService.refreshInbox();
+    res.json({ emails });
+  } catch (error) {
+    console.error('Email refresh error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// SMS API endpoints
+app.post('/api/sms/send', async (req, res) => {
+  if (!smsService) {
+    return res.status(503).json({ error: 'SMS service not configured' });
+  }
+
+  try {
+    const { to, message } = req.body;
+    
+    if (!to || !message) {
+      return res.status(400).json({ error: 'Missing required fields: to, message' });
+    }
+
+    const result = await smsService.sendSMS(to, message);
+    res.json(result);
+  } catch (error) {
+    console.error('SMS send error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/sms/messages', async (req, res) => {
+  if (!smsService) {
+    return res.status(503).json({ error: 'SMS service not configured' });
+  }
+
+  try {
+    const limit = parseInt(req.query.limit) || 20;
+    const messages = await smsService.getMessages(limit);
+    res.json({ messages });
+  } catch (error) {
+    console.error('SMS messages error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/sms/refresh', async (req, res) => {
+  if (!smsService) {
+    return res.status(503).json({ error: 'SMS service not configured' });
+  }
+
+  try {
+    const messages = await smsService.refreshMessages();
+    res.json({ messages });
+  } catch (error) {
+    console.error('SMS refresh error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Email manual interface
+app.get('/email', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Email Service - PartnerPlus</title>
+      <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 0; }
+        .header { background-color: #1976d2; color: white; padding: 15px 20px; margin-bottom: 20px; }
+        .nav { display: flex; align-items: center; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
+        .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
+        .nav a:hover { background-color: rgba(255,255,255,0.1); }
+        .nav a.active { background-color: rgba(255,255,255,0.2); }
+        .content { padding: 0 20px; }
+        .container { display: flex; gap: 20px; }
+        .section { flex: 1; border: 1px solid #ccc; border-radius: 10px; padding: 20px; }
+        h2 { margin-top: 0; color: #1976d2; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        textarea { min-height: 100px; resize: vertical; }
+        button { padding: 10px 20px; background-color: #1976d2; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #1565c0; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .email-list { max-height: 600px; overflow-y: auto; }
+        .email-item { border: 1px solid #eee; border-radius: 5px; padding: 10px; margin-bottom: 10px; cursor: pointer; }
+        .email-item:hover { background-color: #f5f5f5; }
+        .email-from { font-weight: bold; color: #333; }
+        .email-subject { color: #1976d2; margin: 5px 0; }
+        .email-date { color: #666; font-size: 0.9em; }
+        .email-preview { color: #666; font-size: 0.9em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .status.success { background-color: #d4edda; color: #155724; }
+        .status.error { background-color: #f8d7da; color: #721c24; }
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); }
+        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 800px; border-radius: 10px; }
+        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close:hover { color: black; }
+        .email-body { white-space: pre-wrap; word-wrap: break-word; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="nav">
+          <h1>PartnerPlus</h1>
+          <a href="/">AI Agent</a>
+          <a href="/email" class="active">Email Service</a>
+          <a href="/sms">SMS Service</a>
+        </div>
+      </div>
+      <div class="content">
+        <h2>Email Service Manual Interface</h2>
+      
+      <div class="container">
+        <div class="section">
+          <h2>Send Email</h2>
+          <form id="sendEmailForm">
+            <div class="form-group">
+              <label for="to">To:</label>
+              <input type="email" id="to" name="to" required placeholder="recipient@example.com">
+            </div>
+            <div class="form-group">
+              <label for="subject">Subject:</label>
+              <input type="text" id="subject" name="subject" required placeholder="Email subject">
+            </div>
+            <div class="form-group">
+              <label for="text">Message:</label>
+              <textarea id="text" name="text" required placeholder="Your message here..."></textarea>
+            </div>
+            <div class="form-group">
+              <label for="html">HTML (optional):</label>
+              <textarea id="html" name="html" placeholder="<p>HTML version of your message</p>"></textarea>
+            </div>
+            <button type="submit" id="sendButton">Send Email</button>
+          </form>
+          <div id="sendStatus"></div>
+        </div>
+
+        <div class="section">
+          <h2>Inbox</h2>
+          <button onclick="refreshInbox()" id="refreshButton">Refresh Inbox</button>
+          <div id="inboxStatus"></div>
+          <div id="emailList" class="email-list"></div>
+        </div>
+      </div>
+
+      <!-- Email Detail Modal -->
+      <div id="emailModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeModal()">&times;</span>
+          <h2 id="modalSubject"></h2>
+          <p><strong>From:</strong> <span id="modalFrom"></span></p>
+          <p><strong>To:</strong> <span id="modalTo"></span></p>
+          <p><strong>Date:</strong> <span id="modalDate"></span></p>
+          <hr>
+          <div id="modalBody" class="email-body"></div>
+        </div>
+      </div>
+
+      <script>
+        // Load inbox on page load
+        window.onload = () => {
+          refreshInbox();
+        };
+
+        // Send email form handler
+        document.getElementById('sendEmailForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const sendButton = document.getElementById('sendButton');
+          const statusDiv = document.getElementById('sendStatus');
+          
+          sendButton.disabled = true;
+          sendButton.textContent = 'Sending...';
+          
+          const formData = {
+            to: document.getElementById('to').value,
+            subject: document.getElementById('subject').value,
+            text: document.getElementById('text').value,
+            html: document.getElementById('html').value
+          };
+
+          try {
+            const response = await fetch('/api/email/send', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+              statusDiv.className = 'status success';
+              statusDiv.textContent = 'Email sent successfully! Message ID: ' + result.messageId;
+              document.getElementById('sendEmailForm').reset();
+            } else {
+              statusDiv.className = 'status error';
+              statusDiv.textContent = 'Failed to send email: ' + (result.error || 'Unknown error');
+            }
+          } catch (error) {
+            statusDiv.className = 'status error';
+            statusDiv.textContent = 'Error: ' + error.message;
+          } finally {
+            sendButton.disabled = false;
+            sendButton.textContent = 'Send Email';
+          }
+        });
+
+        // Refresh inbox
+        async function refreshInbox() {
+          const refreshButton = document.getElementById('refreshButton');
+          const statusDiv = document.getElementById('inboxStatus');
+          const emailList = document.getElementById('emailList');
+          
+          refreshButton.disabled = true;
+          refreshButton.textContent = 'Refreshing...';
+          statusDiv.textContent = '';
+
+          try {
+            const response = await fetch('/api/email/refresh', {
+              method: 'POST'
+            });
+
+            const result = await response.json();
+            
+            if (result.emails) {
+              displayEmails(result.emails);
+              statusDiv.className = 'status success';
+              statusDiv.textContent = 'Inbox refreshed: ' + result.emails.length + ' emails';
+            } else {
+              statusDiv.className = 'status error';
+              statusDiv.textContent = 'Failed to refresh inbox: ' + (result.error || 'Unknown error');
+            }
+          } catch (error) {
+            statusDiv.className = 'status error';
+            statusDiv.textContent = 'Error: ' + error.message;
+          } finally {
+            refreshButton.disabled = false;
+            refreshButton.textContent = 'Refresh Inbox';
+          }
+        }
+
+        // Display emails in the list
+        function displayEmails(emails) {
+          const emailList = document.getElementById('emailList');
+          emailList.innerHTML = '';
+
+          if (emails.length === 0) {
+            emailList.innerHTML = '<p>No emails found</p>';
+            return;
+          }
+
+          emails.forEach((email, index) => {
+            const emailItem = document.createElement('div');
+            emailItem.className = 'email-item';
+            emailItem.onclick = () => showEmailDetail(email);
+            
+            // Clean up the email text for better preview
+            let cleanText = email.text || '';
+            // Remove common email artifacts
+            cleanText = cleanText.replace(/\\[image:.*?\\]/g, ''); // Remove image placeholders
+            cleanText = cleanText.replace(/\\n+/g, ' '); // Replace multiple newlines with spaces
+            cleanText = cleanText.replace(/\\s+/g, ' '); // Replace multiple spaces with single space
+            cleanText = cleanText.trim();
+            
+            // Get preview text (first 80 characters)
+            const preview = cleanText.length > 80 ? cleanText.substring(0, 80) + '...' : cleanText;
+            
+            // Clean up sender name (remove quotes if present)
+            let fromName = email.from;
+            const emailMatch = fromName.match(/"?(.*?)"?\\s*<(.+?)>/);
+            if (emailMatch) {
+              fromName = emailMatch[1] || emailMatch[2];
+            }
+            
+            // Format date nicely
+            const emailDate = new Date(email.date);
+            const now = new Date();
+            const diffDays = Math.floor((now - emailDate) / (1000 * 60 * 60 * 24));
+            
+            let dateDisplay;
+            if (diffDays === 0) {
+              dateDisplay = emailDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            } else if (diffDays === 1) {
+              dateDisplay = 'Yesterday';
+            } else if (diffDays < 7) {
+              dateDisplay = emailDate.toLocaleDateString([], {weekday: 'short'});
+            } else {
+              dateDisplay = emailDate.toLocaleDateString([], {month: 'short', day: 'numeric'});
+            }
+            
+            emailItem.innerHTML = \`
+              <div class="email-from">\${fromName}</div>
+              <div class="email-subject">\${email.subject || '(No Subject)'}</div>
+              <div class="email-date">\${dateDisplay}</div>
+              <div class="email-preview">\${preview}</div>
+            \`;
+            
+            emailList.appendChild(emailItem);
+          });
+        }
+
+        // Show email detail in modal
+        function showEmailDetail(email) {
+          document.getElementById('modalSubject').textContent = email.subject || '(No Subject)';
+          
+          // Clean up sender name for display
+          let fromName = email.from;
+          const emailMatch = fromName.match(/"?(.*?)"?\\s*<(.+?)>/);
+          if (emailMatch) {
+            fromName = \`\${emailMatch[1]} <\${emailMatch[2]}>\`;
+          }
+          
+          document.getElementById('modalFrom').textContent = fromName;
+          document.getElementById('modalTo').textContent = email.to;
+          document.getElementById('modalDate').textContent = new Date(email.date).toLocaleString();
+          
+          // Display email body - prefer HTML if available, otherwise format text
+          const modalBody = document.getElementById('modalBody');
+          if (email.html && email.html.length > 50) {
+            // Create a sandboxed iframe for HTML content to prevent XSS
+            const iframe = document.createElement('iframe');
+            iframe.style.width = '100%';
+            iframe.style.height = '400px';
+            iframe.style.border = 'none';
+            iframe.srcdoc = email.html;
+            modalBody.innerHTML = '';
+            modalBody.appendChild(iframe);
+          } else {
+            // Format plain text nicely
+            let formattedText = email.text || 'No content';
+            formattedText = formattedText.replace(/\\[image:.*?\\]/g, '[Image]');
+            formattedText = formattedText.replace(/\\n/g, '<br>');
+            modalBody.innerHTML = formattedText;
+          }
+          
+          document.getElementById('emailModal').style.display = 'block';
+        }
+
+        // Close modal
+        function closeModal() {
+          document.getElementById('emailModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = (event) => {
+          const modal = document.getElementById('emailModal');
+          if (event.target == modal) {
+            modal.style.display = 'none';
+          }
+        }
+      </script>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
+// SMS manual interface
+app.get('/sms', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>SMS Service - PartnerPlus</title>
+      <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 0; }
+        .header { background-color: #1976d2; color: white; padding: 15px 20px; margin-bottom: 20px; }
+        .nav { display: flex; align-items: center; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
+        .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
+        .nav a:hover { background-color: rgba(255,255,255,0.1); }
+        .nav a.active { background-color: rgba(255,255,255,0.2); }
+        .content { padding: 0 20px; }
+        .container { display: flex; gap: 20px; }
+        .section { flex: 1; border: 1px solid #ccc; border-radius: 10px; padding: 20px; }
+        h2 { margin-top: 0; color: #1976d2; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        textarea { min-height: 100px; resize: vertical; }
+        button { padding: 10px 20px; background-color: #1976d2; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #1565c0; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .message-list { max-height: 600px; overflow-y: auto; }
+        .message-item { border: 1px solid #eee; border-radius: 5px; padding: 10px; margin-bottom: 10px; }
+        .message-item.sent { background-color: #e3f2fd; margin-left: 20px; }
+        .message-item.received { background-color: #f5f5f5; margin-right: 20px; }
+        .message-from { font-weight: bold; color: #333; }
+        .message-body { margin: 5px 0; }
+        .message-date { color: #666; font-size: 0.9em; }
+        .message-status { color: #666; font-size: 0.8em; font-style: italic; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .status.success { background-color: #d4edda; color: #155724; }
+        .status.error { background-color: #f8d7da; color: #721c24; }
+        .phone-input { font-family: monospace; }
+        .char-count { font-size: 0.8em; color: #666; text-align: right; margin-top: 5px; }
+        .char-count.warning { color: #f57c00; }
+        .char-count.error { color: #d32f2f; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="nav">
+          <h1>PartnerPlus</h1>
+          <a href="/">AI Agent</a>
+          <a href="/email">Email Service</a>
+          <a href="/sms" class="active">SMS Service</a>
+        </div>
+      </div>
+      <div class="content">
+        <h2>SMS Service Manual Interface</h2>
+      
+        <div class="container">
+          <div class="section">
+            <h2>Send SMS</h2>
+            <form id="sendSMSForm">
+              <div class="form-group">
+                <label for="to">To (Phone Number):</label>
+                <input type="tel" id="to" name="to" required placeholder="+1 (555) 123-4567" class="phone-input">
+                <small>Format: +1 (555) 123-4567 or 5551234567</small>
+              </div>
+              <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required placeholder="Your message here..." maxlength="1600" oninput="updateCharCount()"></textarea>
+                <div id="charCount" class="char-count">0 / 160 characters (1 SMS)</div>
+              </div>
+              <button type="submit" id="sendButton">Send SMS</button>
+            </form>
+            <div id="sendStatus"></div>
+          </div>
+
+          <div class="section">
+            <h2>Messages</h2>
+            <button onclick="refreshMessages()" id="refreshButton">Refresh Messages</button>
+            <div id="messageStatus"></div>
+            <div id="messageList" class="message-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        // Load messages on page load
+        window.onload = () => {
+          refreshMessages();
+        };
+
+        // Character count function
+        function updateCharCount() {
+          const messageInput = document.getElementById('message');
+          const charCountDiv = document.getElementById('charCount');
+          const length = messageInput.value.length;
+          
+          let smsCount = Math.ceil(length / 160);
+          if (length > 160) {
+            smsCount = Math.ceil(length / 153); // SMS segments after first are 153 chars
+          }
+          
+          charCountDiv.textContent = \`\${length} / \${length <= 160 ? '160' : '1600'} characters (\${smsCount} SMS)\`;
+          
+          if (length > 1600) {
+            charCountDiv.className = 'char-count error';
+          } else if (length > 160) {
+            charCountDiv.className = 'char-count warning';
+          } else {
+            charCountDiv.className = 'char-count';
+          }
+        }
+
+        // Send SMS form handler
+        document.getElementById('sendSMSForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const sendButton = document.getElementById('sendButton');
+          const statusDiv = document.getElementById('sendStatus');
+          
+          sendButton.disabled = true;
+          sendButton.textContent = 'Sending...';
+          
+          const formData = {
+            to: document.getElementById('to').value,
+            message: document.getElementById('message').value
+          };
+
+          try {
+            const response = await fetch('/api/sms/send', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+              statusDiv.className = 'status success';
+              statusDiv.textContent = 'SMS sent successfully! Message ID: ' + result.messageId;
+              document.getElementById('sendSMSForm').reset();
+              updateCharCount();
+              // Refresh messages to show sent message
+              setTimeout(refreshMessages, 1000);
+            } else {
+              statusDiv.className = 'status error';
+              statusDiv.textContent = 'Failed to send SMS: ' + (result.error || 'Unknown error');
+            }
+          } catch (error) {
+            statusDiv.className = 'status error';
+            statusDiv.textContent = 'Error: ' + error.message;
+          } finally {
+            sendButton.disabled = false;
+            sendButton.textContent = 'Send SMS';
+          }
+        });
+
+        // Format phone number as user types
+        document.getElementById('to').addEventListener('input', function(e) {
+          let value = e.target.value.replace(/\\D/g, '');
+          if (value.length >= 10) {
+            if (value.length === 10) {
+              value = value.replace(/(\\d{3})(\\d{3})(\\d{4})/, '($1) $2-$3');
+            } else if (value.length === 11 && value.startsWith('1')) {
+              value = value.replace(/(\\d{1})(\\d{3})(\\d{3})(\\d{4})/, '+$1 ($2) $3-$4');
+            }
+          }
+          e.target.value = value;
+        });
+
+        // Refresh messages
+        async function refreshMessages() {
+          const refreshButton = document.getElementById('refreshButton');
+          const statusDiv = document.getElementById('messageStatus');
+          const messageList = document.getElementById('messageList');
+          
+          refreshButton.disabled = true;
+          refreshButton.textContent = 'Refreshing...';
+          statusDiv.textContent = '';
+
+          try {
+            const response = await fetch('/api/sms/refresh', {
+              method: 'POST'
+            });
+
+            const result = await response.json();
+            
+            if (result.messages) {
+              displayMessages(result.messages);
+              statusDiv.className = 'status success';
+              statusDiv.textContent = 'Messages refreshed: ' + result.messages.length + ' messages';
+            } else {
+              statusDiv.className = 'status error';
+              statusDiv.textContent = 'Failed to refresh messages: ' + (result.error || 'Unknown error');
+            }
+          } catch (error) {
+            statusDiv.className = 'status error';
+            statusDiv.textContent = 'Error: ' + error.message;
+          } finally {
+            refreshButton.disabled = false;
+            refreshButton.textContent = 'Refresh Messages';
+          }
+        }
+
+        // Display messages in the list
+        function displayMessages(messages) {
+          const messageList = document.getElementById('messageList');
+          messageList.innerHTML = '';
+
+          if (messages.length === 0) {
+            messageList.innerHTML = '<p>No messages found</p>';
+            return;
+          }
+
+          messages.forEach((message) => {
+            const messageItem = document.createElement('div');
+            messageItem.className = \`message-item \${message.type}\`;
+            
+            // Format phone number for display
+            const phoneNumber = formatPhoneForDisplay(message.type === 'sent' ? message.to : message.from);
+            
+            // Format date nicely
+            const messageDate = new Date(message.date);
+            const now = new Date();
+            const diffDays = Math.floor((now - messageDate) / (1000 * 60 * 60 * 24));
+            
+            let dateDisplay;
+            if (diffDays === 0) {
+              dateDisplay = messageDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            } else if (diffDays === 1) {
+              dateDisplay = 'Yesterday ' + messageDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            } else if (diffDays < 7) {
+              dateDisplay = messageDate.toLocaleDateString([], {weekday: 'short'}) + ' ' + messageDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            } else {
+              dateDisplay = messageDate.toLocaleDateString([], {month: 'short', day: 'numeric'}) + ' ' + messageDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            }
+            
+            messageItem.innerHTML = \`
+              <div class="message-from">\${message.type === 'sent' ? 'To: ' + phoneNumber : 'From: ' + phoneNumber}</div>
+              <div class="message-body">\${message.body}</div>
+              <div class="message-date">\${dateDisplay}</div>
+              \${message.status ? '<div class="message-status">Status: ' + message.status + '</div>' : ''}
+            \`;
+            
+            messageList.appendChild(messageItem);
+          });
+        }
+
+        // Format phone number for display
+        function formatPhoneForDisplay(phoneNumber) {
+          if (!phoneNumber) return 'Unknown';
+          
+          const digits = phoneNumber.replace(/\\D/g, '');
+          
+          if (digits.length === 10) {
+            return \`(\${digits.slice(0, 3)}) \${digits.slice(3, 6)}-\${digits.slice(6)}\`;
+          } else if (digits.length === 11 && digits.startsWith('1')) {
+            return \`+1 (\${digits.slice(1, 4)}) \${digits.slice(4, 7)}-\${digits.slice(7)}\`;
+          }
+          
+          return phoneNumber; // Return original if can't format
+        }
+      </script>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
+// Twilio webhook for incoming SMS
+app.post('/webhook/sms', (req, res) => {
+  const { From, Body, MessageSid } = req.body;
+  
+  console.log('Incoming SMS:', {
+    from: From,
+    body: Body,
+    messageId: MessageSid
+  });
+
+  // Store incoming message in SMS service
+  if (smsService) {
+    const messageData = {
+      id: MessageSid,
+      from: From,
+      to: process.env.TWILIO_PHONE_NUMBER,
+      body: Body,
+      direction: 'inbound',
+      status: 'received',
+      date: new Date(),
+      type: 'received'
+    };
+    
+    smsService.messages.unshift(messageData);
+  }
+
+  // Respond with TwiML (empty response = no auto-reply)
+  res.type('text/xml');
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+</Response>`);
 });
 
 // Graceful shutdown handler
