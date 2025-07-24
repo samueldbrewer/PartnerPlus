@@ -3,6 +3,7 @@ const express = require('express');
 const Agent = require('./lib/agent');
 const EmailService = require('./lib/email-service');
 const SMSService = require('./lib/sms-service');
+const CodeExecutor = require('./lib/code-executor');
 const { exec } = require('child_process');
 const util = require('util');
 const execPromise = util.promisify(exec);
@@ -46,6 +47,9 @@ app.use(express.static('public'));
 
 // Create agent instance
 const agent = new Agent();
+
+// Create code executor instance
+const codeExecutor = new CodeExecutor();
 
 // Create email service instance
 let emailService = null;
@@ -109,6 +113,19 @@ if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.e
   console.log('SMS service not configured. Missing TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, or TWILIO_PHONE_NUMBER');
 }
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    services: {
+      email: emailService ? 'active' : 'disabled',
+      sms: smsService ? 'active' : 'disabled',
+      codeExecutor: 'active'
+    }
+  });
+});
+
 // Routes
 app.get('/', (req, res) => {
   res.send(`
@@ -116,6 +133,7 @@ app.get('/', (req, res) => {
     <html>
     <head>
       <title>PartnerPlus Agent</title>
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg">
       <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 0; }
         .header { background-color: #1976d2; color: white; padding: 15px 20px; margin-bottom: 20px; }
@@ -143,6 +161,7 @@ app.get('/', (req, res) => {
           <a href="/" class="active">AI Agent</a>
           <a href="/email">Email Service</a>
           <a href="/sms">SMS Service</a>
+          <a href="/executor">Code Executor</a>
         </div>
       </div>
       <div class="content">
@@ -153,6 +172,7 @@ app.get('/', (req, res) => {
         <input type="text" id="messageInput" placeholder="Type your message..." />
         <button id="sendButton" onclick="sendMessage()">Send</button>
         <button onclick="clearChat()">Clear</button>
+        <button id="executeButton" onclick="executeCode()" style="background-color: #2e7d32;">Execute Code</button>
       </div>
       
       <script>
@@ -195,6 +215,40 @@ app.get('/', (req, res) => {
           document.getElementById('chatContainer').innerHTML = '';
           await fetch('/api/chat/clear', { method: 'POST' });
         }
+
+        async function executeCode() {
+          const executeButton = document.getElementById('executeButton');
+          const chatContainer = document.getElementById('chatContainer');
+          
+          executeButton.disabled = true;
+          executeButton.textContent = 'Extracting...';
+          
+          try {
+            // Ask AI to extract code from last message
+            const response = await fetch('/api/extract-code', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+            });
+            
+            const data = await response.json();
+            
+            if (data.code) {
+              // Store code for executor tab
+              localStorage.setItem('extractedCode', data.code);
+              localStorage.setItem('codeLanguage', data.language || 'javascript');
+              
+              // Open executor tab
+              window.open('/executor', '_blank');
+            } else {
+              chatContainer.innerHTML += '<div class="message assistant">No executable code found in the last message.</div>';
+            }
+          } catch (error) {
+            chatContainer.innerHTML += '<div class="message assistant">Error extracting code: ' + error.message + '</div>';
+          } finally {
+            executeButton.disabled = false;
+            executeButton.textContent = 'Execute Code';
+          }
+        }
         
         // Allow sending message with Enter key
         document.getElementById('messageInput').addEventListener('keypress', function(e) {
@@ -222,6 +276,50 @@ app.post('/api/chat', async (req, res) => {
 app.post('/api/chat/clear', (req, res) => {
   agent.clearHistory();
   res.json({ success: true });
+});
+
+// Code extraction endpoint
+app.post('/api/extract-code', async (req, res) => {
+  try {
+    const lastMessage = agent.getLastMessage();
+    if (!lastMessage) {
+      return res.json({ code: null, language: null });
+    }
+
+    // Ask AI to extract only the code
+    const extractPrompt = `Extract only the executable code from this message, removing any explanations or markdown formatting. Return only the raw code that can be executed. If there are multiple code blocks, return the most complete/main one. Message: "${lastMessage}"`;
+    
+    const response = await agent.processMessage(extractPrompt);
+    
+    // Detect language from the extracted code
+    const language = codeExecutor.detectLanguage(response);
+    
+    res.json({ 
+      code: response, 
+      language: language,
+      original: lastMessage 
+    });
+  } catch (error) {
+    console.error('Code extraction error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Code execution endpoint
+app.post('/api/execute-code', async (req, res) => {
+  try {
+    const { code, language } = req.body;
+    
+    if (!code) {
+      return res.status(400).json({ error: 'No code provided' });
+    }
+
+    const result = await codeExecutor.executeCode(code, language);
+    res.json(result);
+  } catch (error) {
+    console.error('Code execution error:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Email API endpoints
@@ -331,6 +429,7 @@ app.get('/email', (req, res) => {
     <html>
     <head>
       <title>Email Service - PartnerPlus</title>
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg">
       <style>
         body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 0; }
         .header { background-color: #1976d2; color: white; padding: 15px 20px; margin-bottom: 20px; }
@@ -374,6 +473,7 @@ app.get('/email', (req, res) => {
           <a href="/">AI Agent</a>
           <a href="/email" class="active">Email Service</a>
           <a href="/sms">SMS Service</a>
+          <a href="/executor">Code Executor</a>
         </div>
       </div>
       <div class="content">
@@ -631,6 +731,7 @@ app.get('/sms', (req, res) => {
     <html>
     <head>
       <title>SMS Service - PartnerPlus</title>
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg">
       <style>
         body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 0; }
         .header { background-color: #1976d2; color: white; padding: 15px 20px; margin-bottom: 20px; }
@@ -674,6 +775,7 @@ app.get('/sms', (req, res) => {
           <a href="/">AI Agent</a>
           <a href="/email">Email Service</a>
           <a href="/sms" class="active">SMS Service</a>
+          <a href="/executor">Code Executor</a>
         </div>
       </div>
       <div class="content">
@@ -925,6 +1027,249 @@ app.post('/webhook/sms', (req, res) => {
 </Response>`);
 });
 
+// Code Executor page
+app.get('/executor', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Code Executor - PartnerPlus</title>
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+      <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 0; }
+        .header { background-color: #1976d2; color: white; padding: 15px 20px; margin-bottom: 20px; }
+        .nav { display: flex; align-items: center; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
+        .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
+        .nav a:hover { background-color: rgba(255,255,255,0.1); }
+        .nav a.active { background-color: rgba(255,255,255,0.2); }
+        .content { padding: 0 20px; }
+        .container { display: flex; gap: 20px; flex-wrap: wrap; }
+        .section { flex: 1; min-width: 300px; border: 1px solid #ccc; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        h2 { margin-top: 0; color: #1976d2; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        select, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        textarea { min-height: 200px; font-family: 'Monaco', 'Consolas', monospace; font-size: 14px; }
+        button { padding: 10px 20px; background-color: #1976d2; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px; }
+        button:hover { background-color: #1565c0; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        button.execute { background-color: #2e7d32; }
+        button.execute:hover { background-color: #1b5e20; }
+        button.clear { background-color: #d32f2f; }
+        button.clear:hover { background-color: #c62828; }
+        .output { background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 15px; min-height: 200px; font-family: 'Monaco', 'Consolas', monospace; white-space: pre-wrap; font-size: 14px; overflow-y: auto; max-height: 400px; }
+        .output.success { border-left: 4px solid #4caf50; }
+        .output.error { border-left: 4px solid #f44336; background-color: #ffebee; }
+        .language-badge { display: inline-block; background-color: #1976d2; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-bottom: 10px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .status.success { background-color: #d4edda; color: #155724; }
+        .status.error { background-color: #f8d7da; color: #721c24; }
+        .status.info { background-color: #d1ecf1; color: #0c5460; }
+        .examples { background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin-bottom: 15px; }
+        .examples h3 { margin-top: 0; color: #1976d2; }
+        .examples code { background-color: white; padding: 2px 4px; border-radius: 3px; font-family: 'Monaco', 'Consolas', monospace; }
+        .html-preview { border: 1px solid #ddd; border-radius: 4px; background: white; min-height: 200px; }
+        .html-preview iframe { width: 100%; height: 300px; border: none; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="nav">
+          <h1>PartnerPlus</h1>
+          <a href="/">AI Agent</a>
+          <a href="/email">Email Service</a>
+          <a href="/sms">SMS Service</a>
+          <a href="/executor" class="active">Code Executor</a>
+        </div>
+      </div>
+      <div class="content">
+        <h2>Code Executor</h2>
+        <p>Execute code in multiple languages. Code can be imported from AI Agent conversations.</p>
+        
+        <div class="examples">
+          <h3>Supported Languages:</h3>
+          <p><strong>JavaScript:</strong> <code>console.log("Hello World")</code></p>
+          <p><strong>Python:</strong> <code>print("Hello World")</code></p>
+          <p><strong>Bash:</strong> <code>echo "Hello World"</code></p>
+          <p><strong>HTML:</strong> <code>&lt;h1&gt;Hello World&lt;/h1&gt;</code></p>
+          <p><strong>CSS:</strong> <code>body { color: blue; }</code></p>
+        </div>
+        
+        <div class="container">
+          <div class="section">
+            <h2>Code Input</h2>
+            <div class="form-group">
+              <label for="language">Language:</label>
+              <select id="language" onchange="updateLanguage()">
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="bash">Bash</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="code">Code:</label>
+              <textarea id="code" placeholder="Enter your code here..." oninput="updateLineNumbers()"></textarea>
+            </div>
+            <button class="execute" onclick="executeCode()" id="executeBtn">Execute Code</button>
+            <button class="clear" onclick="clearCode()">Clear</button>
+            <button onclick="loadFromStorage()">Load from AI Chat</button>
+            <div id="executeStatus"></div>
+          </div>
+
+          <div class="section">
+            <h2>Output</h2>
+            <div id="languageBadge" class="language-badge">JavaScript</div>
+            <div id="output" class="output">Ready to execute code...</div>
+            <div id="htmlPreview" class="html-preview" style="display: none;">
+              <h3>HTML Preview:</h3>
+              <iframe id="htmlFrame"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        // Load code from localStorage if available (from AI chat)
+        window.onload = () => {
+          loadFromStorage();
+        };
+
+        function loadFromStorage() {
+          const extractedCode = localStorage.getItem('extractedCode');
+          const codeLanguage = localStorage.getItem('codeLanguage');
+          
+          if (extractedCode) {
+            document.getElementById('code').value = extractedCode;
+            if (codeLanguage) {
+              document.getElementById('language').value = codeLanguage;
+              updateLanguage();
+            }
+            
+            // Clear from storage after loading
+            localStorage.removeItem('extractedCode');
+            localStorage.removeItem('codeLanguage');
+            
+            // Show status
+            const statusDiv = document.getElementById('executeStatus');
+            statusDiv.className = 'status info';
+            statusDiv.textContent = 'Code loaded from AI Agent chat';
+          }
+        }
+
+        function updateLanguage() {
+          const language = document.getElementById('language').value;
+          const badge = document.getElementById('languageBadge');
+          badge.textContent = language.charAt(0).toUpperCase() + language.slice(1);
+          
+          // Update placeholder based on language
+          const codeArea = document.getElementById('code');
+          const placeholders = {
+            javascript: 'console.log("Hello, World!");\\n\\n// Your JavaScript code here',
+            python: 'print("Hello, World!")\\n\\n# Your Python code here',
+            bash: 'echo "Hello, World!"\\n\\n# Your bash commands here',
+            html: '<!DOCTYPE html>\\n<html>\\n<body>\\n<h1>Hello, World!</h1>\\n</body>\\n</html>',
+            css: 'body {\\n  background-color: #f0f0f0;\\n  font-family: Arial, sans-serif;\\n}'
+          };
+          
+          if (!codeArea.value) {
+            codeArea.placeholder = placeholders[language] || 'Enter your code here...';
+          }
+        }
+
+        function clearCode() {
+          document.getElementById('code').value = '';
+          document.getElementById('output').textContent = 'Ready to execute code...';
+          document.getElementById('output').className = 'output';
+          document.getElementById('htmlPreview').style.display = 'none';
+          document.getElementById('executeStatus').textContent = '';
+        }
+
+        async function executeCode() {
+          const code = document.getElementById('code').value.trim();
+          const language = document.getElementById('language').value;
+          const executeBtn = document.getElementById('executeBtn');
+          const output = document.getElementById('output');
+          const statusDiv = document.getElementById('executeStatus');
+          const htmlPreview = document.getElementById('htmlPreview');
+          
+          if (!code) {
+            statusDiv.className = 'status error';
+            statusDiv.textContent = 'Please enter some code to execute';
+            return;
+          }
+
+          executeBtn.disabled = true;
+          executeBtn.textContent = 'Executing...';
+          output.textContent = 'Executing code...';
+          output.className = 'output';
+          htmlPreview.style.display = 'none';
+          statusDiv.textContent = '';
+
+          try {
+            const response = await fetch('/api/execute-code', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ code, language })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+              output.className = 'output success';
+              output.textContent = result.output || 'Code executed successfully (no output)';
+              
+              statusDiv.className = 'status success';
+              statusDiv.textContent = 'Code executed successfully';
+              
+              // Special handling for HTML
+              if (language === 'html' && result.htmlContent) {
+                htmlPreview.style.display = 'block';
+                const iframe = document.getElementById('htmlFrame');
+                iframe.srcdoc = result.htmlContent;
+              }
+              
+              // Special handling for CSS
+              if (language === 'css' && result.cssContent) {
+                output.textContent = 'CSS validated successfully\\n\\n' + result.cssContent;
+              }
+              
+            } else {
+              output.className = 'output error';
+              output.textContent = result.error || 'Unknown error occurred';
+              
+              statusDiv.className = 'status error';
+              statusDiv.textContent = 'Execution failed';
+            }
+          } catch (error) {
+            output.className = 'output error';
+            output.textContent = 'Network error: ' + error.message;
+            
+            statusDiv.className = 'status error';
+            statusDiv.textContent = 'Failed to execute code';
+          } finally {
+            executeBtn.disabled = false;
+            executeBtn.textContent = 'Execute Code';
+          }
+        }
+
+        // Allow Ctrl+Enter to execute code
+        document.getElementById('code').addEventListener('keydown', function(e) {
+          if (e.ctrlKey && e.key === 'Enter') {
+            executeCode();
+          }
+        });
+
+        // Initialize
+        updateLanguage();
+      </script>
+    </body>
+    </html>
+  `);
+});
+
 // SMS Opt-In Policy page
 app.get('/optin', (req, res) => {
   res.send(`
@@ -932,6 +1277,7 @@ app.get('/optin', (req, res) => {
     <html>
     <head>
       <title>SMS Opt-In Policy - PartnerPlus</title>
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg">
       <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 0; }
         .header { background-color: #1976d2; color: white; padding: 15px 20px; margin-bottom: 20px; }
@@ -1050,26 +1396,48 @@ function gracefulShutdown() {
 // Start server with port conflict handling
 async function startServer() {
   try {
-    // Kill any existing process on the port
-    await killExistingProcess(PORT);
+    console.log('Starting PartnerPlus server...');
+    console.log('Environment:', {
+      NODE_ENV: process.env.NODE_ENV,
+      PORT: PORT,
+      OPENAI_API_KEY: process.env.OPENAI_API_KEY ? 'Set' : 'Not set',
+      EMAIL_USER: process.env.EMAIL_USER || 'Not set',
+      TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID ? 'Set' : 'Not set'
+    });
+
+    // Only kill existing processes locally, not on Railway
+    if (process.env.NODE_ENV !== 'production') {
+      await killExistingProcess(PORT);
+    }
     
     // Start the server
-    server = app.listen(PORT, () => {
-      console.log(`PartnerPlus Agent running on port ${PORT}`);
-      console.log(`Visit http://localhost:${PORT} to interact with the agent`);
+    server = app.listen(PORT, '0.0.0.0', () => {
+      console.log(`✅ PartnerPlus server successfully started!`);
+      console.log(`🌐 Running on: http://0.0.0.0:${PORT}`);
+      console.log(`🚀 Environment: ${process.env.NODE_ENV || 'development'}`);
     });
 
     server.on('error', (error) => {
+      console.error('❌ Server error:', error);
       if (error.code === 'EADDRINUSE') {
         console.error(`Port ${PORT} is already in use`);
-        process.exit(1);
-      } else {
-        console.error('Server error:', error);
-        process.exit(1);
       }
+      process.exit(1);
     });
+
+    // Handle uncaught exceptions
+    process.on('uncaughtException', (error) => {
+      console.error('❌ Uncaught Exception:', error);
+      process.exit(1);
+    });
+
+    process.on('unhandledRejection', (reason, promise) => {
+      console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+      process.exit(1);
+    });
+
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('❌ Failed to start server:', error);
     process.exit(1);
   }
 }
