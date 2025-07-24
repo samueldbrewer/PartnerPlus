@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Test - PartsTown Toolkit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .loading {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .viewport-info {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 PartsTown Toolkit - Mobile Test Suite</h1>
+        
+        <div class="viewport-info">
+            <strong>Viewport Info:</strong><br>
+            Screen: <span id="screenSize"></span><br>
+            Window: <span id="windowSize"></span><br>
+            Device Pixel Ratio: <span id="devicePixelRatio"></span><br>
+            User Agent: <span id="userAgent"></span>
+        </div>
+
+        <div class="test-section">
+            <h3>🌐 API Connectivity Tests</h3>
+            <button onclick="testAPIHealth()">Test API Health</button>
+            <button onclick="testManufacturers()">Test Manufacturers</button>
+            <button onclick="testSearch()">Test Search</button>
+            <div id="apiResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📱 Mobile Features Test</h3>
+            <button onclick="testTouchEvents()">Test Touch Events</button>
+            <button onclick="testOrientation()">Test Orientation</button>
+            <button onclick="testCamera()">Test Camera Access</button>
+            <div id="mobileResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎨 UI Responsiveness Test</h3>
+            <button onclick="testResponsive()">Test Responsive Design</button>
+            <button onclick="testPerformance()">Test Performance</button>
+            <div id="uiResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔄 Service Worker Test</h3>
+            <button onclick="testServiceWorker()">Test Service Worker</button>
+            <button onclick="testOfflineMode()">Test Offline Mode</button>
+            <div id="swResults"></div>
+        </div>
+    </div>
+
+    <script>
+        // Display viewport information
+        function updateViewportInfo() {
+            document.getElementById('screenSize').textContent = `${screen.width}x${screen.height}`;
+            document.getElementById('windowSize').textContent = `${window.innerWidth}x${window.innerHeight}`;
+            document.getElementById('devicePixelRatio').textContent = window.devicePixelRatio;
+            document.getElementById('userAgent').textContent = navigator.userAgent.substring(0, 80) + '...';
+        }
+
+        // API Tests
+        async function testAPIHealth() {
+            const resultsDiv = document.getElementById('apiResults');
+            resultsDiv.innerHTML += '<div class="test-result loading">Testing API health...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:7777/health');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultsDiv.innerHTML += `<div class="test-result success">✅ API Health: ${data.status} - Scraper Ready: ${data.scraper_ready}</div>`;
+                } else {
+                    resultsDiv.innerHTML += `<div class="test-result error">❌ API Health failed: ${response.status}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `<div class="test-result error">❌ API connection failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testManufacturers() {
+            const resultsDiv = document.getElementById('apiResults');
+            resultsDiv.innerHTML += '<div class="test-result loading">Testing manufacturers endpoint...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:7777/api/manufacturers?limit=2');
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    resultsDiv.innerHTML += `<div class="test-result success">✅ Manufacturers: Found ${data.count} manufacturers</div>`;
+                } else {
+                    resultsDiv.innerHTML += `<div class="test-result error">❌ Manufacturers failed: ${data.error || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `<div class="test-result error">❌ Manufacturers request failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testSearch() {
+            const resultsDiv = document.getElementById('apiResults');
+            resultsDiv.innerHTML += '<div class="test-result loading">Testing search endpoint...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:7777/api/search?q=fryer&limit=2');
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    resultsDiv.innerHTML += `<div class="test-result success">✅ Search: Found ${data.count} results for "fryer"</div>`;
+                } else {
+                    resultsDiv.innerHTML += `<div class="test-result error">❌ Search failed: ${data.error || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `<div class="test-result error">❌ Search request failed: ${error.message}</div>`;
+            }
+        }
+
+        // Mobile Feature Tests
+        function testTouchEvents() {
+            const resultsDiv = document.getElementById('mobileResults');
+            
+            if ('ontouchstart' in window) {
+                resultsDiv.innerHTML += '<div class="test-result success">✅ Touch events supported</div>';
+            } else {
+                resultsDiv.innerHTML += '<div class="test-result error">❌ Touch events not supported</div>';
+            }
+        }
+
+        function testOrientation() {
+            const resultsDiv = document.getElementById('mobileResults');
+            
+            if (screen.orientation) {
+                const orientation = screen.orientation.type;
+                resultsDiv.innerHTML += `<div class="test-result success">✅ Orientation API: ${orientation}</div>`;
+            } else {
+                resultsDiv.innerHTML += '<div class="test-result error">❌ Orientation API not supported</div>';
+            }
+        }
+
+        async function testCamera() {
+            const resultsDiv = document.getElementById('mobileResults');
+            
+            try {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    // Don't actually request camera access, just check if it's available
+                    resultsDiv.innerHTML += '<div class="test-result success">✅ Camera API available (getUserMedia supported)</div>';
+                } else {
+                    resultsDiv.innerHTML += '<div class="test-result error">❌ Camera API not available</div>';
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `<div class="test-result error">❌ Camera test failed: ${error.message}</div>`;
+            }
+        }
+
+        // UI Tests
+        function testResponsive() {
+            const resultsDiv = document.getElementById('uiResults');
+            const width = window.innerWidth;
+            
+            let deviceType;
+            if (width < 768) {
+                deviceType = 'Mobile';
+            } else if (width < 1024) {
+                deviceType = 'Tablet';
+            } else {
+                deviceType = 'Desktop';
+            }
+            
+            resultsDiv.innerHTML += `<div class="test-result success">✅ Device detected as: ${deviceType} (${width}px wide)</div>`;
+            
+            // Test CSS custom properties
+            const testElement = document.createElement('div');
+            testElement.style.setProperty('--test-var', 'test');
+            if (testElement.style.getPropertyValue('--test-var') === 'test') {
+                resultsDiv.innerHTML += '<div class="test-result success">✅ CSS Custom Properties supported</div>';
+            } else {
+                resultsDiv.innerHTML += '<div class="test-result error">❌ CSS Custom Properties not supported</div>';
+            }
+        }
+
+        function testPerformance() {
+            const resultsDiv = document.getElementById('uiResults');
+            
+            if ('performance' in window) {
+                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                resultsDiv.innerHTML += `<div class="test-result success">✅ Page load time: ${loadTime}ms</div>`;
+            } else {
+                resultsDiv.innerHTML += '<div class="test-result error">❌ Performance API not available</div>';
+            }
+        }
+
+        // Service Worker Tests
+        async function testServiceWorker() {
+            const resultsDiv = document.getElementById('swResults');
+            
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    if (registration) {
+                        resultsDiv.innerHTML += '<div class="test-result success">✅ Service Worker registered and active</div>';
+                    } else {
+                        resultsDiv.innerHTML += '<div class="test-result loading">⏳ Service Worker not yet registered</div>';
+                    }
+                } catch (error) {
+                    resultsDiv.innerHTML += `<div class="test-result error">❌ Service Worker error: ${error.message}</div>`;
+                }
+            } else {
+                resultsDiv.innerHTML += '<div class="test-result error">❌ Service Worker not supported</div>';
+            }
+        }
+
+        function testOfflineMode() {
+            const resultsDiv = document.getElementById('swResults');
+            
+            if (navigator.onLine) {
+                resultsDiv.innerHTML += '<div class="test-result success">✅ Currently online</div>';
+            } else {
+                resultsDiv.innerHTML += '<div class="test-result error">❌ Currently offline</div>';
+            }
+            
+            // Test storage
+            if ('localStorage' in window) {
+                try {
+                    localStorage.setItem('test', 'value');
+                    localStorage.removeItem('test');
+                    resultsDiv.innerHTML += '<div class="test-result success">✅ Local Storage available</div>';
+                } catch (error) {
+                    resultsDiv.innerHTML += '<div class="test-result error">❌ Local Storage not available</div>';
+                }
+            }
+        }
+
+        // Initialize tests
+        window.addEventListener('load', () => {
+            updateViewportInfo();
+            
+            // Update viewport info on resize
+            window.addEventListener('resize', updateViewportInfo);
+            
+            // Automatically run basic tests
+            setTimeout(() => {
+                testAPIHealth();
+                testTouchEvents();
+                testResponsive();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

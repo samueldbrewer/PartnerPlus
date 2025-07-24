@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Lookup - Manuals & Parts</title>
+    <meta name="description" content="Find manuals and parts for commercial equipment by manufacturer and model">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #3b82f6;
+            --accent-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius: 6px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .header p {
+            color: var(--text-secondary);
+        }
+
+        .lookup-section {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-select:disabled {
+            background: var(--bg-color);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .loading {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-card {
+            background: var(--surface-color);
+            padding: 2rem 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            min-width: 300px;
+        }
+
+        .loading-card .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem auto;
+        }
+
+        .loading-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .loading-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .pagination-info {
+            background: var(--bg-color);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .load-more-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .load-more-btn:hover {
+            background: var(--primary-color);
+        }
+
+        .load-more-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .model-info {
+            background: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .model-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .model-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .section {
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+        }
+
+        .count-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .manuals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .manual-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            background: var(--bg-color);
+        }
+
+        .manual-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow);
+            transform: translateY(-1px);
+        }
+
+        .manual-type {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .manual-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .manual-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-color);
+        }
+
+        .parts-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .parts-table th,
+        .parts-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .parts-table th {
+            background: var(--bg-color);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .parts-table tr:hover {
+            background: var(--bg-color);
+        }
+
+        .part-number {
+            font-weight: 600;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .part-number:hover {
+            text-decoration: underline;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: var(--danger-color);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: var(--accent-color);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .header {
+                padding: 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .lookup-section {
+                padding: 1.5rem;
+            }
+            
+            .manuals-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .model-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .parts-table {
+                font-size: 0.875rem;
+            }
+            
+            .parts-table th,
+            .parts-table td {
+                padding: 0.5rem;
+            }
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🔧 Equipment Lookup</h1>
+            <p>Find manuals and parts by selecting manufacturer and model</p>
+        </header>
+
+        <div class="lookup-section">
+            <form id="lookupForm">
+                <div class="form-group">
+                    <label for="manufacturerSelect" class="form-label">
+                        1. Select Manufacturer
+                    </label>
+                    <select id="manufacturerSelect" class="form-select">
+                        <option value="">Loading manufacturers...</option>
+                    </select>
+                    <div class="loading" id="manufacturerLoading">
+                        <div class="spinner"></div>
+                        <span>Loading manufacturers...</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="modelSelect" class="form-label">
+                        2. Select Model
+                    </label>
+                    <select id="modelSelect" class="form-select" disabled>
+                        <option value="">Select a manufacturer first</option>
+                    </select>
+                    <div class="loading" id="modelLoading">
+                        <div class="spinner"></div>
+                        <span>Loading models...</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="resultsSection" class="results-section">
+            <div id="modelInfo" class="model-info">
+                <!-- Model information will be displayed here -->
+            </div>
+
+            <div id="manualsSection" class="section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">📚</span>
+                        Available Manuals
+                    </h3>
+                    <span class="count-badge" id="manualsCount">0</span>
+                </div>
+                <div id="manualsList" class="manuals-grid">
+                    <!-- Manuals will be listed here -->
+                </div>
+            </div>
+
+            <div id="partsSection" class="section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="section-icon">⚙️</span>
+                        Parts List
+                    </h3>
+                    <span class="count-badge" id="partsCount">0</span>
+                </div>
+                <div id="partsList">
+                    <!-- Parts will be listed here -->
+                </div>
+            </div>
+        </div>
+
+        <div id="quickStats" class="quick-stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-value" id="totalManufacturers">0</div>
+                <div class="stat-label">Total Manufacturers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalModels">0</div>
+                <div class="stat-label">Models Available</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalDocs">0</div>
+                <div class="stat-label">Documents</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-card">
+            <div class="spinner"></div>
+            <div class="loading-title" id="loadingTitle">Loading...</div>
+            <div class="loading-description" id="loadingDescription">Please wait while we fetch the data</div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let manufacturers = [];
+        let currentManufacturer = null;
+        let currentModels = [];
+        let currentModel = null;
+        let currentParts = [];
+        let modelsPageSize = 50; // Load models in chunks
+        let allModelsLoaded = false;
+        let loadingModels = false;
+
+        // API base URL
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:7777' 
+            : '/api';
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        async function initializeApp() {
+            await loadManufacturers();
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            document.getElementById('manufacturerSelect').addEventListener('change', handleManufacturerChange);
+            document.getElementById('modelSelect').addEventListener('change', handleModelChange);
+        }
+
+        async function loadManufacturers() {
+            const select = document.getElementById('manufacturerSelect');
+            const loading = document.getElementById('manufacturerLoading');
+            
+            loading.classList.add('active');
+            select.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/manufacturers`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    manufacturers = data.data;
+                    
+                    // Populate manufacturer dropdown
+                    select.innerHTML = '<option value="">Choose a manufacturer...</option>';
+                    manufacturers.forEach(mfr => {
+                        const option = document.createElement('option');
+                        option.value = mfr.uri;
+                        option.textContent = `${mfr.name} (${mfr.model_count} models)`;
+                        option.dataset.name = mfr.name;
+                        option.dataset.code = mfr.code;
+                        option.dataset.modelCount = mfr.model_count;
+                        select.appendChild(option);
+                    });
+                    
+                    // Update stats
+                    document.getElementById('totalManufacturers').textContent = manufacturers.length;
+                    document.getElementById('quickStats').style.display = 'grid';
+                    
+                } else {
+                    showError('Failed to load manufacturers: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error loading manufacturers:', error);
+                showError('Unable to connect to the API. Please ensure the server is running.');
+            } finally {
+                loading.classList.remove('active');
+                select.disabled = false;
+            }
+        }
+
+        async function handleManufacturerChange(event) {
+            const manufacturerUri = event.target.value;
+            const modelSelect = document.getElementById('modelSelect');
+            const resultsSection = document.getElementById('resultsSection');
+            
+            // Reset model selection and hide results
+            modelSelect.innerHTML = '<option value="">Choose a model...</option>';
+            modelSelect.disabled = true;
+            resultsSection.classList.remove('active');
+            
+            if (!manufacturerUri) {
+                modelSelect.innerHTML = '<option value="">Select a manufacturer first</option>';
+                return;
+            }
+            
+            // Get manufacturer details
+            const selectedOption = event.target.selectedOptions[0];
+            currentManufacturer = {
+                uri: manufacturerUri,
+                name: selectedOption.dataset.name,
+                code: selectedOption.dataset.code,
+                modelCount: selectedOption.dataset.modelCount
+            };
+            
+            // Load models for this manufacturer
+            await loadModels(manufacturerUri);
+        }
+
+        async function loadModels(manufacturerUri) {
+            const modelSelect = document.getElementById('modelSelect');
+            const loading = document.getElementById('modelLoading');
+            
+            // Reset state
+            currentModels = [];
+            allModelsLoaded = false;
+            loadingModels = true;
+            
+            // Show loading overlay
+            showLoadingOverlay('Loading Models', `Fetching all models for ${currentManufacturer.name}...`);
+            loading.classList.add('active');
+            
+            try {
+                // Load all models at once (API returns all models by default)
+                const response = await fetch(`${API_BASE}/api/manufacturers/${manufacturerUri}/models`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentModels = data.data;
+                    allModelsLoaded = true;
+                    
+                    // Update loading message
+                    updateLoadingOverlay('Processing Models', `Organizing ${currentModels.length} models...`);
+                    
+                    // Populate model dropdown (with slight delay to show processing)
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    populateModelDropdown();
+                    modelSelect.disabled = false;
+                    
+                    // Update model count
+                    document.getElementById('totalModels').textContent = currentModels.length;
+                    
+                    // Show completion message briefly
+                    updateLoadingOverlay('Models Loaded', `Successfully loaded ${currentModels.length} models`);
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                } else {
+                    showError('Failed to load models: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error loading models:', error);
+                showError('Unable to load models. Please try again.');
+            } finally {
+                loadingModels = false;
+                loading.classList.remove('active');
+                hideLoadingOverlay();
+            }
+        }
+
+        function populateModelDropdown() {
+            const modelSelect = document.getElementById('modelSelect');
+            
+            // Sort models alphabetically
+            const sortedModels = [...currentModels].sort((a, b) => a.name.localeCompare(b.name));
+            
+            modelSelect.innerHTML = '<option value="">Choose a model...</option>';
+            sortedModels.forEach(model => {
+                const option = document.createElement('option');
+                option.value = model.name;
+                option.textContent = model.name;
+                if (model.description) {
+                    const cleanDescription = model.description.replace(/<[^>]*>/g, '').substring(0, 50);
+                    if (cleanDescription.trim()) {
+                        option.textContent += ` - ${cleanDescription}`;
+                    }
+                }
+                option.dataset.modelData = JSON.stringify(model);
+                modelSelect.appendChild(option);
+            });
+            
+            // Clear any previous loading messages
+            const loading = document.getElementById('modelLoading');
+            loading.innerHTML = '';
+        }
+
+        // Loading overlay functions
+        function showLoadingOverlay(title, description) {
+            const overlay = document.getElementById('loadingOverlay');
+            const titleEl = document.getElementById('loadingTitle');
+            const descEl = document.getElementById('loadingDescription');
+            
+            titleEl.textContent = title;
+            descEl.textContent = description;
+            overlay.classList.add('active');
+        }
+
+        function updateLoadingOverlay(title, description) {
+            const titleEl = document.getElementById('loadingTitle');
+            const descEl = document.getElementById('loadingDescription');
+            
+            titleEl.textContent = title;
+            descEl.textContent = description;
+        }
+
+        function hideLoadingOverlay() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.remove('active');
+        }
+
+        async function handleModelChange(event) {
+            const modelName = event.target.value;
+            
+            if (!modelName) {
+                document.getElementById('resultsSection').classList.remove('active');
+                return;
+            }
+            
+            // Show loading overlay for model details
+            showLoadingOverlay('Loading Model Details', `Fetching manuals and parts for ${modelName}...`);
+            
+            try {
+                // Get model details from the selected option
+                const selectedOption = event.target.selectedOptions[0];
+                currentModel = JSON.parse(selectedOption.dataset.modelData);
+                
+                // Display model information
+                displayModelInfo();
+                
+                // Display manuals
+                displayManuals();
+                
+                // Update loading message
+                updateLoadingOverlay('Loading Parts List', 'Fetching parts data from PartsTown...');
+                
+                // Load and display parts
+                await loadParts();
+                
+                // Show results section
+                document.getElementById('resultsSection').classList.add('active');
+                
+            } catch (error) {
+                console.error('Error loading model details:', error);
+                showError('Failed to load model details. Please try again.');
+            } finally {
+                hideLoadingOverlay();
+            }
+        }
+
+        function displayModelInfo() {
+            const modelInfo = document.getElementById('modelInfo');
+            
+            modelInfo.innerHTML = `
+                <h2>${currentManufacturer.name} ${currentModel.name}</h2>
+                <div class="model-meta">
+                    <div class="meta-item">
+                        <span>🏭</span>
+                        <span>Manufacturer: ${currentManufacturer.name}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span>📋</span>
+                        <span>Model: ${currentModel.name}</span>
+                    </div>
+                    ${currentModel.description ? `
+                        <div class="meta-item">
+                            <span>ℹ️</span>
+                            <span>${currentModel.description}</span>
+                        </div>
+                    ` : ''}
+                    ${currentModel.code ? `
+                        <div class="meta-item">
+                            <span>🔢</span>
+                            <span>Code: ${currentModel.code}</span>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function displayManuals() {
+            const manualsList = document.getElementById('manualsList');
+            const manualsCount = document.getElementById('manualsCount');
+            
+            if (!currentModel.manuals || currentModel.manuals.length === 0) {
+                manualsList.innerHTML = '<div class="no-data">No manuals available for this model</div>';
+                manualsCount.textContent = '0';
+                return;
+            }
+            
+            manualsCount.textContent = currentModel.manuals.length;
+            
+            manualsList.innerHTML = currentModel.manuals.map(manual => {
+                const manualType = getManualType(manual.type || manual.link);
+                const pdfUrl = manual.link.startsWith('http') ? manual.link : `https://www.partstown.com${manual.link}`;
+                
+                return `
+                    <div class="manual-card">
+                        <div class="manual-type">${manualType.type}</div>
+                        <div class="manual-title">${manual.type || 'Equipment Manual'}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                            Language: ${manual.language || 'English'}
+                        </div>
+                        <div class="manual-actions">
+                            <a href="${pdfUrl}" target="_blank" class="btn btn-primary">
+                                📄 View PDF
+                            </a>
+                            <button class="btn btn-secondary" onclick="downloadManual('${pdfUrl}', '${escapeHtml(manual.type || 'Manual')}')">
+                                ⬇️ Download
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Update document count
+            document.getElementById('totalDocs').textContent = currentModel.manuals.length;
+        }
+
+        async function loadParts() {
+            const partsList = document.getElementById('partsList');
+            const partsCount = document.getElementById('partsCount');
+            
+            partsList.innerHTML = '<div class="loading active"><div class="spinner"></div><span>Loading parts...</span></div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/manufacturers/${currentManufacturer.uri}/models/${encodeURIComponent(currentModel.name)}/parts`);
+                const data = await response.json();
+                
+                if (data.success && data.data.length > 0) {
+                    currentParts = data.data;
+                    partsCount.textContent = currentParts.length;
+                    
+                    // Create parts table
+                    partsList.innerHTML = `
+                        <table class="parts-table">
+                            <thead>
+                                <tr>
+                                    <th>Part Number</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${currentParts.map(part => `
+                                    <tr>
+                                        <td>
+                                            <span class="part-number" onclick="viewPartDetails('${escapeHtml(part.part_number)}')">
+                                                ${escapeHtml(part.part_number)}
+                                            </span>
+                                        </td>
+                                        <td>${escapeHtml(part.description || 'N/A')}</td>
+                                        <td>
+                                            <button class="btn btn-primary" onclick="viewPartDetails('${escapeHtml(part.part_number)}')">
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                } else {
+                    partsList.innerHTML = '<div class="no-data">No parts data available for this model</div>';
+                    partsCount.textContent = '0';
+                }
+            } catch (error) {
+                console.error('Error loading parts:', error);
+                partsList.innerHTML = '<div class="error-message">⚠️ Failed to load parts data</div>';
+                partsCount.textContent = '0';
+            }
+        }
+
+        function getManualType(typeOrLink) {
+            const type = (typeOrLink || '').toLowerCase();
+            
+            if (type.includes('service') || type.includes('spm')) {
+                return { type: 'SERVICE & PARTS MANUAL', icon: '🔧' };
+            } else if (type.includes('parts') || type.includes('pm')) {
+                return { type: 'PARTS MANUAL', icon: '⚙️' };
+            } else if (type.includes('wiring') || type.includes('wd')) {
+                return { type: 'WIRING DIAGRAM', icon: '⚡' };
+            } else if (type.includes('installation') || type.includes('iom')) {
+                return { type: 'INSTALLATION & OPERATION', icon: '🏗️' };
+            } else if (type.includes('operation') || type.includes('user')) {
+                return { type: 'USER MANUAL', icon: '📖' };
+            } else {
+                return { type: 'TECHNICAL DOCUMENT', icon: '📄' };
+            }
+        }
+
+        async function viewPartDetails(partNumber) {
+            // This would typically open a modal or navigate to a part details page
+            alert(`Part details for ${partNumber} would be displayed here.\n\nThis would show:\n- Full description\n- Pricing\n- Images\n- Specifications\n- Ordering information`);
+            
+            // In a real implementation:
+            // window.location.href = `/api/parts/${encodeURIComponent(partNumber)}?manufacturer=${currentManufacturer.code}&manufacturer_uri=${currentManufacturer.uri}`;
+        }
+
+        function downloadManual(url, title) {
+            // Create a temporary link element to trigger download
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${currentManufacturer.name}_${currentModel.name}_${title}.pdf`.replace(/[^a-z0-9]/gi, '_');
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function showError(message) {
+            const container = document.querySelector('.container');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `⚠️ ${escapeHtml(message)}`;
+            
+            // Insert after header
+            container.insertBefore(errorDiv, container.children[1]);
+            
+            // Remove after 5 seconds
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+
+        function escapeHtml(text) {
+            if (typeof text !== 'string') return text || '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

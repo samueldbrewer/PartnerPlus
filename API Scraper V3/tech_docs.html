@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Documentation Toolkit</title>
+    <meta name="description" content="Access service manuals, wiring diagrams, and technical specifications">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2c5aa0;
+            --accent-color: #e53e3e;
+            --success-color: #38a169;
+            --warning-color: #d69e2e;
+            --bg-color: #f7fafc;
+            --surface-color: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .search-section {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .search-btn {
+            padding: 1rem 2rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .filter-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .filter-select {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            background: white;
+            cursor: pointer;
+        }
+
+        .doc-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .doc-type-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .doc-type-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .doc-type-btn:hover {
+            border-color: var(--primary-color);
+        }
+
+        .results-section {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .equipment-card {
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .equipment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .equipment-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8fafc, #edf2f7);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .equipment-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .equipment-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .docs-grid {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .doc-item {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            transition: border-color 0.2s, transform 0.2s;
+            cursor: pointer;
+            background: white;
+        }
+
+        .doc-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
+        .doc-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .doc-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--primary-color);
+        }
+
+        .doc-type {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .doc-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .doc-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .doc-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .doc-btn.primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .doc-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-color);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.25rem;
+            border-radius: var(--radius);
+            transition: background 0.2s;
+        }
+
+        .close-btn:hover {
+            background: var(--border-color);
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .pdf-viewer {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: var(--radius);
+        }
+
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .spec-table th,
+        .spec-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .spec-table th {
+            background: var(--bg-color);
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fed7d7;
+            border: 1px solid #feb2b2;
+            color: var(--accent-color);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin: 1rem 0;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .no-results h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .header {
+                padding: 1.5rem;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .docs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal {
+                padding: 0.5rem;
+            }
+            
+            .pdf-viewer {
+                height: 400px;
+            }
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .breadcrumb-item {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .breadcrumb-item:hover {
+            text-decoration: underline;
+        }
+
+        .quick-access {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .quick-card {
+            background: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: var(--shadow);
+        }
+
+        .quick-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .quick-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .quick-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📖 Technical Documentation Toolkit</h1>
+            <p>Access service manuals, wiring diagrams, specifications, and troubleshooting guides</p>
+        </header>
+
+        <nav class="breadcrumb" id="breadcrumb" style="display: none;">
+            <a href="#" class="breadcrumb-item" onclick="goHome()">🏠 Home</a>
+            <span>></span>
+            <span id="breadcrumbCurrent"></span>
+        </nav>
+
+        <div id="homeView">
+            <section class="quick-access">
+                <div class="quick-card" onclick="quickSearch('service manual')">
+                    <span class="quick-icon">📋</span>
+                    <div class="quick-title">Service Manuals</div>
+                    <div class="quick-description">Complete service and repair documentation</div>
+                </div>
+                <div class="quick-card" onclick="quickSearch('wiring diagram')">
+                    <span class="quick-icon">⚡</span>
+                    <div class="quick-title">Wiring Diagrams</div>
+                    <div class="quick-description">Electrical schematics and connections</div>
+                </div>
+                <div class="quick-card" onclick="quickSearch('parts manual')">
+                    <span class="quick-icon">🔧</span>
+                    <div class="quick-title">Parts Manuals</div>
+                    <div class="quick-description">Parts lists and assembly diagrams</div>
+                </div>
+                <div class="quick-card" onclick="quickSearch('installation')">
+                    <span class="quick-icon">🏗️</span>
+                    <div class="quick-title">Installation Guides</div>
+                    <div class="quick-description">Setup and installation procedures</div>
+                </div>
+            </section>
+
+            <section class="search-section">
+                <form class="search-form" onsubmit="performSearch(event)">
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="searchInput" 
+                        placeholder="Enter equipment model, manufacturer, or keyword..."
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="search-btn" id="searchBtn">
+                        🔍 Search Documentation
+                    </button>
+                </form>
+                
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <label class="filter-label">Manufacturer</label>
+                        <select class="filter-select" id="manufacturerFilter">
+                            <option value="">All Manufacturers</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Equipment Type</label>
+                        <select class="filter-select" id="equipmentFilter">
+                            <option value="">All Equipment</option>
+                            <option value="fryer">Fryers</option>
+                            <option value="oven">Ovens</option>
+                            <option value="refrigeration">Refrigeration</option>
+                            <option value="dishwasher">Dishwashers</option>
+                            <option value="ice machine">Ice Machines</option>
+                            <option value="grill">Grills</option>
+                            <option value="steamer">Steamers</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Document Types</label>
+                    <div class="doc-types">
+                        <button type="button" class="doc-type-btn active" data-type="all">All Types</button>
+                        <button type="button" class="doc-type-btn" data-type="spm">Service Manual</button>
+                        <button type="button" class="doc-type-btn" data-type="pm">Parts Manual</button>
+                        <button type="button" class="doc-type-btn" data-type="wd">Wiring Diagram</button>
+                        <button type="button" class="doc-type-btn" data-type="iom">Installation</button>
+                        <button type="button" class="doc-type-btn" data-type="sm">User Manual</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="resultsSection" class="results-section">
+            <!-- Results will be dynamically populated here -->
+        </div>
+    </div>
+
+    <div class="modal" id="docModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Document Viewer</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentView = 'home';
+        let currentData = null;
+        let selectedDocTypes = ['all'];
+        
+        // API base URL
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:7777' 
+            : '/api';
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            setupEventListeners();
+            loadManufacturers();
+        });
+
+        function initializeApp() {
+            // Setup document type filter buttons
+            document.querySelectorAll('.doc-type-btn').forEach(btn => {
+                btn.addEventListener('click', () => toggleDocType(btn.dataset.type));
+            });
+        }
+
+        function setupEventListeners() {
+            // Modal close on background click
+            document.getElementById('docModal').addEventListener('click', (e) => {
+                if (e.target.id === 'docModal') closeModal();
+            });
+            
+            // Filter change handlers
+            document.getElementById('manufacturerFilter').addEventListener('change', applyFilters);
+            document.getElementById('equipmentFilter').addEventListener('change', applyFilters);
+        }
+
+        async function loadManufacturers() {
+            try {
+                const response = await fetch(`${API_BASE}/api/manufacturers`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const select = document.getElementById('manufacturerFilter');
+                    data.data.forEach(mfr => {
+                        const option = document.createElement('option');
+                        option.value = mfr.uri;
+                        option.textContent = mfr.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to load manufacturers:', error);
+            }
+        }
+
+        function toggleDocType(type) {
+            const buttons = document.querySelectorAll('.doc-type-btn');
+            
+            if (type === 'all') {
+                // Select only "All Types"
+                buttons.forEach(btn => btn.classList.remove('active'));
+                document.querySelector('[data-type="all"]').classList.add('active');
+                selectedDocTypes = ['all'];
+            } else {
+                // Remove "All Types" and toggle the specific type
+                document.querySelector('[data-type="all"]').classList.remove('active');
+                const btn = document.querySelector(`[data-type="${type}"]`);
+                
+                if (btn.classList.contains('active')) {
+                    btn.classList.remove('active');
+                    selectedDocTypes = selectedDocTypes.filter(t => t !== type);
+                } else {
+                    btn.classList.add('active');
+                    selectedDocTypes.push(type);
+                }
+                
+                // If nothing selected, revert to "All Types"
+                if (selectedDocTypes.length === 0 || selectedDocTypes.includes('all')) {
+                    document.querySelector('[data-type="all"]').classList.add('active');
+                    selectedDocTypes = ['all'];
+                }
+            }
+            
+            applyFilters();
+        }
+
+        async function quickSearch(query) {
+            document.getElementById('searchInput').value = query;
+            await performSearch({ preventDefault: () => {} });
+        }
+
+        async function performSearch(event) {
+            event.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            
+            if (!query) return;
+            
+            setLoading(true);
+            setBreadcrumb(`Search: "${query}"`);
+            currentView = 'results';
+            
+            try {
+                // Search for models that might have manuals
+                const response = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}&type=models&limit=20`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    await displayTechnicalResults(data.data, query);
+                } else {
+                    showError('Search failed: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                showError('Unable to connect to the service. Please check your connection.');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function displayTechnicalResults(models, query) {
+            const resultsSection = document.getElementById('resultsSection');
+            document.getElementById('homeView').style.display = 'none';
+            
+            if (models.length === 0) {
+                resultsSection.innerHTML = `
+                    <div class="no-results">
+                        <h3>No technical documentation found</h3>
+                        <p>Try a different search term or browse by manufacturer.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            // Process each model to extract technical documentation
+            for (const model of models) {
+                const docs = await getModelDocumentation(model);
+                if (docs.length > 0) {
+                    html += createEquipmentCard(model, docs);
+                }
+            }
+            
+            if (html === '') {
+                resultsSection.innerHTML = `
+                    <div class="no-results">
+                        <h3>No technical documentation available</h3>
+                        <p>The found equipment models don't have accessible technical documentation.</p>
+                    </div>
+                `;
+            } else {
+                resultsSection.innerHTML = html;
+            }
+        }
+
+        async function getModelDocumentation(model) {
+            // Extract documentation from model data
+            const docs = [];
+            
+            if (model.manuals && model.manuals.length > 0) {
+                model.manuals.forEach(manual => {
+                    const docType = getDocumentType(manual.type || manual.link);
+                    docs.push({
+                        title: manual.type || 'Manual',
+                        type: docType.type,
+                        icon: docType.icon,
+                        description: `${model.manufacturer} ${model.name} - ${manual.type || 'Documentation'}`,
+                        link: manual.link,
+                        language: manual.language || 'en'
+                    });
+                });
+            }
+            
+            // Add placeholder technical specs
+            docs.push({
+                title: 'Technical Specifications',
+                type: 'SPEC',
+                icon: '📊',
+                description: `Detailed specifications for ${model.manufacturer} ${model.name}`,
+                link: null,
+                data: {
+                    manufacturer: model.manufacturer,
+                    model: model.name,
+                    description: model.description || 'Commercial Equipment'
+                }
+            });
+            
+            return docs;
+        }
+
+        function getDocumentType(typeOrLink) {
+            const type = (typeOrLink || '').toLowerCase();
+            
+            if (type.includes('service') || type.includes('spm') || type.includes('sm.pdf')) {
+                return { type: 'SERVICE', icon: '🔧' };
+            } else if (type.includes('parts') || type.includes('pm') || type.includes('pm.pdf')) {
+                return { type: 'PARTS', icon: '⚙️' };
+            } else if (type.includes('wiring') || type.includes('wd') || type.includes('electrical')) {
+                return { type: 'WIRING', icon: '⚡' };
+            } else if (type.includes('installation') || type.includes('iom') || type.includes('setup')) {
+                return { type: 'INSTALL', icon: '🏗️' };
+            } else if (type.includes('operation') || type.includes('user') || type.includes('manual')) {
+                return { type: 'MANUAL', icon: '📖' };
+            } else {
+                return { type: 'DOC', icon: '📄' };
+            }
+        }
+
+        function createEquipmentCard(model, docs) {
+            return `
+                <div class="equipment-card">
+                    <div class="equipment-header">
+                        <div class="equipment-title">${escapeHtml(model.manufacturer)} ${escapeHtml(model.name)}</div>
+                        <div class="equipment-meta">
+                            <div class="meta-item">
+                                <span>🏭</span>
+                                <span>${escapeHtml(model.manufacturer)}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>📋</span>
+                                <span>${docs.length} documents</span>
+                            </div>
+                            ${model.description ? `
+                                <div class="meta-item">
+                                    <span>🔧</span>
+                                    <span>${escapeHtml(model.description)}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="docs-grid">
+                        ${docs.map(doc => createDocumentItem(doc, model)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function createDocumentItem(doc, model) {
+            return `
+                <div class="doc-item" onclick="openDocument('${escapeHtml(JSON.stringify(doc))}', '${escapeHtml(JSON.stringify(model))}')">
+                    <span class="doc-icon">${doc.icon}</span>
+                    <div class="doc-title">${escapeHtml(doc.title)}</div>
+                    <div class="doc-type">${doc.type}</div>
+                    <div class="doc-description">${escapeHtml(doc.description)}</div>
+                    <div class="doc-actions">
+                        ${doc.link ? `
+                            <button class="doc-btn primary" onclick="event.stopPropagation(); openPDF('${doc.link}', '${escapeHtml(doc.title)}')">
+                                📄 View PDF
+                            </button>
+                        ` : ''}
+                        <button class="doc-btn" onclick="event.stopPropagation(); openDocument('${escapeHtml(JSON.stringify(doc))}', '${escapeHtml(JSON.stringify(model))}')">
+                            ℹ️ Details
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openDocument(docJson, modelJson) {
+            try {
+                const doc = JSON.parse(docJson);
+                const model = JSON.parse(modelJson);
+                
+                const modal = document.getElementById('docModal');
+                const title = document.getElementById('modalTitle');
+                const body = document.getElementById('modalBody');
+                
+                title.textContent = `${doc.title} - ${model.manufacturer} ${model.name}`;
+                
+                let html = '';
+                
+                if (doc.type === 'SPEC') {
+                    // Show technical specifications
+                    html = `
+                        <h3>📊 Technical Specifications</h3>
+                        <table class="spec-table">
+                            <tr><th>Property</th><th>Value</th></tr>
+                            <tr><td>Manufacturer</td><td>${escapeHtml(model.manufacturer)}</td></tr>
+                            <tr><td>Model</td><td>${escapeHtml(model.name)}</td></tr>
+                            <tr><td>Equipment Type</td><td>${escapeHtml(model.description || 'Commercial Equipment')}</td></tr>
+                            <tr><td>Model Code</td><td>${escapeHtml(model.code || 'N/A')}</td></tr>
+                            <tr><td>Documentation Available</td><td>Service Manual, Parts List, Wiring Diagram</td></tr>
+                        </table>
+                        
+                        <h4>🔧 Service Information</h4>
+                        <p>This equipment requires regular maintenance according to manufacturer specifications. 
+                        Refer to the service manual for detailed procedures and safety requirements.</p>
+                        
+                        <h4>⚠️ Safety Notes</h4>
+                        <p>Always disconnect power before servicing. Follow lockout/tagout procedures. 
+                        Use appropriate personal protective equipment.</p>
+                    `;
+                } else if (doc.link) {
+                    // Show PDF viewer for actual manuals
+                    const pdfUrl = doc.link.startsWith('http') ? doc.link : `https://www.partstown.com${doc.link}`;
+                    html = `
+                        <div style="margin-bottom: 1rem;">
+                            <strong>Document Type:</strong> ${doc.type}<br>
+                            <strong>Language:</strong> ${doc.language || 'English'}<br>
+                            <strong>Source:</strong> PartsTown Official Documentation
+                        </div>
+                        <iframe src="${pdfUrl}" class="pdf-viewer" title="${escapeHtml(doc.title)}"></iframe>
+                        <p style="margin-top: 1rem;">
+                            <a href="${pdfUrl}" target="_blank" style="color: var(--primary-color);">
+                                🔗 Open in new window
+                            </a>
+                        </p>
+                    `;
+                } else {
+                    html = `
+                        <p><strong>Document:</strong> ${escapeHtml(doc.title)}</p>
+                        <p><strong>Type:</strong> ${doc.type}</p>
+                        <p><strong>Equipment:</strong> ${escapeHtml(model.manufacturer)} ${escapeHtml(model.name)}</p>
+                        <p>This document contains technical information for service and repair procedures.</p>
+                    `;
+                }
+                
+                body.innerHTML = html;
+                modal.classList.add('active');
+                
+            } catch (error) {
+                console.error('Error opening document:', error);
+                showError('Failed to load document details.');
+            }
+        }
+
+        function openPDF(link, title) {
+            const pdfUrl = link.startsWith('http') ? link : `https://www.partstown.com${link}`;
+            window.open(pdfUrl, '_blank');
+        }
+
+        function closeModal() {
+            document.getElementById('docModal').classList.remove('active');
+        }
+
+        function setLoading(loading) {
+            const btn = document.getElementById('searchBtn');
+            const resultsSection = document.getElementById('resultsSection');
+            
+            if (loading) {
+                btn.disabled = true;
+                btn.innerHTML = '⏳ Searching...';
+                resultsSection.innerHTML = `
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>Searching technical documentation...</p>
+                    </div>
+                `;
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = '🔍 Search Documentation';
+            }
+        }
+
+        function showError(message) {
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.innerHTML = `
+                <div class="error-message">
+                    <strong>⚠️ Error:</strong> ${escapeHtml(message)}
+                </div>
+            `;
+        }
+
+        function setBreadcrumb(text) {
+            const breadcrumb = document.getElementById('breadcrumb');
+            const current = document.getElementById('breadcrumbCurrent');
+            current.textContent = text;
+            breadcrumb.style.display = 'flex';
+        }
+
+        function clearBreadcrumb() {
+            document.getElementById('breadcrumb').style.display = 'none';
+        }
+
+        function goHome() {
+            currentView = 'home';
+            document.getElementById('homeView').style.display = 'block';
+            document.getElementById('resultsSection').innerHTML = '';
+            clearBreadcrumb();
+        }
+
+        function applyFilters() {
+            // Filter functionality - would be implemented based on current results
+            console.log('Applying filters...', {
+                manufacturer: document.getElementById('manufacturerFilter').value,
+                equipment: document.getElementById('equipmentFilter').value,
+                docTypes: selectedDocTypes
+            });
+        }
+
+        function escapeHtml(text) {
+            if (typeof text !== 'string') return text;
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

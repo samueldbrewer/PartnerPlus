@@ -1,0 +1,195 @@
+DISCOVERED PUBLIC API ENDPOINTS
+================================
+Website: www.partstown.com
+Last Updated: 2025-06-13
+================================
+
+✅ WORKING DATA APIS (Confirmed via Playwright)
+---------------------------------------------
+
+1. Manufacturers Data API
+   Endpoint: https://www.partstown.com/api/manufacturers/
+   Method: GET
+   Headers: X-Requested-With: XMLHttpRequest
+   Query Params: v={timestamp}
+   Function: Returns complete list of all 482 manufacturers with codes and model counts
+   Response: JSON array with manufacturer objects
+   Status: ✅ WORKING via Playwright
+   
+   Sample Data Structure:
+   [{
+     "code": "PT_CAT1050",
+     "name": "3M", 
+     "categoryUri": "3m",
+     "modelCount": 58
+   }, ...]
+
+2. Models Data API
+   Endpoint: https://www.partstown.com/{manufacturer}/parts/models
+   Method: GET
+   Headers: X-Requested-With: XMLHttpRequest
+   Query Params: v={timestamp}&narrow=
+   Function: Returns detailed model data including manuals, images, descriptions
+   Status: ✅ WORKING via Playwright
+   
+   Sample Data Structure:
+   {
+     "results": [{
+       "code": "PT_CAT294966",
+       "name": "12",
+       "url": "/pitco/12/parts",
+       "description": "Gas Fryer",
+       "manuals": [{
+         "type": "Parts Manual",
+         "typeCode": "pm", 
+         "link": "/modelManual/PT-7-12-14-14R-PR14-PM14-18_pm.pdf?v=1655476704727"
+       }],
+       ...
+     }]
+   }
+
+3. Model Facets API
+   Endpoint: https://www.partstown.com/{manufacturer}/parts/model-facet
+   Method: GET
+   Headers: X-Requested-With: XMLHttpRequest
+   Query Params: v={timestamp}&page={page_number}
+   Function: Returns paginated model data with metadata
+   Status: ✅ WORKING via Playwright
+
+BREAKTHROUGH: Playwright with Chromium successfully bypasses Cloudflare bot detection!
+
+4. Part Predictor Models
+   Endpoint: https://www.partstown.com/part-predictor/{category_code}/models
+   Method: GET
+   Headers: X-Requested-With: XMLHttpRequest
+   Function: Retrieves models for a specific category
+   Example: https://www.partstown.com/part-predictor/PT_CAT1163/models
+   Status: ✓ Confirmed Working
+
+
+IMAGE/MEDIA APIs
+----------------
+
+2. Product Images (Sirv CDN)
+   Base URL: https://partstown.sirv.com/products/{MANUFACTURER}/{PART_NUMBER}.view
+   Method: GET
+   Function: Access product images in various sizes
+   Parameters:
+     - No params = Full size image
+     - ?thumb = Thumbnail version
+     - ?w={width} = Custom width (e.g., ?w=500)
+     - ?thumb&image.rules=G0&w=200 = Thumbnail with specific rules
+   Examples:
+     - Full: https://partstown.sirv.com/products/ALT/ALTBA-38586.view
+     - Thumbnail: https://partstown.sirv.com/products/ALT/ALTBA-38586.view?thumb
+     - Custom: https://partstown.sirv.com/products/ALT/ALTBA-38586.view?w=500
+   Status: ✓ Confirmed Working
+
+
+DOCUMENTATION APIs
+------------------
+
+3. Equipment Manuals (Multiple Types)
+   Base URL: https://www.partstown.com/modelManual/{MANUAL_NAME}_{TYPE}.pdf
+   Method: GET
+   Function: Direct access to equipment manuals in PDF format
+   Parameters:
+     - v={timestamp} = Version/cache parameter (optional)
+   
+   Document Types Discovered:
+   - spm = Service & Parts Manual
+   - pm = Parts Manual  
+   - wd = Wiring Diagrams
+   - iom = Installation & Operation Manual
+   - sm = Service Manual
+   
+   Examples:
+   - https://www.partstown.com/modelManual/PT-SG-SSH-SERIES_spm.pdf
+   - https://www.partstown.com/modelManual/PT-SG14_pm.pdf
+   - https://www.partstown.com/modelManual/PT-SG-SSH-SERIES_wd.pdf
+   - https://www.partstown.com/modelManual/PT-SSH55_iom.pdf
+   - https://www.partstown.com/modelManual/PT-SSH55_sm.pdf
+   
+   Alternative URL Pattern (Via Model Pages):
+   https://www.partstown.com/{manufacturer}/{model}/manual/{manual-slug}?manualLang=en
+   Examples:
+   - /pitco/ssh55/manual/pt-sg-ssh-series-spm?manualLang=en
+   - /pitco/ssh55/manual/pt-ssh55-iom?manualLang=en
+   
+   Status: ✓ Confirmed Working
+
+
+POTENTIAL APIs TO EXPLORE
+-------------------------
+
+Product/Parts Data:
+- /api/products/
+- /api/parts/
+- /api/{manufacturer}/parts
+- /api/{manufacturer}/{model}/parts
+
+Search Functions:
+- /api/search/
+- /api/search/parts
+- /api/search/models
+
+Model Information:
+- /api/models/
+- /api/{manufacturer}/models
+
+Documentation:
+- /api/manuals/
+- /api/{manufacturer}/{model}/manuals
+- /api/documents/
+
+Categories/Filters:
+- /api/categories/
+- /api/filters/
+- /api/specifications/
+
+
+TECHNICAL NOTES
+---------------
+- Site uses Vue.js for frontend
+- Authentication may not be required for read operations
+- Timestamp parameter (v=) appears to be cache-busting
+- All API calls use XMLHttpRequest header
+
+
+CURRENT ACCESSIBLE RESOURCES
+----------------------------
+
+✅ STILL WORKING:
+1. Product Images: https://partstown.sirv.com/products/{MANUFACTURER}/{PART_NUMBER}.view
+   - Hosted on external Sirv CDN - CONFIRMED WORKING
+   - Various size options via query parameters
+   - Returns proper JPEG images with 200 OK status
+   - Example: https://partstown.sirv.com/products/ALT/ALTBA-38586.view?thumb
+
+2. Manual PDFs: /modelManual/{MANUAL_NAME}_{TYPE}.pdf
+   - ✅ WORKING via Playwright (was blocked for curl/requests)
+   - Direct PDF downloads confirmed working
+   - Examples tested: ALT-1010_spm.pdf (2.6MB), PT-SSH55_iom.pdf (1.5MB)
+
+3. Alternative Manual URLs: /{manufacturer}/{model}/manual/{manual-slug}
+   - ✅ WORKING via Playwright
+
+DETECTION BYPASS:
+- curl/requests: ✗ BLOCKED (403 Forbidden)
+- Playwright with Chromium: ✅ WORKING (bypasses all protection)
+- The site's bot detection is sophisticated but can be circumvented with proper browser automation
+
+ALTERNATIVE APPROACHES:
+- Web scraping with advanced browser automation
+- Using proxy services / residential IPs
+- Manual data collection through browser developer tools
+- Reverse engineering mobile app APIs (if available)
+
+
+PAGES ANALYZED
+--------------
+1. https://www.partstown.com/alto-shaam/10-10/parts
+2. https://www.partstown.com/alto-shaam/10-10/parts#id=mdptabmanuals
+3. https://www.partstown.com/modelManual/ALT-1010_spm.pdf?v=1655476531672
+4. https://www.partstown.com/pitco/parts#id=mdptabmodels
+================================

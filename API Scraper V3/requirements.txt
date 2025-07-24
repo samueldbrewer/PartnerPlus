@@ -1,0 +1,16 @@
+# Core Flask dependencies
+Flask==2.3.3
+flask-cors==4.0.0
+
+# Async support
+asyncio
+
+# Scraping dependencies (already installed)
+playwright==1.53.0
+
+# Production deployment (optional)
+gunicorn==21.2.0
+waitress==2.1.2
+
+# Development/testing (optional)
+requests==2.31.0

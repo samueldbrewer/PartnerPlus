@@ -1,9 +1,42 @@
 const express = require('express');
 const Agent = require('./lib/agent');
+const { exec } = require('child_process');
+const util = require('util');
+const execPromise = util.promisify(exec);
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Kill any process using the port before starting
+async function killExistingProcess(port) {
+  try {
+    if (process.platform === 'darwin' || process.platform === 'linux') {
+      // Find process using the port
+      const { stdout } = await execPromise(`lsof -ti:${port}`);
+      if (stdout.trim()) {
+        const pids = stdout.trim().split('\n');
+        for (const pid of pids) {
+          console.log(`Killing process ${pid} on port ${port}`);
+          await execPromise(`kill -9 ${pid}`);
+        }
+        // Wait a bit for processes to fully terminate
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+    } else if (process.platform === 'win32') {
+      // Windows command to find and kill process
+      try {
+        await execPromise(`netstat -ano | findstr :${port}`);
+        await execPromise(`for /f "tokens=5" %a in ('netstat -ano ^| findstr :${port}') do taskkill /PID %a /F`);
+      } catch (err) {
+        // No process found, which is fine
+      }
+    }
+  } catch (error) {
+    // No process found on port, which is what we want
+    console.log(`Port ${port} is available`);
+  }
+}
 
 // Middleware
 app.use(express.json());
@@ -110,6 +143,49 @@ app.post('/api/chat/clear', (req, res) => {
   res.json({ success: true });
 });
 
-app.listen(PORT, () => {
-  console.log(`PartnerPlus Agent running on port ${PORT}`);
-});
+// Graceful shutdown handler
+let server;
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
+
+function gracefulShutdown() {
+  console.log('\nShutting down gracefully...');
+  if (server) {
+    server.close(() => {
+      console.log('Server closed');
+      process.exit(0);
+    });
+  } else {
+    process.exit(0);
+  }
+}
+
+// Start server with port conflict handling
+async function startServer() {
+  try {
+    // Kill any existing process on the port
+    await killExistingProcess(PORT);
+    
+    // Start the server
+    server = app.listen(PORT, () => {
+      console.log(`PartnerPlus Agent running on port ${PORT}`);
+      console.log(`Visit http://localhost:${PORT} to interact with the agent`);
+    });
+
+    server.on('error', (error) => {
+      if (error.code === 'EADDRINUSE') {
+        console.error(`Port ${PORT} is already in use`);
+        process.exit(1);
+      } else {
+        console.error('Server error:', error);
+        process.exit(1);
+      }
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+// Start the application
+startServer();

@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PartsTown Service Toolkit</title>
+    <meta name="description" content="Mobile service technician toolkit for PartsTown parts lookup">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #1e40af;
+            --secondary-color: #3b82f6;
+            --accent-color: #f59e0b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+            --spacing: 1rem;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem var(--spacing);
+            border-radius: var(--radius);
+            margin-bottom: var(--spacing);
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .search-section {
+            background: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: var(--spacing);
+            box-shadow: var(--shadow);
+        }
+
+        .search-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            background: var(--bg-color);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .tab-button:last-child {
+            border-right: none;
+        }
+
+        .tab-button.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .search-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            min-width: 80px;
+        }
+
+        .search-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .search-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .quick-btn {
+            padding: 0.5rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .quick-btn:hover {
+            background: var(--border-color);
+        }
+
+        .results-section {
+            margin-bottom: var(--spacing);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-card {
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary-color);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .result-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-description {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+
+        .tag {
+            background: var(--bg-color);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .tag.manufacturer {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .tag.price {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: var(--error-color);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: var(--success-color);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            padding: var(--spacing);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.25rem;
+            border-radius: var(--radius);
+            transition: background 0.2s;
+        }
+
+        .close-btn:hover {
+            background: var(--border-color);
+        }
+
+        .detail-grid {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background: var(--bg-color);
+            border-radius: var(--radius);
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .detail-value {
+            color: var(--text-primary);
+            text-align: right;
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .part-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .part-image:hover {
+            transform: scale(1.05);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .breadcrumb-item {
+            cursor: pointer;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item:hover {
+            text-decoration: underline;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+            z-index: 100;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .header {
+                padding: 1.5rem 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .search-form {
+                flex-direction: column;
+            }
+            
+            .search-btn {
+                width: 100%;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .modal {
+                padding: 0.5rem;
+            }
+            
+            .fab {
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
+
+        .offline-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--error-color);
+            color: white;
+            text-align: center;
+            padding: 0.5rem;
+            transform: translateY(-100%);
+            transition: transform 0.3s;
+            z-index: 1001;
+        }
+
+        .offline-indicator.show {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-indicator" id="offlineIndicator">
+        📶 No internet connection - Some features may be limited
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1>🔧 PartsTown Service Toolkit</h1>
+            <p>Find parts, manuals, and technical data for commercial equipment</p>
+        </header>
+
+        <nav class="breadcrumb" id="breadcrumb" style="display: none;">
+            <a href="#" class="breadcrumb-item" onclick="goHome()">🏠 Home</a>
+            <span>></span>
+            <span id="breadcrumbCurrent"></span>
+        </nav>
+
+        <section class="search-section">
+            <div class="search-tabs">
+                <button class="tab-button active" data-tab="search">🔍 Search</button>
+                <button class="tab-button" data-tab="manufacturers">🏭 Brands</button>
+                <button class="tab-button" data-tab="scan">📱 Scan</button>
+            </div>
+
+            <div id="searchTab" class="tab-content">
+                <form class="search-form" onsubmit="performSearch(event)">
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="searchInput" 
+                        placeholder="Enter part number, model, or equipment type..."
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="search-btn" id="searchBtn">
+                        Search
+                    </button>
+                </form>
+                
+                <div class="quick-actions">
+                    <button class="quick-btn" onclick="quickSearch('fryer')">🍟 Fryers</button>
+                    <button class="quick-btn" onclick="quickSearch('oven')">🔥 Ovens</button>
+                    <button class="quick-btn" onclick="quickSearch('refrigeration')">❄️ Cooling</button>
+                    <button class="quick-btn" onclick="quickSearch('dishwasher')">🧽 Washing</button>
+                </div>
+            </div>
+
+            <div id="manufacturersTab" class="tab-content" style="display: none;">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Browse by equipment manufacturer</p>
+                <button class="search-btn" onclick="loadManufacturers()" style="width: 100%;">
+                    Load All Manufacturers
+                </button>
+            </div>
+
+            <div id="scanTab" class="tab-content" style="display: none;">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    📷 Take a photo of the equipment nameplate or part number
+                </p>
+                <button class="search-btn" onclick="openCamera()" style="width: 100%;">
+                    Open Camera
+                </button>
+                <input type="file" id="imageInput" accept="image/*" capture="environment" style="display: none;" onchange="processImage(this)">
+            </div>
+        </section>
+
+        <div id="resultsSection" class="results-section">
+            <div id="welcomeMessage" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                <h3>Welcome to PartsTown Service Toolkit!</h3>
+                <p>Search for parts, browse manufacturers, or scan equipment to get started.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Part Details</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <button class="fab" onclick="scrollToTop()" title="Back to top">
+        ↑
+    </button>
+
+    <script>
+        // Global state
+        let currentTab = 'search';
+        let searchHistory = [];
+        let currentData = null;
+        
+        // API base URL - adjust for your deployment
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:7777' 
+            : '/api';
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            setupEventListeners();
+            checkOnlineStatus();
+        });
+
+        function initializeApp() {
+            // Setup tab switching
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+            });
+
+            // Setup search input
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('keyup', debounce(handleSearchInput, 300));
+            
+            // Load saved search history
+            loadSearchHistory();
+        }
+
+        function setupEventListeners() {
+            // Online/offline detection
+            window.addEventListener('online', () => updateOnlineStatus(true));
+            window.addEventListener('offline', () => updateOnlineStatus(false));
+            
+            // Modal close on background click
+            document.getElementById('detailModal').addEventListener('click', (e) => {
+                if (e.target.id === 'detailModal') closeModal();
+            });
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tab);
+            });
+            
+            // Show/hide tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            document.getElementById(tab + 'Tab').style.display = 'block';
+            
+            // Clear results when switching tabs
+            if (tab !== 'search') {
+                clearResults();
+            }
+        }
+
+        async function performSearch(event) {
+            event.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            
+            if (!query) return;
+            
+            setLoading(true);
+            addToSearchHistory(query);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/search?q=${encodeURIComponent(query)}&limit=20`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displaySearchResults(data.data, query);
+                } else {
+                    showError('Search failed: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                showError('Unable to connect to the service. Please check your connection.');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function quickSearch(type) {
+            document.getElementById('searchInput').value = type;
+            await performSearch({ preventDefault: () => {} });
+        }
+
+        async function loadManufacturers() {
+            setLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/manufacturers`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayManufacturers(data.data);
+                    setBreadcrumb('Manufacturers');
+                } else {
+                    showError('Failed to load manufacturers: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Manufacturers error:', error);
+                showError('Unable to load manufacturers. Please check your connection.');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function loadModels(manufacturerUri, manufacturerName) {
+            setLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/manufacturers/${manufacturerUri}/models`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayModels(data.data, manufacturerName);
+                    setBreadcrumb(`${manufacturerName} Models`);
+                } else {
+                    showError('Failed to load models: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Models error:', error);
+                showError('Unable to load models. Please check your connection.');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function loadParts(manufacturerUri, modelName, manufacturerName) {
+            setLoading(true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/manufacturers/${manufacturerUri}/models/${encodeURIComponent(modelName)}/parts`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayParts(data.data, data.model_info, manufacturerName);
+                    setBreadcrumb(`${manufacturerName} > ${modelName} Parts`);
+                } else {
+                    showError('Failed to load parts: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Parts error:', error);
+                showError('Unable to load parts. Please check your connection.');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function loadPartDetails(partNumber, manufacturerUri = '', manufacturerCode = '') {
+            setLoading(true);
+            
+            try {
+                let url = `${API_BASE}/api/parts/${encodeURIComponent(partNumber)}`;
+                if (manufacturerUri && manufacturerCode) {
+                    url += `?manufacturer_uri=${manufacturerUri}&manufacturer=${manufacturerCode}`;
+                }
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.success) {
+                    showPartDetails(data.data);
+                } else {
+                    showError('Failed to load part details: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Part details error:', error);
+                showError('Unable to load part details. Please check your connection.');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function displaySearchResults(results, query) {
+            const resultsSection = document.getElementById('resultsSection');
+            
+            if (results.length === 0) {
+                resultsSection.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                        <h3>No results found</h3>
+                        <p>Try a different search term or browse manufacturers.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `<h3 style="margin-bottom: 1rem; color: var(--primary-color);">Search Results for "${query}"</h3>`;
+            
+            results.forEach(item => {
+                const card = createResultCard(item);
+                html += card;
+            });
+            
+            resultsSection.innerHTML = html;
+            clearBreadcrumb();
+        }
+
+        function displayManufacturers(manufacturers) {
+            const resultsSection = document.getElementById('resultsSection');
+            
+            let html = `<h3 style="margin-bottom: 1rem; color: var(--primary-color);">Equipment Manufacturers (${manufacturers.length})</h3>`;
+            
+            manufacturers.forEach(mfr => {
+                html += `
+                    <div class="result-card" onclick="loadModels('${mfr.uri}', '${escapeHtml(mfr.name)}')">
+                        <div class="result-title">${escapeHtml(mfr.name)}</div>
+                        <div class="result-meta">Code: ${mfr.code}</div>
+                        <div class="result-tags">
+                            <span class="tag manufacturer">${mfr.model_count} models</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsSection.innerHTML = html;
+        }
+
+        function displayModels(models, manufacturerName) {
+            const resultsSection = document.getElementById('resultsSection');
+            
+            let html = `<h3 style="margin-bottom: 1rem; color: var(--primary-color);">${escapeHtml(manufacturerName)} Models (${models.length})</h3>`;
+            
+            models.forEach(model => {
+                const manualsCount = model.manuals ? model.manuals.length : 0;
+                html += `
+                    <div class="result-card" onclick="loadParts('${model.manufacturer_uri || getCurrentManufacturerUri()}', '${escapeHtml(model.name)}', '${escapeHtml(manufacturerName)}')">
+                        <div class="result-title">${escapeHtml(model.name)}</div>
+                        <div class="result-meta">Code: ${model.code}</div>
+                        ${model.description ? `<div class="result-description">${escapeHtml(model.description)}</div>` : ''}
+                        <div class="result-tags">
+                            ${manualsCount > 0 ? `<span class="tag">${manualsCount} manuals</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsSection.innerHTML = html;
+        }
+
+        function displayParts(parts, modelInfo, manufacturerName) {
+            const resultsSection = document.getElementById('resultsSection');
+            
+            let html = `<h3 style="margin-bottom: 1rem; color: var(--primary-color);">${escapeHtml(modelInfo.name)} Parts (${parts.length})</h3>`;
+            
+            if (modelInfo.description) {
+                html += `<p style="margin-bottom: 1rem; color: var(--text-secondary);">${escapeHtml(modelInfo.description)}</p>`;
+            }
+            
+            parts.forEach(part => {
+                html += `
+                    <div class="result-card" onclick="loadPartDetails('${escapeHtml(part.part_number)}')">
+                        <div class="result-title">${escapeHtml(part.part_number)}</div>
+                        ${part.description ? `<div class="result-description">${escapeHtml(part.description)}</div>` : ''}
+                        <div class="result-tags">
+                            <span class="tag">${part.source || 'partstown'}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsSection.innerHTML = html;
+        }
+
+        function createResultCard(item) {
+            let title, description, tags = [];
+            
+            switch (item.type) {
+                case 'manufacturer':
+                    title = item.name;
+                    description = `${item.model_count} models available`;
+                    tags.push({ text: 'Manufacturer', class: 'manufacturer' });
+                    return `
+                        <div class="result-card" onclick="loadModels('${item.uri}', '${escapeHtml(item.name)}')">
+                            <div class="result-title">${escapeHtml(title)}</div>
+                            <div class="result-description">${description}</div>
+                            <div class="result-tags">
+                                ${tags.map(tag => `<span class="tag ${tag.class}">${tag.text}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                    
+                case 'model':
+                    title = item.name;
+                    description = item.description || 'Equipment model';
+                    tags.push({ text: item.manufacturer, class: 'manufacturer' });
+                    if (item.manuals && item.manuals.length > 0) {
+                        tags.push({ text: `${item.manuals.length} manuals`, class: '' });
+                    }
+                    return `
+                        <div class="result-card" onclick="loadParts('${item.manufacturer_uri}', '${escapeHtml(item.name)}', '${escapeHtml(item.manufacturer)}')">
+                            <div class="result-title">${escapeHtml(title)}</div>
+                            <div class="result-description">${escapeHtml(description)}</div>
+                            <div class="result-tags">
+                                ${tags.map(tag => `<span class="tag ${tag.class}">${tag.text}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                    
+                default:
+                    title = item.name || item.part_number || 'Unknown';
+                    description = item.description || '';
+                    return `
+                        <div class="result-card" onclick="loadPartDetails('${escapeHtml(item.part_number || item.name)}')">
+                            <div class="result-title">${escapeHtml(title)}</div>
+                            ${description ? `<div class="result-description">${escapeHtml(description)}</div>` : ''}
+                        </div>
+                    `;
+            }
+        }
+
+        function showPartDetails(partData) {
+            const modal = document.getElementById('detailModal');
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+            
+            title.textContent = partData.part_number || 'Part Details';
+            
+            let html = `
+                <div class="detail-grid">
+                    ${partData.title ? `
+                        <div class="detail-item">
+                            <span class="detail-label">Title:</span>
+                            <span class="detail-value">${escapeHtml(partData.title)}</span>
+                        </div>
+                    ` : ''}
+                    ${partData.description ? `
+                        <div class="detail-item">
+                            <span class="detail-label">Description:</span>
+                            <span class="detail-value">${escapeHtml(partData.description)}</span>
+                        </div>
+                    ` : ''}
+                    ${partData.price_text ? `
+                        <div class="detail-item">
+                            <span class="detail-label">Price:</span>
+                            <span class="detail-value" style="color: var(--success-color); font-weight: 600;">${escapeHtml(partData.price_text)}</span>
+                        </div>
+                    ` : ''}
+                    ${partData.url ? `
+                        <div class="detail-item">
+                            <span class="detail-label">PartsTown URL:</span>
+                            <span class="detail-value">
+                                <a href="${partData.url}" target="_blank" style="color: var(--primary-color);">View on PartsTown</a>
+                            </span>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            // Add images if available
+            if (partData.images && partData.images.length > 0) {
+                html += `
+                    <h4 style="margin: 1rem 0 0.5rem 0; color: var(--primary-color);">Product Images</h4>
+                    <div class="image-gallery">
+                        ${partData.images.map(img => `
+                            <img src="${img}" alt="Product image" class="part-image" onclick="openImageModal('${img}')" loading="lazy">
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            // Add specifications if available
+            if (partData.specifications && Object.keys(partData.specifications).length > 0) {
+                html += `
+                    <h4 style="margin: 1rem 0 0.5rem 0; color: var(--primary-color);">Specifications</h4>
+                    <div class="detail-grid">
+                        ${Object.entries(partData.specifications).map(([key, value]) => `
+                            <div class="detail-item">
+                                <span class="detail-label">${escapeHtml(key)}:</span>
+                                <span class="detail-value">${escapeHtml(value)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            body.innerHTML = html;
+            modal.classList.add('active');
+        }
+
+        function openImageModal(imageUrl) {
+            // Create a simple image modal
+            const imageModal = document.createElement('div');
+            imageModal.className = 'modal active';
+            imageModal.innerHTML = `
+                <div class="modal-content" style="max-width: 90%; max-height: 90%; padding: 1rem;">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Product Image</h3>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <img src="${imageUrl}" alt="Product image" style="width: 100%; height: auto; border-radius: var(--radius);">
+                </div>
+            `;
+            
+            document.body.appendChild(imageModal);
+            
+            // Close on background click
+            imageModal.addEventListener('click', (e) => {
+                if (e.target === imageModal) imageModal.remove();
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        function setLoading(loading) {
+            const btn = document.getElementById('searchBtn');
+            const resultsSection = document.getElementById('resultsSection');
+            
+            if (loading) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span>Loading...';
+                resultsSection.innerHTML = `
+                    <div class="loading">
+                        <span class="spinner"></span>
+                        Searching PartsTown database...
+                    </div>
+                `;
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = 'Search';
+            }
+        }
+
+        function showError(message) {
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.innerHTML = `
+                <div class="error-message">
+                    <strong>⚠️ Error:</strong> ${escapeHtml(message)}
+                </div>
+            `;
+        }
+
+        function showSuccess(message) {
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.innerHTML = `
+                <div class="success-message">
+                    <strong>✅ Success:</strong> ${escapeHtml(message)}
+                </div>
+            ` + resultsSection.innerHTML;
+        }
+
+        function setBreadcrumb(text) {
+            const breadcrumb = document.getElementById('breadcrumb');
+            const current = document.getElementById('breadcrumbCurrent');
+            current.textContent = text;
+            breadcrumb.style.display = 'flex';
+        }
+
+        function clearBreadcrumb() {
+            document.getElementById('breadcrumb').style.display = 'none';
+        }
+
+        function goHome() {
+            clearResults();
+            clearBreadcrumb();
+            switchTab('search');
+        }
+
+        function clearResults() {
+            document.getElementById('resultsSection').innerHTML = `
+                <div id="welcomeMessage" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                    <h3>Welcome to PartsTown Service Toolkit!</h3>
+                    <p>Search for parts, browse manufacturers, or scan equipment to get started.</p>
+                </div>
+            `;
+        }
+
+        function addToSearchHistory(query) {
+            searchHistory = searchHistory.filter(item => item !== query);
+            searchHistory.unshift(query);
+            if (searchHistory.length > 10) searchHistory.pop();
+            localStorage.setItem('partstown_search_history', JSON.stringify(searchHistory));
+        }
+
+        function loadSearchHistory() {
+            const saved = localStorage.getItem('partstown_search_history');
+            if (saved) {
+                searchHistory = JSON.parse(saved);
+            }
+        }
+
+        function handleSearchInput(event) {
+            // Could add autocomplete here based on search history
+            // For now, just basic validation
+            const value = event.target.value;
+            const btn = document.getElementById('searchBtn');
+            btn.disabled = value.trim().length < 2;
+        }
+
+        function openCamera() {
+            document.getElementById('imageInput').click();
+        }
+
+        async function processImage(input) {
+            if (!input.files || !input.files[0]) return;
+            
+            const file = input.files[0];
+            showSuccess('Image captured! OCR processing is not yet implemented, but this would extract text from the image.');
+            
+            // TODO: Implement OCR processing
+            // This would extract text from the image and search for part numbers
+        }
+
+        function getCurrentManufacturerUri() {
+            // Helper function to get current manufacturer URI from breadcrumb or context
+            // This is a simplified implementation
+            return 'unknown';
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function checkOnlineStatus() {
+            updateOnlineStatus(navigator.onLine);
+        }
+
+        function updateOnlineStatus(online) {
+            const indicator = document.getElementById('offlineIndicator');
+            if (online) {
+                indicator.classList.remove('show');
+            } else {
+                indicator.classList.add('show');
+            }
+        }
+
+        function escapeHtml(text) {
+            if (typeof text !== 'string') return text;
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Service Worker registration for offline functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('SW registered'))
+                    .catch(registrationError => console.log('SW registration failed'));
+            });
+        }
+    </script>
+</body>
+</html>

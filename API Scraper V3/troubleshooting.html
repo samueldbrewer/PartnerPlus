@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Troubleshooting Guide</title>
+    <meta name="description" content="Step-by-step troubleshooting for commercial kitchen equipment">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2d3748;
+            --secondary-color: #4a5568;
+            --accent-color: #e53e3e;
+            --success-color: #38a169;
+            --warning-color: #d69e2e;
+            --info-color: #3182ce;
+            --bg-color: #f7fafc;
+            --surface-color: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1rem;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .search-section {
+            background: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .symptom-search {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 1rem;
+        }
+
+        .search-btn {
+            padding: 1rem 2rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .common-issues {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .issue-card {
+            background: var(--bg-color);
+            padding: 1rem;
+            border-radius: var(--radius);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .issue-card:hover {
+            border-color: var(--primary-color);
+            background: white;
+        }
+
+        .issue-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .issue-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--primary-color);
+        }
+
+        .troubleshooting-flow {
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .flow-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .flow-content {
+            padding: 2rem;
+        }
+
+        .step {
+            background: var(--bg-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--info-color);
+        }
+
+        .step.current {
+            border-left-color: var(--warning-color);
+            background: #fffbeb;
+        }
+
+        .step.completed {
+            border-left-color: var(--success-color);
+            background: #f0fff4;
+        }
+
+        .step.failed {
+            border-left-color: var(--accent-color);
+            background: #fef2f2;
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            background: var(--info-color);
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .step.current .step-number {
+            background: var(--warning-color);
+        }
+
+        .step.completed .step-number {
+            background: var(--success-color);
+        }
+
+        .step.failed .step-number {
+            background: var(--accent-color);
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            flex: 1;
+            margin-left: 1rem;
+        }
+
+        .step-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .step-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-yes {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-no {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-skip {
+            background: var(--text-secondary);
+            color: white;
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .step-details {
+            background: white;
+            padding: 1rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            margin-top: 1rem;
+        }
+
+        .safety-warning {
+            background: #fef2f2;
+            border: 2px solid #feb2b2;
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .safety-warning .icon {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .tools-required {
+            background: #ebf8ff;
+            border: 1px solid #bee3f8;
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .tools-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .tool-tag {
+            background: var(--info-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .result-section {
+            background: var(--surface-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .action-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .symptom-search {
+                flex-direction: column;
+            }
+            
+            .common-issues {
+                grid-template-columns: 1fr;
+            }
+            
+            .step-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .step-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .result-actions {
+                flex-direction: column;
+            }
+        }
+
+        .equipment-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .equipment-card {
+            background: var(--surface-color);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .equipment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .equipment-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .equipment-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🔍 Equipment Troubleshooting Guide</h1>
+            <p>Step-by-step diagnostic procedures for commercial kitchen equipment</p>
+        </header>
+
+        <div id="equipmentSelection">
+            <section class="equipment-selector">
+                <div class="equipment-card" onclick="selectEquipment('fryer')">
+                    <span class="equipment-icon">🍟</span>
+                    <div class="equipment-name">Commercial Fryers</div>
+                </div>
+                <div class="equipment-card" onclick="selectEquipment('oven')">
+                    <span class="equipment-icon">🔥</span>
+                    <div class="equipment-name">Ovens & Ranges</div>
+                </div>
+                <div class="equipment-card" onclick="selectEquipment('refrigeration')">
+                    <span class="equipment-icon">❄️</span>
+                    <div class="equipment-name">Refrigeration</div>
+                </div>
+                <div class="equipment-card" onclick="selectEquipment('dishwasher')">
+                    <span class="equipment-icon">🧽</span>
+                    <div class="equipment-name">Dishwashers</div>
+                </div>
+                <div class="equipment-card" onclick="selectEquipment('ice-machine')">
+                    <span class="equipment-icon">🧊</span>
+                    <div class="equipment-name">Ice Machines</div>
+                </div>
+                <div class="equipment-card" onclick="selectEquipment('grill')">
+                    <span class="equipment-icon">🥩</span>
+                    <div class="equipment-name">Grills</div>
+                </div>
+            </section>
+        </div>
+
+        <div id="troubleshootingInterface" style="display: none;">
+            <section class="search-section">
+                <h3>What problem are you experiencing?</h3>
+                <div class="symptom-search">
+                    <input type="text" class="search-input" id="symptomInput" placeholder="Describe the symptom or problem...">
+                    <button class="search-btn" onclick="searchSymptom()">🔍 Find Solution</button>
+                </div>
+                
+                <div class="common-issues" id="commonIssues">
+                    <!-- Populated dynamically based on equipment type -->
+                </div>
+            </section>
+
+            <div id="troubleshootingFlow" style="display: none;">
+                <div class="troubleshooting-flow">
+                    <div class="flow-header">
+                        <h3 id="flowTitle">Troubleshooting Steps</h3>
+                        <p id="flowDescription">Follow these steps to diagnose the issue</p>
+                    </div>
+                    <div class="flow-content" id="flowSteps">
+                        <!-- Steps populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="troubleshootingResult" style="display: none;">
+                <div class="result-section">
+                    <span class="result-icon" id="resultIcon">🔧</span>
+                    <h3 class="result-title" id="resultTitle">Diagnosis Complete</h3>
+                    <p id="resultDescription">Based on your responses, here's what we found:</p>
+                    <div class="result-actions">
+                        <button class="action-btn btn-primary" onclick="showSolution()">View Solution</button>
+                        <button class="action-btn btn-secondary" onclick="restartTroubleshooting()">Start Over</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Troubleshooting data
+        const troubleshootingData = {
+            fryer: {
+                name: "Commercial Fryers",
+                icon: "🍟",
+                issues: [
+                    { title: "Not heating up", icon: "🌡️", id: "fryer-no-heat" },
+                    { title: "Oil temperature too high/low", icon: "⚡", id: "fryer-temp-control" },
+                    { title: "Strange noises", icon: "🔊", id: "fryer-noise" },
+                    { title: "Oil smoking excessively", icon: "💨", id: "fryer-smoke" },
+                    { title: "Won't turn on", icon: "🔌", id: "fryer-power" }
+                ],
+                procedures: {
+                    "fryer-no-heat": {
+                        title: "Fryer Not Heating Up",
+                        description: "Systematic diagnosis for heating issues",
+                        steps: [
+                            {
+                                title: "Check Power Supply",
+                                description: "Verify electrical connections and power availability",
+                                details: "Check main breaker, verify voltage at unit (240V for electric, check gas supply for gas units)",
+                                tools: ["Multimeter", "Voltage tester"],
+                                safety: "Turn off main power before checking connections"
+                            },
+                            {
+                                title: "Inspect Heating Element/Burner",
+                                description: "Examine the primary heating components",
+                                details: "Look for visible damage, corrosion, or burnout on heating elements. For gas units, check burner for clogs or damage.",
+                                tools: ["Flashlight", "Ohmmeter"]
+                            },
+                            {
+                                title: "Test Temperature Controller",
+                                description: "Verify thermostat and control board function",
+                                details: "Check if temperature controller displays properly and responds to adjustments",
+                                tools: ["Thermometer", "Multimeter"]
+                            },
+                            {
+                                title: "Check Safety Systems",
+                                description: "Verify all safety interlocks and switches",
+                                details: "Test high-limit switches, door interlocks, and emergency shutoffs",
+                                tools: ["Continuity tester"]
+                            }
+                        ]
+                    }
+                }
+            },
+            refrigeration: {
+                name: "Refrigeration Equipment",
+                icon: "❄️",
+                issues: [
+                    { title: "Not cooling properly", icon: "🌡️", id: "ref-no-cool" },
+                    { title: "Excessive frost buildup", icon: "❄️", id: "ref-frost" },
+                    { title: "Compressor not running", icon: "🔧", id: "ref-compressor" },
+                    { title: "Strange noises", icon: "🔊", id: "ref-noise" },
+                    { title: "Door seal problems", icon: "🚪", id: "ref-door" }
+                ],
+                procedures: {
+                    "ref-no-cool": {
+                        title: "Refrigeration Unit Not Cooling",
+                        description: "Diagnose cooling system failures",
+                        steps: [
+                            {
+                                title: "Check Temperature Settings",
+                                description: "Verify thermostat and control settings",
+                                details: "Ensure temperature controls are set correctly and display is functioning",
+                                tools: ["Thermometer"]
+                            },
+                            {
+                                title: "Inspect Condenser Coils",
+                                description: "Check for dirt, debris, or damage",
+                                details: "Clean condenser coils if dirty. Check for proper airflow around unit.",
+                                tools: ["Coil brush", "Vacuum cleaner"],
+                                safety: "Disconnect power before cleaning coils"
+                            },
+                            {
+                                title: "Test Compressor Operation",
+                                description: "Verify compressor starts and runs properly",
+                                details: "Listen for compressor startup, check for proper amperage draw",
+                                tools: ["Clamp meter", "Multimeter"]
+                            }
+                        ]
+                    }
+                }
+            }
+        };
+
+        let currentEquipment = null;
+        let currentProcedure = null;
+        let currentStep = 0;
+        let stepResults = [];
+
+        function selectEquipment(equipmentType) {
+            currentEquipment = equipmentType;
+            const equipment = troubleshootingData[equipmentType];
+            
+            document.getElementById('equipmentSelection').style.display = 'none';
+            document.getElementById('troubleshootingInterface').style.display = 'block';
+            
+            // Populate common issues
+            const issuesContainer = document.getElementById('commonIssues');
+            issuesContainer.innerHTML = equipment.issues.map(issue => `
+                <div class="issue-card" onclick="startTroubleshooting('${issue.id}')">
+                    <span class="issue-icon">${issue.icon}</span>
+                    <div class="issue-title">${issue.title}</div>
+                </div>
+            `).join('');
+        }
+
+        function searchSymptom() {
+            const symptom = document.getElementById('symptomInput').value.toLowerCase();
+            
+            if (!symptom) return;
+            
+            // Simple keyword matching to suggest procedures
+            const equipment = troubleshootingData[currentEquipment];
+            let suggestedProcedure = null;
+            
+            if (symptom.includes('heat') || symptom.includes('hot') || symptom.includes('cold')) {
+                if (currentEquipment === 'fryer') {
+                    suggestedProcedure = 'fryer-no-heat';
+                } else if (currentEquipment === 'refrigeration') {
+                    suggestedProcedure = 'ref-no-cool';
+                }
+            }
+            
+            if (suggestedProcedure && equipment.procedures[suggestedProcedure]) {
+                startTroubleshooting(suggestedProcedure);
+            } else {
+                alert('No specific procedure found. Please select from common issues below.');
+            }
+        }
+
+        function startTroubleshooting(procedureId) {
+            const equipment = troubleshootingData[currentEquipment];
+            const procedure = equipment.procedures[procedureId];
+            
+            if (!procedure) {
+                alert('Troubleshooting procedure not yet available for this issue.');
+                return;
+            }
+            
+            currentProcedure = procedure;
+            currentStep = 0;
+            stepResults = [];
+            
+            document.getElementById('troubleshootingFlow').style.display = 'block';
+            document.getElementById('flowTitle').textContent = procedure.title;
+            document.getElementById('flowDescription').textContent = procedure.description;
+            
+            renderSteps();
+        }
+
+        function renderSteps() {
+            const stepsContainer = document.getElementById('flowSteps');
+            const steps = currentProcedure.steps;
+            
+            stepsContainer.innerHTML = steps.map((step, index) => {
+                let stepClass = '';
+                if (index < currentStep) stepClass = 'completed';
+                else if (index === currentStep) stepClass = 'current';
+                
+                return `
+                    <div class="step ${stepClass}">
+                        <div class="step-header">
+                            <div class="step-number">${index + 1}</div>
+                            <div class="step-title">${step.title}</div>
+                            ${index === currentStep ? `
+                                <div class="step-actions">
+                                    <button class="step-btn btn-yes" onclick="completeStep(true)">✓ Done</button>
+                                    <button class="step-btn btn-no" onclick="completeStep(false)">✗ Issue Found</button>
+                                    <button class="step-btn btn-skip" onclick="skipStep()">Skip</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="step-description">${step.description}</div>
+                        
+                        ${step.safety ? `
+                            <div class="safety-warning">
+                                <span class="icon">⚠️</span>
+                                <strong>Safety:</strong> ${step.safety}
+                            </div>
+                        ` : ''}
+                        
+                        ${step.tools ? `
+                            <div class="tools-required">
+                                <strong>Tools Required:</strong>
+                                <div class="tools-list">
+                                    ${step.tools.map(tool => `<span class="tool-tag">${tool}</span>`).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="step-details">
+                            ${step.details}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function completeStep(success) {
+            stepResults.push({
+                step: currentStep,
+                success: success,
+                title: currentProcedure.steps[currentStep].title
+            });
+            
+            if (!success) {
+                // Issue found at this step
+                showResult('issue-found', currentStep);
+                return;
+            }
+            
+            currentStep++;
+            
+            if (currentStep >= currentProcedure.steps.length) {
+                // All steps completed successfully
+                showResult('all-clear');
+            } else {
+                renderSteps();
+            }
+        }
+
+        function skipStep() {
+            stepResults.push({
+                step: currentStep,
+                success: null,
+                title: currentProcedure.steps[currentStep].title
+            });
+            
+            currentStep++;
+            
+            if (currentStep >= currentProcedure.steps.length) {
+                showResult('incomplete');
+            } else {
+                renderSteps();
+            }
+        }
+
+        function showResult(type, problemStep = null) {
+            document.getElementById('troubleshootingFlow').style.display = 'none';
+            document.getElementById('troubleshootingResult').style.display = 'block';
+            
+            const resultIcon = document.getElementById('resultIcon');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultDescription = document.getElementById('resultDescription');
+            
+            switch (type) {
+                case 'issue-found':
+                    resultIcon.textContent = '🔴';
+                    resultTitle.textContent = 'Issue Identified';
+                    resultDescription.textContent = `Problem found at step ${problemStep + 1}: ${currentProcedure.steps[problemStep].title}. This is likely the cause of your equipment malfunction.`;
+                    break;
+                    
+                case 'all-clear':
+                    resultIcon.textContent = '✅';
+                    resultTitle.textContent = 'All Checks Passed';
+                    resultDescription.textContent = 'All diagnostic steps completed successfully. The issue may require advanced troubleshooting or professional service.';
+                    break;
+                    
+                case 'incomplete':
+                    resultIcon.textContent = '⚠️';
+                    resultTitle.textContent = 'Incomplete Diagnosis';
+                    resultDescription.textContent = 'Some steps were skipped. For accurate diagnosis, all steps should be completed.';
+                    break;
+            }
+        }
+
+        function showSolution() {
+            alert('Detailed solution guides would be shown here, including part numbers, repair procedures, and safety requirements.');
+        }
+
+        function restartTroubleshooting() {
+            document.getElementById('troubleshootingResult').style.display = 'none';
+            document.getElementById('troubleshootingFlow').style.display = 'none';
+            currentStep = 0;
+            stepResults = [];
+        }
+
+        function goBack() {
+            document.getElementById('troubleshootingInterface').style.display = 'none';
+            document.getElementById('equipmentSelection').style.display = 'block';
+            currentEquipment = null;
+        }
+    </script>
+</body>
+</html>
