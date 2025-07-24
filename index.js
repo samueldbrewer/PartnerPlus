@@ -682,6 +682,7 @@ app.get('/sms', (req, res) => {
         <div class="container">
           <div class="section">
             <h2>Send SMS</h2>
+            <p><small>By using this service, you agree to our <a href="/optin" target="_blank">SMS Opt-In Policy</a>. Message and data rates may apply.</small></p>
             <form id="sendSMSForm">
               <div class="form-group">
                 <label for="to">To (Phone Number):</label>
@@ -922,6 +923,111 @@ app.post('/webhook/sms', (req, res) => {
   res.send(`<?xml version="1.0" encoding="UTF-8"?>
 <Response>
 </Response>`);
+});
+
+// SMS Opt-In Policy page
+app.get('/optin', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>SMS Opt-In Policy - PartnerPlus</title>
+      <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 0; }
+        .header { background-color: #1976d2; color: white; padding: 15px 20px; margin-bottom: 20px; }
+        .nav { display: flex; align-items: center; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
+        .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
+        .nav a:hover { background-color: rgba(255,255,255,0.1); }
+        .content { padding: 20px; line-height: 1.6; }
+        h1, h2 { color: #1976d2; }
+        .policy-section { margin-bottom: 30px; }
+        .highlight { background-color: #e3f2fd; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .contact-info { background-color: #f5f5f5; padding: 15px; border-radius: 5px; }
+        a { color: #1976d2; }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <div class="nav">
+          <h1>PartnerPlus</h1>
+          <a href="/">AI Agent</a>
+          <a href="/email">Email Service</a>
+          <a href="/sms">SMS Service</a>
+        </div>
+      </div>
+      <div class="content">
+        <h1>SMS Opt-In Policy & Terms of Service</h1>
+        
+        <div class="highlight">
+          <strong>By providing your phone number and using our SMS service, you agree to receive text messages from PartnerPlus.</strong>
+        </div>
+
+        <div class="policy-section">
+          <h2>1. Consent to Receive Messages</h2>
+          <p>By providing your mobile phone number to PartnerPlus, you expressly consent to receive text messages from us. This includes:</p>
+          <ul>
+            <li>Service notifications and updates</li>
+            <li>Responses to your inquiries</li>
+            <li>Administrative messages related to your account</li>
+          </ul>
+        </div>
+
+        <div class="policy-section">
+          <h2>2. Message Frequency</h2>
+          <p>Message frequency varies based on your usage and interactions with our service. You may receive messages in response to your inquiries or as part of our service delivery.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>3. Message and Data Rates</h2>
+          <p><strong>Message and data rates may apply.</strong> Standard messaging rates from your wireless carrier will apply to all SMS messages sent and received through our service.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>4. Opt-Out Instructions</h2>
+          <p>You can opt out of receiving SMS messages at any time by:</p>
+          <ul>
+            <li>Replying <strong>STOP</strong> to any message from our service</li>
+            <li>Contacting us using the information provided below</li>
+          </ul>
+          <p>After opting out, you will receive a confirmation message, and no further messages will be sent to your number unless you opt back in.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>5. Help and Support</h2>
+          <p>For help or questions about our SMS service, reply <strong>HELP</strong> to any message or contact us using the information below.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>6. Privacy</h2>
+          <p>We respect your privacy and will not share your phone number with third parties without your consent, except as required by law or to provide our services. Your phone number and message content are used solely for service delivery and communication purposes.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>7. Service Availability</h2>
+          <p>SMS service is available to users in the United States. Service availability depends on your carrier network and may not be available in all areas.</p>
+        </div>
+
+        <div class="policy-section">
+          <h2>8. Changes to Policy</h2>
+          <p>We may update this SMS policy from time to time. Continued use of our SMS service after changes indicates your acceptance of the updated terms.</p>
+        </div>
+
+        <div class="contact-info">
+          <h2>Contact Information</h2>
+          <p><strong>PartnerPlus</strong><br>
+          Email: <a href="mailto:partnerplustestsdb@gmail.com">partnerplustestsdb@gmail.com</a><br>
+          SMS Support: Text HELP to +1 (877) 564-1118<br>
+          Website: <a href="/">PartnerPlus Dashboard</a></p>
+        </div>
+
+        <div class="policy-section">
+          <p><small><em>Last updated: ${new Date().toLocaleDateString()}</em></small></p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
 });
 
 // Graceful shutdown handler
