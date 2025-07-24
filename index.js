@@ -237,10 +237,16 @@ app.get('/', (req, res) => {
               localStorage.setItem('extractedCode', data.code);
               localStorage.setItem('codeLanguage', data.language || 'javascript');
               
-              // Open executor tab
-              window.open('/executor', '_blank');
+              // Show success message before switching
+              chatContainer.innerHTML += '<div class="message assistant">✅ Code extracted successfully! Switching to Code Executor...</div>';
+              chatContainer.scrollTop = chatContainer.scrollHeight;
+              
+              // Small delay to show the message, then switch
+              setTimeout(() => {
+                window.location.href = '/executor';
+              }, 1000);
             } else {
-              chatContainer.innerHTML += '<div class="message assistant">No executable code found in the last message.</div>';
+              chatContainer.innerHTML += '<div class="message assistant">❌ No executable code found in the last message. Try asking me to write some code first!</div>';
             }
           } catch (error) {
             chatContainer.innerHTML += '<div class="message assistant">Error extracting code: ' + error.message + '</div>';
@@ -286,17 +292,59 @@ app.post('/api/extract-code', async (req, res) => {
       return res.json({ code: null, language: null });
     }
 
-    // Ask AI to extract only the code
-    const extractPrompt = `Extract only the executable code from this message, removing any explanations or markdown formatting. Return only the raw code that can be executed. If there are multiple code blocks, return the most complete/main one. Message: "${lastMessage}"`;
+    // First try to extract code blocks using regex patterns
+    let extractedCode = null;
+    let language = null;
+
+    // Pattern 1: Look for code blocks with language specification ```language
+    const codeBlockRegex = /```(\w+)?\n?([\s\S]*?)```/g;
+    const matches = [...lastMessage.matchAll(codeBlockRegex)];
     
-    const response = await agent.processMessage(extractPrompt);
-    
-    // Detect language from the extracted code
-    const language = codeExecutor.detectLanguage(response);
+    if (matches.length > 0) {
+      // Use the first/longest code block
+      let bestMatch = matches[0];
+      for (const match of matches) {
+        if (match[2].length > bestMatch[2].length) {
+          bestMatch = match;
+        }
+      }
+      extractedCode = bestMatch[2].trim();
+      language = bestMatch[1] || codeExecutor.detectLanguage(extractedCode);
+    } else {
+      // Pattern 2: Look for inline code patterns
+      const inlinePatterns = [
+        /console\.log\([^)]+\)/g,
+        /print\([^)]+\)/g,
+        /echo\s+[^\n]+/g,
+        /<[^>]+>[^<]*<\/[^>]+>/g,
+        /function\s+\w+\s*\([^)]*\)\s*{[^}]*}/g
+      ];
+      
+      for (const pattern of inlinePatterns) {
+        const match = lastMessage.match(pattern);
+        if (match) {
+          extractedCode = match[0];
+          language = codeExecutor.detectLanguage(extractedCode);
+          break;
+        }
+      }
+    }
+
+    // If regex fails, fall back to AI extraction
+    if (!extractedCode) {
+      const extractPrompt = `Extract only the executable code from this message, removing any explanations or markdown formatting. Return only the raw code that can be executed. If there are multiple code blocks, return the most complete/main one. If there's no code, return "NO_CODE_FOUND". Message: "${lastMessage}"`;
+      
+      const response = await agent.processMessage(extractPrompt);
+      
+      if (response !== "NO_CODE_FOUND" && response.length > 5) {
+        extractedCode = response;
+        language = codeExecutor.detectLanguage(response);
+      }
+    }
     
     res.json({ 
-      code: response, 
-      language: language,
+      code: extractedCode, 
+      language: language || 'javascript',
       original: lastMessage 
     });
   } catch (error) {
