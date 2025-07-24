@@ -100,7 +100,8 @@ app.get('/', (req, res) => {
             const data = await response.json();
             
             // Add assistant response to chat
-            chatContainer.innerHTML += '<div class="message assistant">' + data.response.replace(/\\n/g, '<br>') + '</div>';
+            const responseText = data.response || data.error || 'No response received';
+            chatContainer.innerHTML += '<div class="message assistant">' + responseText.replace(/\\n/g, '<br>') + '</div>';
             chatContainer.scrollTop = chatContainer.scrollHeight;
           } catch (error) {
             chatContainer.innerHTML += '<div class="message assistant">Error: ' + error.message + '</div>';
