@@ -172,7 +172,6 @@ app.get('/', (req, res) => {
         <input type="text" id="messageInput" placeholder="Type your message..." />
         <button id="sendButton" onclick="sendMessage()">Send</button>
         <button onclick="clearChat()">Clear</button>
-        <button id="executeButton" onclick="executeCode()" style="background-color: #2e7d32;">Execute Code</button>
       </div>
       
       <script>
@@ -214,46 +213,6 @@ app.get('/', (req, res) => {
         async function clearChat() {
           document.getElementById('chatContainer').innerHTML = '';
           await fetch('/api/chat/clear', { method: 'POST' });
-        }
-
-        async function executeCode() {
-          const executeButton = document.getElementById('executeButton');
-          const chatContainer = document.getElementById('chatContainer');
-          
-          executeButton.disabled = true;
-          executeButton.textContent = 'Extracting...';
-          
-          try {
-            // Ask AI to extract code from last message
-            const response = await fetch('/api/extract-code', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' }
-            });
-            
-            const data = await response.json();
-            
-            if (data.code) {
-              // Store code for executor tab
-              localStorage.setItem('extractedCode', data.code);
-              localStorage.setItem('codeLanguage', data.language || 'javascript');
-              
-              // Show success message before switching
-              chatContainer.innerHTML += '<div class="message assistant">✅ Code extracted successfully! Switching to Code Executor...</div>';
-              chatContainer.scrollTop = chatContainer.scrollHeight;
-              
-              // Small delay to show the message, then switch
-              setTimeout(() => {
-                window.location.href = '/executor';
-              }, 1000);
-            } else {
-              chatContainer.innerHTML += '<div class="message assistant">❌ No executable code found in the last message. Try asking me to write some code first!</div>';
-            }
-          } catch (error) {
-            chatContainer.innerHTML += '<div class="message assistant">Error extracting code: ' + error.message + '</div>';
-          } finally {
-            executeButton.disabled = false;
-            executeButton.textContent = 'Execute Code';
-          }
         }
         
         // Allow sending message with Enter key
