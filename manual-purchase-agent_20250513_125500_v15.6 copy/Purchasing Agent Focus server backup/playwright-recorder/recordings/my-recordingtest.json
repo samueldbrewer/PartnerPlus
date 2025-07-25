@@ -1,0 +1,75 @@
+{
+  "version": "1.0",
+  "timestamp": 1747856251722,
+  "startUrl": "https://www.etundra.com/restaurant-parts/beverage-equipment-parts/drink-dispenser/faucets/mavrik-26010-sweet-unsweet-iced-tea-faucet/",
+  "actions": [
+    {
+      "type": "navigation",
+      "timestamp": 1747856242836,
+      "url": "https://www.etundra.com/restaurant-parts/beverage-equipment-parts/drink-dispenser/faucets/mavrik-26010-sweet-unsweet-iced-tea-faucet/"
+    },
+    {
+      "type": "click",
+      "timestamp": 1747856244453,
+      "x": 264,
+      "y": 130,
+      "selector": "div.mnu-group.hzof-items:nth-child(2) > div.mnu-item.hzof-item.mnu-active:nth-child(3) > a.mnu.mnu-default.mnu-tier-1 > span",
+      "textContent": "Plumbing"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1747856245461,
+      "url": "https://www.etundra.com/commercial-plumbing-supplies/"
+    },
+    {
+      "type": "click",
+      "timestamp": 1747856246797,
+      "x": 556,
+      "y": 97,
+      "selector": "#hawk_searchbar",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856247172,
+      "selector": "#hawk_searchbar",
+      "value": "b"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856247335,
+      "selector": "#hawk_searchbar",
+      "value": "ba"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856247491,
+      "selector": "#hawk_searchbar",
+      "value": "bal"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856247683,
+      "selector": "#hawk_searchbar",
+      "value": "ball"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856247858,
+      "selector": "#hawk_searchbar",
+      "value": "balli"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856247966,
+      "selector": "#hawk_searchbar",
+      "value": "ballin"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856248050,
+      "selector": "#hawk_searchbar",
+      "value": "balling"
+    }
+  ]
+}

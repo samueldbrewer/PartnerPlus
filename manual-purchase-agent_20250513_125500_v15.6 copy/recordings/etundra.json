@@ -1,0 +1,109 @@
+{
+  "version": "1.0",
+  "timestamp": 1748890712884,
+  "startUrl": "https://www.etundra.com/kitchen-supplies/food-storage/dough-boxes/cambro-dbc1826cw148-pizza-dough-box-cover/",
+  "actions": [
+    {
+      "type": "navigation",
+      "timestamp": 1748890703740,
+      "url": "https://www.etundra.com/kitchen-supplies/food-storage/dough-boxes/cambro-dbc1826cw148-pizza-dough-box-cover/"
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1748890705456,
+      "width": 1280,
+      "height": 76
+    },
+    {
+      "type": "click",
+      "timestamp": 1748890705616,
+      "x": 561,
+      "y": 400,
+      "selector": ".btn.btn-primary.addtocart",
+      "textContent": "ADD TO CART"
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1748890705735,
+      "width": 569,
+      "height": 76
+    },
+    {
+      "type": "window_size",
+      "timestamp": 1748890706388,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "type": "click",
+      "timestamp": 1748890706765,
+      "x": 1188,
+      "y": 24,
+      "selector": ".caption.hidden-xs",
+      "textContent": "CART"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1748890707486,
+      "url": "https://www.etundra.com/cart/"
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1748890707935,
+      "width": 1280,
+      "height": 76
+    },
+    {
+      "type": "click",
+      "timestamp": 1748890708642,
+      "x": 993,
+      "y": 311,
+      "selector": "#ZipCode",
+      "textContent": ""
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1748890708722,
+      "width": 569,
+      "height": 76
+    },
+    {
+      "type": "input",
+      "timestamp": 1748890709364,
+      "selector": "#ZipCode",
+      "value": "9"
+    },
+    {
+      "type": "input",
+      "timestamp": 1748890709514,
+      "selector": "#ZipCode",
+      "value": "90"
+    },
+    {
+      "type": "input",
+      "timestamp": 1748890709566,
+      "selector": "#ZipCode",
+      "value": "902"
+    },
+    {
+      "type": "input",
+      "timestamp": 1748890709713,
+      "selector": "#ZipCode",
+      "value": "9021"
+    },
+    {
+      "type": "input",
+      "timestamp": 1748890709820,
+      "selector": "#ZipCode",
+      "value": "90210"
+    },
+    {
+      "type": "click",
+      "timestamp": 1748890710584,
+      "x": 998,
+      "y": 350,
+      "selector": ".big.btn.btn-primary.col-xs-12",
+      "textContent": "Calculate Shipping"
+    }
+  ]
+}

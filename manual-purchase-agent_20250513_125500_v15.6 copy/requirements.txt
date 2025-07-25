@@ -1,0 +1,32 @@
+# Flask and database
+flask==2.3.3
+flask-sqlalchemy==3.1.1
+flask-migrate==4.0.4
+python-dotenv==1.0.0
+gunicorn==21.2.0
+flask-login==0.6.2
+flask-wtf==1.1.1
+email-validator==2.0.0
+
+# PDF processing
+pymupdf==1.23.6  # PyMuPDF for PDF parsing
+Pillow==10.1.0  # For image processing
+
+# Web scraping and API integration
+google-search-results==2.4.2  # SerpAPI client package
+requests==2.31.0
+
+# OpenAI integration
+openai==0.28.1  # Using older version for compatibility
+tiktoken==0.5.1  # For token counting
+
+# Browser automation
+playwright==1.40.0
+
+# Security
+cryptography==41.0.4
+bcrypt==4.0.1
+
+# Utilities
+pydantic==2.5.1
+tenacity==8.2.3  # For retry logic

@@ -1,0 +1,166 @@
+/* Main Styles for Manual Purchase Agent */
+
+/* Custom Variables */
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --success-color: #198754;
+    --info-color: #0dcaf0;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+}
+
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background-color: #f5f7fb;
+}
+
+/* Feature Icons */
+.feature-icon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+/* Workflow Steps */
+.workflow-steps {
+    margin: 2rem 0;
+}
+
+.workflow-step {
+    padding: 1rem 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.workflow-step:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.workflow-step.active {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.workflow-step .step-icon {
+    width: 48px;
+    height: 48px;
+    background-color: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin: 0 auto 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.workflow-step.active .step-icon {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Dashboard Cards */
+.card {
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Manual Cards */
+.manual-card {
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.manual-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Charts */
+canvas {
+    max-width: 100%;
+}
+
+/* Counters */
+.counter {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+/* Demo mode specific styles */
+.extraction-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.part-highlight {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.4; }
+}
+
+.log-entry {
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed #eee;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .workflow-step .step-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 0.8rem;
+    }
+    
+    .workflow-step h6 {
+        font-size: 0.8rem;
+    }
+}
+
+/* Custom breadcrumb */
+.custom-breadcrumb {
+    background-color: transparent;
+    padding: 0.5rem 0;
+}
+
+/* Manual result list */
+.manual-result {
+    transition: all 0.2s ease;
+}
+
+.manual-result:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+/* Footer */
+.footer {
+    margin-top: 2rem;
+    border-top: 1px solid #eee;
+}
+
+/* Custom tabs */
+.nav-tabs .nav-link.active {
+    border-color: #dee2e6 #dee2e6 #fff;
+    border-top: 2px solid var(--primary-color);
+}

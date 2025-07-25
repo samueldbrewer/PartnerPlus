@@ -1,0 +1,251 @@
+/* 
+ * Manual Purchase Agent - API Demo Mobile Styles
+ * Version 10.0.0
+ */
+
+/* Mobile Container Adjustments */
+.mobile-container {
+    padding-top: 70px;
+    padding-bottom: 50px;
+    max-width: 100%;
+}
+
+/* Sticky Navigation Tabs */
+.sticky-tabs {
+    position: sticky;
+    top: 56px;
+    z-index: 100;
+    background-color: #fff;
+    padding: 8px 0;
+    margin: 0 -12px;
+    padding: 8px 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sticky-tabs .nav-link {
+    padding: 0.5rem;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.sticky-tabs .nav-link.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* Mobile Console Adjustments */
+.mobile-console {
+    background-color: #212529;
+    color: #f8f9fa;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    padding: 0.75rem;
+    height: calc(100vh - 250px);
+    min-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+/* Mobile Response Container */
+.mobile-response {
+    height: calc(100vh - 250px);
+    min-height: 200px;
+    overflow-y: auto;
+    font-size: 0.9rem;
+}
+
+/* Form Adjustments */
+.form-control, .form-select {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+}
+
+/* Textarea height for mobile */
+textarea.form-control {
+    height: calc(100vh - 400px);
+    min-height: 120px;
+}
+
+/* Floating Action Button */
+.fab-container {
+    position: fixed;
+    bottom: 65px;
+    right: 20px;
+    z-index: 999;
+}
+
+.fab-container .btn {
+    width: 56px;
+    height: 56px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.fab-container .btn:active {
+    transform: scale(0.95);
+}
+
+.fab-container .btn i {
+    font-size: 1.25rem;
+}
+
+/* Bottom navigation space adjustment */
+body {
+    padding-bottom: 50px !important;
+}
+
+/* Offcanvas Menu */
+.offcanvas {
+    max-width: 80%;
+}
+
+.offcanvas .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.5rem 0;
+    margin: 0.5rem 0;
+    transition: all 0.2s ease;
+}
+
+.offcanvas .nav-link:hover {
+    color: white;
+}
+
+/* Mobile-optimized card adjustments */
+.card {
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    padding: 0.75rem 1rem;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+/* Buttons in card headers */
+.card-header .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+/* Mobile-friendly code displays */
+.code-area, pre, code {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Force touch-friendly elements */
+select, button, input, textarea, .btn {
+    min-height: 44px; /* Apple's recommended minimum tap size */
+}
+
+/* Compact form elements */
+.form-label {
+    margin-bottom: 0.25rem;
+}
+
+.mb-3 {
+    margin-bottom: 0.75rem !important;
+}
+
+/* Toast Notifications for feedback */
+.toast-container {
+    position: fixed;
+    top: 70px;
+    right: 15px;
+    z-index: 9999;
+}
+
+/* Media Queries */
+@media (max-width: 576px) {
+    .card-header h5 {
+        font-size: 1rem;
+    }
+    
+    .btn {
+        font-size: 0.875rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1rem;
+    }
+}
+
+/* Confirm Dialog for mobile */
+.mobile-confirm-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.mobile-confirm-dialog .dialog-content {
+    background-color: white;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.mobile-confirm-dialog .dialog-body {
+    padding: 1.5rem 1rem;
+    text-align: center;
+}
+
+.mobile-confirm-dialog .dialog-footer {
+    padding: 1rem;
+    display: flex;
+    border-top: 1px solid #dee2e6;
+}
+
+.mobile-confirm-dialog .dialog-footer .btn {
+    flex: 1;
+}
+
+.mobile-confirm-dialog .dialog-footer .btn:first-child {
+    margin-right: 0.5rem;
+}
+
+/* Improved visibility for active tabs */
+.nav-pills .nav-link.active {
+    font-weight: 500;
+}
+
+/* Toast styling */
+.toast {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: none;
+    border-radius: 8px;
+}
+
+.toast-header {
+    background-color: transparent;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Loading indicators */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}

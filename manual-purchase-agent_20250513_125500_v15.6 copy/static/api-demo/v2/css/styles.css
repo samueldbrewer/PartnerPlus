@@ -1,0 +1,255 @@
+/* 
+ * Manual Purchase Agent - API Demo v2 Styles
+ * Version 10.0.0
+ */
+
+/* Body & Typography */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-bottom: 70px;
+}
+
+/* Code Areas */
+.code-area {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    tab-size: 2;
+}
+
+/* Console Log */
+#console-log {
+    background-color: #212529;
+    color: #f8f9fa;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    padding: 1rem;
+    min-height: 100px;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+.console-entry {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.console-info {
+    color: #6c757d;
+}
+
+.console-request {
+    color: #0dcaf0;
+}
+
+.console-success {
+    color: #198754;
+}
+
+.console-error {
+    color: #dc3545;
+}
+
+/* Response Container */
+.response-container {
+    background-color: #f8f9fa;
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+}
+
+.response-container.success {
+    background-color: rgba(25, 135, 84, 0.05);
+    border-left: 4px solid #198754;
+}
+
+.response-container.error {
+    background-color: rgba(220, 53, 69, 0.05);
+    border-left: 4px solid #dc3545;
+}
+
+.response-container pre {
+    margin: 0;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+/* Utility Classes */
+.line-numbers {
+    padding-right: 1rem;
+    text-align: right;
+    color: #6c757d;
+    user-select: none;
+}
+
+/* Copy Button Animation */
+.copy-button.copied {
+    background-color: #198754;
+    color: #fff;
+    border-color: #198754;
+    transition: all 0.3s ease;
+}
+
+/* Highlight Colors for JSON */
+.json-key {
+    color: #dc3545;
+}
+
+.json-string {
+    color: #198754;
+}
+
+.json-number {
+    color: #0d6efd;
+}
+
+.json-boolean {
+    color: #fd7e14;
+}
+
+.json-null {
+    color: #6c757d;
+}
+
+/* Mobile Responsiveness Tweaks */
+@media (max-width: 767.98px) {
+    #console-log, .response-container {
+        max-height: 300px;
+    }
+}
+
+/* Part Search Specific Styles */
+.confidence-meter {
+    height: 6px;
+    margin-top: 4px;
+}
+
+.result-card {
+    transition: all 0.3s ease;
+}
+
+.result-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.supplier-logo {
+    width: 100%;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.part-info-icon {
+    font-size: 2.5rem;
+    opacity: 0.7;
+}
+
+/* OEM Part Number Display Styling */
+#oem-part-number {
+    font-family: 'Roboto Mono', monospace, 'Courier New', Courier;
+    font-weight: 500;
+    padding: 4px 8px;
+    background-color: rgba(0, 123, 255, 0.05);
+    border-radius: 4px;
+    line-height: 1.5;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 100%;
+    transition: all 0.2s ease;
+}
+
+#oem-part-number:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Make supplier cards more consistent */
+#suppliers-list .card {
+    min-height: 300px;
+}
+
+/* Improve source attribution */
+.source-info {
+    font-size: 0.85rem;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+}
+
+.source-info i {
+    margin-right: 5px;
+    font-size: 0.75rem;
+}
+
+/* Enhanced Part Resolve Display */
+.enhanced-response {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    white-space: normal;
+}
+
+.enhanced-response h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.enhanced-response .card {
+    border: 1px solid rgba(0,0,0,0.125);
+    margin-bottom: 1rem;
+}
+
+.enhanced-response .card-header {
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+}
+
+.enhanced-response code {
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: rgba(0,0,0,0.05);
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.enhanced-response .alert {
+    font-size: 0.95rem;
+}
+
+.enhanced-response .small {
+    font-size: 0.85rem;
+}
+
+.raw-json-container {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+}

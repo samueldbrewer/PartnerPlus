@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PartPro Admin - Purchase Variables</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .admin-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-title {
+            color: #2c3e50;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            color: #34495e;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            padding: 0.75rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .button-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .button-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .button-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .status-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .nav-links {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-cog"></i>
+                Purchase Variables
+            </h1>
+            <p class="admin-subtitle">Configure billing and shipping information for automated purchases</p>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html">← Back to PartPro</a>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <form id="variablesForm">
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-user"></i>
+                    Personal Information
+                </h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-input" name="first_name" placeholder="John">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" name="last_name" placeholder="Doe">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" name="email" placeholder="john.doe@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-input" name="phone" placeholder="555-123-4567">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Company</label>
+                        <input type="text" class="form-input" name="company" placeholder="HVAC Solutions Inc.">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Shipping Address
+                </h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Address Line 1</label>
+                        <input type="text" class="form-input" name="address" placeholder="123 Main Street">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Address Line 2</label>
+                        <input type="text" class="form-input" name="address2" placeholder="Suite 200">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input type="text" class="form-input" name="city" placeholder="Springfield">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">State</label>
+                        <input type="text" class="form-input" name="state" placeholder="IL">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ZIP Code</label>
+                        <input type="text" class="form-input" name="zip_code" placeholder="62701">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Country</label>
+                        <input type="text" class="form-input" name="country" placeholder="United States">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-credit-card"></i>
+                    Payment Information
+                </h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Credit Card Number</label>
+                        <input type="text" class="form-input" name="credit_card" placeholder="4000123456789010">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Expiry Month</label>
+                        <input type="text" class="form-input" name="expiry_month" placeholder="12">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Expiry Year</label>
+                        <input type="text" class="form-input" name="expiry_year" placeholder="2027">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CVV</label>
+                        <input type="text" class="form-input" name="cvv" placeholder="123">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-file-invoice"></i>
+                    Billing Address
+                </h2>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; color: #34495e; font-weight: 500;">
+                        <input type="checkbox" id="sameAsShipping" onchange="toggleBillingAddress()">
+                        Same as shipping address
+                    </label>
+                </div>
+                <div class="form-grid" id="billingAddressFields">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-input" name="billing_first_name" placeholder="John">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" name="billing_last_name" placeholder="Doe">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Address Line 1</label>
+                        <input type="text" class="form-input" name="billing_address" placeholder="123 Main Street">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Address Line 2</label>
+                        <input type="text" class="form-input" name="billing_address2" placeholder="Suite 200">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <input type="text" class="form-input" name="billing_city" placeholder="Springfield">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">State</label>
+                        <input type="text" class="form-input" name="billing_state" placeholder="IL">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ZIP Code</label>
+                        <input type="text" class="form-input" name="billing_zip" placeholder="62701">
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="button button-primary">
+                    <i class="fas fa-save"></i>
+                    Save Variables
+                </button>
+                <button type="button" class="button button-secondary" onclick="loadVariables()">
+                    <i class="fas fa-refresh"></i>
+                    Reload
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const baseURL = window.location.origin;
+
+        // Load variables on page load
+        document.addEventListener('DOMContentLoaded', loadVariables);
+
+        async function loadVariables() {
+            try {
+                showStatus('Loading variables...', 'info');
+                
+                const response = await fetch(`${baseURL}/api/recordings/variables`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    populateForm(data.variables);
+                    showStatus('Variables loaded successfully', 'success');
+                } else {
+                    showStatus(`Error loading variables: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`Failed to load variables: ${error.message}`, 'error');
+            }
+        }
+
+        function populateForm(variables) {
+            const form = document.getElementById('variablesForm');
+            
+            Object.keys(variables).forEach(key => {
+                const input = form.querySelector(`[name="${key}"]`);
+                if (input) {
+                    input.value = variables[key] || '';
+                }
+            });
+        }
+
+        document.getElementById('variablesForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            try {
+                showStatus('Saving variables...', 'info');
+                
+                const formData = new FormData(e.target);
+                const variables = {};
+                
+                for (const [key, value] of formData.entries()) {
+                    variables[key] = value;
+                }
+                
+                const response = await fetch(`${baseURL}/api/recordings/variables`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ variables })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showStatus('Variables saved successfully!', 'success');
+                } else {
+                    showStatus(`Error saving variables: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`Failed to save variables: ${error.message}`, 'error');
+            }
+        });
+
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = message;
+            statusEl.className = `status-message status-${type}`;
+            statusEl.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusEl.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function toggleBillingAddress() {
+            const checkbox = document.getElementById('sameAsShipping');
+            const billingFields = document.getElementById('billingAddressFields');
+            const form = document.getElementById('variablesForm');
+            
+            if (checkbox.checked) {
+                // Copy shipping info to billing
+                const firstName = form.querySelector('[name="first_name"]').value;
+                const lastName = form.querySelector('[name="last_name"]').value;
+                const address = form.querySelector('[name="address"]').value;
+                const address2 = form.querySelector('[name="address2"]').value;
+                const city = form.querySelector('[name="city"]').value;
+                const state = form.querySelector('[name="state"]').value;
+                const zip = form.querySelector('[name="zip_code"]').value;
+                
+                form.querySelector('[name="billing_first_name"]').value = firstName;
+                form.querySelector('[name="billing_last_name"]').value = lastName;
+                form.querySelector('[name="billing_address"]').value = address;
+                form.querySelector('[name="billing_address2"]').value = address2;
+                form.querySelector('[name="billing_city"]').value = city;
+                form.querySelector('[name="billing_state"]').value = state;
+                form.querySelector('[name="billing_zip"]').value = zip;
+                
+                billingFields.style.opacity = '0.5';
+                billingFields.style.pointerEvents = 'none';
+            } else {
+                billingFields.style.opacity = '1';
+                billingFields.style.pointerEvents = 'auto';
+            }
+        }
+    </script>
+</body>
+</html>

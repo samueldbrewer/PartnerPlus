@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Search - Manual Purchase Agent API Demo v10</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-robot me-2"></i>Manual Purchase Agent API v10
+            </a>
+            <span class="navbar-text text-light ms-3">
+                Model Search
+            </span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">API Demo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="model-search.html">Model Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="part-search.html">Part Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="mobile.html">Mobile Version</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Model Search</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="make" class="form-label">Make</label>
+                                    <input type="text" class="form-control" id="make" placeholder="e.g. Toyota">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="model" class="form-label">Model</label>
+                                    <input type="text" class="form-control" id="model" placeholder="e.g. Camry">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="year" class="form-label">Year (Optional)</label>
+                                    <input type="text" class="form-control" id="year" placeholder="e.g. 2023">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="manual-type" class="form-label">Manual Type</label>
+                                    <select class="form-select" id="manual-type">
+                                        <option value="technical">Technical</option>
+                                        <option value="parts">Parts</option>
+                                        <option value="repair">Repair</option>
+                                        <option value="owner">Owner's Manual</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 text-center">
+                                <button class="btn btn-primary mt-3" id="search-button">
+                                    <i class="fas fa-search me-1"></i> Search Manuals
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Results Card -->
+        <div class="row mb-4 d-none" id="search-results-container">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Search Results</h5>
+                        <span class="badge bg-primary" id="result-count">0 Results</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Type</th>
+                                        <th>Source</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="manuals-table">
+                                    <!-- Manual results will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <button class="btn btn-success" id="process-selected-manuals" disabled>
+                            <i class="fas fa-cogs me-1"></i> Process Selected Manuals
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="row mb-4 d-none" id="loading-container">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <div class="spinner-border text-primary mb-3" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h5 class="text-muted" id="loading-message">Processing request...</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Enrichment Data Section -->
+        <div class="row mb-4 d-none" id="enrichment-container">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Enrichment Data</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-tabs" id="enrichmentTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="images-tab" data-bs-toggle="tab" data-bs-target="#images" type="button" role="tab">Images</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="videos-tab" data-bs-toggle="tab" data-bs-target="#videos" type="button" role="tab">Videos</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="articles-tab" data-bs-toggle="tab" data-bs-target="#articles" type="button" role="tab">Articles</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content p-3" id="enrichmentTabContent">
+                            <div class="tab-pane fade show active" id="images" role="tabpanel">
+                                <div class="row" id="images-container">
+                                    <!-- Images will be inserted here -->
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="videos" role="tabpanel">
+                                <div class="row" id="videos-container">
+                                    <!-- Videos will be inserted here -->
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="articles" role="tabpanel">
+                                <div class="list-group" id="articles-container">
+                                    <!-- Articles will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multi-Process Results Section -->
+        <div class="row mb-4 d-none" id="process-results-container">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Manual Analysis Results</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-tabs" id="resultTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="error-codes-tab" data-bs-toggle="tab" data-bs-target="#error-codes" type="button" role="tab">Error Codes</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="part-numbers-tab" data-bs-toggle="tab" data-bs-target="#part-numbers" type="button" role="tab">Part Numbers</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="common-problems-tab" data-bs-toggle="tab" data-bs-target="#common-problems" type="button" role="tab">Common Problems</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="maintenance-tab" data-bs-toggle="tab" data-bs-target="#maintenance" type="button" role="tab">Maintenance</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="safety-tab" data-bs-toggle="tab" data-bs-target="#safety" type="button" role="tab">Safety</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button" role="tab">Statistics</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content p-3" id="resultTabContent">
+                            <div class="tab-pane fade show active" id="error-codes" role="tabpanel">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <h6 class="text-muted"><span id="error-codes-count">0</span> Error Codes Found</h6>
+                                    <button class="btn btn-sm btn-outline-primary" id="download-error-codes-csv">
+                                        <i class="fas fa-download me-1"></i> Download CSV
+                                    </button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Error Code</th>
+                                                <th>Description</th>
+                                                <th>Confidence</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="error-codes-table">
+                                            <!-- Error codes will be inserted here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="part-numbers" role="tabpanel">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <h6 class="text-muted"><span id="part-numbers-count">0</span> Part Numbers Found</h6>
+                                    <button class="btn btn-sm btn-outline-primary" id="download-part-numbers-csv">
+                                        <i class="fas fa-download me-1"></i> Download CSV
+                                    </button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Part Number</th>
+                                                <th>Description</th>
+                                                <th>Confidence</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="part-numbers-table">
+                                            <!-- Part numbers will be inserted here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="common-problems" role="tabpanel">
+                                <div class="accordion" id="problems-accordion">
+                                    <!-- Common problems will be inserted here -->
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="maintenance" role="tabpanel">
+                                <div class="list-group" id="maintenance-list">
+                                    <!-- Maintenance procedures will be inserted here -->
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="safety" role="tabpanel">
+                                <div class="list-group" id="safety-list">
+                                    <!-- Safety warnings will be inserted here -->
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="stats" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="card mb-3">
+                                            <div class="card-header bg-light">Processing Statistics</div>
+                                            <div class="card-body">
+                                                <ul class="list-group list-group-flush" id="processing-stats">
+                                                    <!-- Processing stats will be inserted here -->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card mb-3">
+                                            <div class="card-header bg-light">Content Statistics</div>
+                                            <div class="card-body">
+                                                <ul class="list-group list-group-flush" id="content-stats">
+                                                    <!-- Content stats will be inserted here -->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Components Section -->
+        <div class="row mb-4 d-none" id="components-container">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Manual Components</h5>
+                        <select class="form-select form-select-sm w-auto" id="components-manual-selector">
+                            <option value="">Select a Manual</option>
+                        </select>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="components-cards">
+                            <!-- Component cards will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Console Log -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Console Log</h5>
+                        <button class="btn btn-sm btn-outline-secondary" id="clear-console">
+                            <i class="fas fa-broom me-1"></i> Clear
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="console-log"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">
+                Manual Purchase Agent API Demo v10.0.0 &copy; 2025
+                <span class="mx-2">|</span>
+                <a href="/API_REFERENCE.md" class="text-decoration-none">API Reference</a>
+                <span class="mx-2">|</span>
+                <a href="index.html" class="text-decoration-none">Standard Demo</a>
+            </span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Prism.js for code highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    
+    <!-- API Client Library -->
+    <script src="/static/api-demo/js/api.js"></script>
+    
+    <!-- Model Search JS -->
+    <script src="js/model-search.js"></script>
+</body>
+</html>

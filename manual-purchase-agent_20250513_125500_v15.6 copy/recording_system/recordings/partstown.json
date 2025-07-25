@@ -1,0 +1,3147 @@
+{
+  "version": "1.0",
+  "timestamp": 1749486588836,
+  "startUrl": "https://www.partstown.com/pitco/ptpp10084",
+  "actions": [
+    {
+      "type": "navigation",
+      "timestamp": 1749486457938,
+      "url": "https://www.partstown.com/pitco/ptpp10084"
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486458790,
+      "width": 1,
+      "height": 1
+    },
+    {
+      "type": "window_size",
+      "timestamp": 1749486460527,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461574,
+      "x": 0,
+      "y": 2
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461590,
+      "x": 0,
+      "y": 11
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461607,
+      "x": 0,
+      "y": 33
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461624,
+      "x": 0,
+      "y": 61
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461640,
+      "x": 0,
+      "y": 92
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461657,
+      "x": 0,
+      "y": 117
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461674,
+      "x": 0,
+      "y": 140
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461689,
+      "x": 0,
+      "y": 156
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461707,
+      "x": 0,
+      "y": 168
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461724,
+      "x": 0,
+      "y": 178
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461740,
+      "x": 0,
+      "y": 184
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461757,
+      "x": 0,
+      "y": 189
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461774,
+      "x": 0,
+      "y": 194
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461790,
+      "x": 0,
+      "y": 199
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461807,
+      "x": 0,
+      "y": 204
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461824,
+      "x": 0,
+      "y": 211
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461840,
+      "x": 0,
+      "y": 219
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461856,
+      "x": 0,
+      "y": 229
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461874,
+      "x": 0,
+      "y": 238
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461890,
+      "x": 0,
+      "y": 247
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461907,
+      "x": 0,
+      "y": 254
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461924,
+      "x": 0,
+      "y": 260
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461940,
+      "x": 0,
+      "y": 264
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461957,
+      "x": 0,
+      "y": 267
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461974,
+      "x": 0,
+      "y": 271
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486461990,
+      "x": 0,
+      "y": 277
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462007,
+      "x": 0,
+      "y": 283
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462024,
+      "x": 0,
+      "y": 289
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462040,
+      "x": 0,
+      "y": 295
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462057,
+      "x": 0,
+      "y": 301
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462074,
+      "x": 0,
+      "y": 307
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462091,
+      "x": 0,
+      "y": 313
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462107,
+      "x": 0,
+      "y": 319
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462124,
+      "x": 0,
+      "y": 324
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462140,
+      "x": 0,
+      "y": 329
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462157,
+      "x": 0,
+      "y": 334
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462281,
+      "x": 0,
+      "y": 337
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462290,
+      "x": 0,
+      "y": 339
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462307,
+      "x": 0,
+      "y": 344
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462324,
+      "x": 0,
+      "y": 349
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462340,
+      "x": 0,
+      "y": 353
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462357,
+      "x": 0,
+      "y": 356
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462374,
+      "x": 0,
+      "y": 358
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462391,
+      "x": 0,
+      "y": 360
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462407,
+      "x": 0,
+      "y": 361
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462424,
+      "x": 0,
+      "y": 362
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462440,
+      "x": 0,
+      "y": 363
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462457,
+      "x": 0,
+      "y": 364
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462474,
+      "x": 0,
+      "y": 365
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462490,
+      "x": 0,
+      "y": 366
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462524,
+      "x": 0,
+      "y": 367
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462540,
+      "x": 0,
+      "y": 368
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462557,
+      "x": 0,
+      "y": 369
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462574,
+      "x": 0,
+      "y": 370
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462590,
+      "x": 0,
+      "y": 371
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462624,
+      "x": 0,
+      "y": 372
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462640,
+      "x": 0,
+      "y": 373
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462657,
+      "x": 0,
+      "y": 374
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486462673,
+      "x": 0,
+      "y": 375
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463074,
+      "x": 0,
+      "y": 376
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463090,
+      "x": 0,
+      "y": 377
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463107,
+      "x": 0,
+      "y": 378
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463123,
+      "x": 0,
+      "y": 379
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463140,
+      "x": 0,
+      "y": 380
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463157,
+      "x": 0,
+      "y": 382
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463173,
+      "x": 0,
+      "y": 384
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463190,
+      "x": 0,
+      "y": 387
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463207,
+      "x": 0,
+      "y": 390
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463224,
+      "x": 0,
+      "y": 393
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463240,
+      "x": 0,
+      "y": 396
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463257,
+      "x": 0,
+      "y": 398
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463273,
+      "x": 0,
+      "y": 399
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463290,
+      "x": 0,
+      "y": 400
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486463307,
+      "x": 0,
+      "y": 401
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464640,
+      "x": 0,
+      "y": 400
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464657,
+      "x": 0,
+      "y": 399
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464674,
+      "x": 0,
+      "y": 397
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464690,
+      "x": 0,
+      "y": 395
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464707,
+      "x": 0,
+      "y": 394
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464724,
+      "x": 0,
+      "y": 392
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464740,
+      "x": 0,
+      "y": 391
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464757,
+      "x": 0,
+      "y": 390
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464774,
+      "x": 0,
+      "y": 389
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464790,
+      "x": 0,
+      "y": 388
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464807,
+      "x": 0,
+      "y": 387
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464824,
+      "x": 0,
+      "y": 386
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464840,
+      "x": 0,
+      "y": 385
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464857,
+      "x": 0,
+      "y": 384
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464874,
+      "x": 0,
+      "y": 383
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464890,
+      "x": 0,
+      "y": 382
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464907,
+      "x": 0,
+      "y": 381
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464924,
+      "x": 0,
+      "y": 380
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486464940,
+      "x": 0,
+      "y": 379
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486465141,
+      "x": 0,
+      "y": 380
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486465424,
+      "x": 0,
+      "y": 381
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486465441,
+      "x": 0,
+      "y": 382
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486467524,
+      "x": 501,
+      "y": 194,
+      "selector": "div.product-gallery > span.product-logo--real_oem_parts:nth-child(2) > svg > path:nth-child(2)",
+      "textContent": ""
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486468288,
+      "key": "Tab"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486468825,
+      "key": "Tab"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486469319,
+      "key": "Tab"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486469980,
+      "key": "Enter"
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486474104,
+      "x": 1201,
+      "y": 22,
+      "selector": ".mini-cart__link.js-mini-cart-link.nav__link.opened",
+      "textContent": "Your Cart\n\t\tYou didn't add any products to Your Ca"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1749486474611,
+      "url": "https://www.partstown.com/cart"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486476960,
+      "x": 0,
+      "y": 2
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486476974,
+      "x": 0,
+      "y": 7
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486476991,
+      "x": 0,
+      "y": 17
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477007,
+      "x": 0,
+      "y": 29
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477023,
+      "x": 0,
+      "y": 46
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477040,
+      "x": 0,
+      "y": 67
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477057,
+      "x": 0,
+      "y": 93
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477074,
+      "x": 0,
+      "y": 122
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477090,
+      "x": 0,
+      "y": 162
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477107,
+      "x": 0,
+      "y": 201
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477124,
+      "x": 0,
+      "y": 238
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477140,
+      "x": 0,
+      "y": 269
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477157,
+      "x": 0,
+      "y": 293
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477174,
+      "x": 0,
+      "y": 312
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477191,
+      "x": 0,
+      "y": 323
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477207,
+      "x": 0,
+      "y": 333
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477224,
+      "x": 0,
+      "y": 341
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477240,
+      "x": 0,
+      "y": 350
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477257,
+      "x": 0,
+      "y": 358
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477274,
+      "x": 0,
+      "y": 366
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477290,
+      "x": 0,
+      "y": 372
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477307,
+      "x": 0,
+      "y": 378
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477324,
+      "x": 0,
+      "y": 383
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477340,
+      "x": 0,
+      "y": 389
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477357,
+      "x": 0,
+      "y": 393
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477373,
+      "x": 0,
+      "y": 397
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477390,
+      "x": 0,
+      "y": 399
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477407,
+      "x": 0,
+      "y": 400
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477440,
+      "x": 0,
+      "y": 401
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477456,
+      "x": 0,
+      "y": 402
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486477474,
+      "x": 0,
+      "y": 404
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486478637,
+      "x": 1080,
+      "y": 585,
+      "selector": ".btn.btn-primary.btn-block.btn--continue-checkout.js-continue-checkout-button",
+      "textContent": "Checkout"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1749486479215,
+      "url": "https://www.partstown.com/login/checkout"
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486483720,
+      "x": 751,
+      "y": 298,
+      "selector": "#guest.email",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486489696,
+      "selector": "#guest.email",
+      "value": "j"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486489831,
+      "selector": "#guest.email",
+      "value": "jo"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486489923,
+      "selector": "#guest.email",
+      "value": "joh"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486490100,
+      "selector": "#guest.email",
+      "value": "john"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486490989,
+      "selector": "#guest.email",
+      "value": "john."
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486491207,
+      "selector": "#guest.email",
+      "value": "john.s"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486491266,
+      "selector": "#guest.email",
+      "value": "john.sm"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486491434,
+      "selector": "#guest.email",
+      "value": "john.smi"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486491589,
+      "selector": "#guest.email",
+      "value": "john.smit"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486491703,
+      "selector": "#guest.email",
+      "value": "john.smith"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486492219,
+      "selector": "#guest.email",
+      "value": "john.smith@"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486492590,
+      "selector": "#guest.email",
+      "value": "john.smith@e"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486492853,
+      "selector": "#guest.email",
+      "value": "john.smith@ex"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486492964,
+      "selector": "#guest.email",
+      "value": "john.smith@exa"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486493113,
+      "selector": "#guest.email",
+      "value": "john.smith@exam"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486493233,
+      "selector": "#guest.email",
+      "value": "john.smith@examp"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486493429,
+      "selector": "#guest.email",
+      "value": "john.smith@exampl"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486493564,
+      "selector": "#guest.email",
+      "value": "john.smith@example"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486494107,
+      "selector": "#guest.email",
+      "value": "john.smith@example."
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486494238,
+      "selector": "#guest.email",
+      "value": "john.smith@example.c"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486494360,
+      "selector": "#guest.email",
+      "value": "john.smith@example.co"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486494755,
+      "selector": "#guest.email",
+      "value": "john.smith@example.com"
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486496488,
+      "x": 717,
+      "y": 344,
+      "selector": ".checkbox-showcase",
+      "textContent": ""
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486496510,
+      "x": 717,
+      "y": 344,
+      "selector": "#Add me to subscription list",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486496523,
+      "selector": "#Add me to subscription list",
+      "value": "true"
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486497653,
+      "x": 918,
+      "y": 463,
+      "selector": ".btn.btn-primary.btn-block",
+      "textContent": "Checkout as a Guest"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1749486499779,
+      "url": "https://www.partstown.com/checkout/multi/delivery-address/add"
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486501870,
+      "x": 167,
+      "y": 418,
+      "selector": "#text.partstownaccelerator.register.firstName",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486502577,
+      "selector": "#text.partstownaccelerator.register.firstName",
+      "value": "J"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486502865,
+      "selector": "#text.partstownaccelerator.register.firstName",
+      "value": "Jo"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486503035,
+      "selector": "#text.partstownaccelerator.register.firstName",
+      "value": "Joh"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486503206,
+      "selector": "#text.partstownaccelerator.register.firstName",
+      "value": "John"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486503466,
+      "key": "Tab"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486503954,
+      "selector": "#text.partstownaccelerator.register.lastName",
+      "value": "S"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486504165,
+      "selector": "#text.partstownaccelerator.register.lastName",
+      "value": "Sm"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486504267,
+      "selector": "#text.partstownaccelerator.register.lastName",
+      "value": "Smi"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486504475,
+      "selector": "#text.partstownaccelerator.register.lastName",
+      "value": "Smit"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486505004,
+      "selector": "#text.partstownaccelerator.register.lastName",
+      "value": "Smith"
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486507821,
+      "x": 80,
+      "y": 576,
+      "selector": ".checkbox-showcase",
+      "textContent": ""
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486507838,
+      "x": 80,
+      "y": 576,
+      "selector": "#I am not a business",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486507854,
+      "selector": "#I am not a business",
+      "value": "true"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508708,
+      "x": 0,
+      "y": 2
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508724,
+      "x": 0,
+      "y": 3
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508740,
+      "x": 0,
+      "y": 4
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508757,
+      "x": 0,
+      "y": 6
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508774,
+      "x": 0,
+      "y": 9
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508790,
+      "x": 0,
+      "y": 13
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508807,
+      "x": 0,
+      "y": 18
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508824,
+      "x": 0,
+      "y": 27
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508840,
+      "x": 0,
+      "y": 38
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508857,
+      "x": 0,
+      "y": 51
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508874,
+      "x": 0,
+      "y": 68
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508890,
+      "x": 0,
+      "y": 84
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508907,
+      "x": 0,
+      "y": 102
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508924,
+      "x": 0,
+      "y": 119
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508940,
+      "x": 0,
+      "y": 140
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508957,
+      "x": 0,
+      "y": 162
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508974,
+      "x": 0,
+      "y": 181
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486508991,
+      "x": 0,
+      "y": 198
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509007,
+      "x": 0,
+      "y": 213
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509024,
+      "x": 0,
+      "y": 223
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509040,
+      "x": 0,
+      "y": 233
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509057,
+      "x": 0,
+      "y": 242
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509074,
+      "x": 0,
+      "y": 249
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509090,
+      "x": 0,
+      "y": 255
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509107,
+      "x": 0,
+      "y": 260
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509124,
+      "x": 0,
+      "y": 263
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509140,
+      "x": 0,
+      "y": 265
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509157,
+      "x": 0,
+      "y": 267
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509174,
+      "x": 0,
+      "y": 268
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509190,
+      "x": 0,
+      "y": 270
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509207,
+      "x": 0,
+      "y": 272
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509224,
+      "x": 0,
+      "y": 274
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509240,
+      "x": 0,
+      "y": 276
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509257,
+      "x": 0,
+      "y": 277
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509274,
+      "x": 0,
+      "y": 278
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509290,
+      "x": 0,
+      "y": 279
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509306,
+      "x": 0,
+      "y": 280
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509324,
+      "x": 0,
+      "y": 281
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509340,
+      "x": 0,
+      "y": 282
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509357,
+      "x": 0,
+      "y": 283
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486509457,
+      "x": 0,
+      "y": 282
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486510286,
+      "x": 134,
+      "y": 477,
+      "selector": "#address.line1",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486510678,
+      "selector": "#address.line1",
+      "value": "1"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486510822,
+      "selector": "#address.line1",
+      "value": "12"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486511013,
+      "selector": "#address.line1",
+      "value": "123"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486511635,
+      "selector": "#address.line1",
+      "value": "123 "
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486511840,
+      "selector": "#address.line1",
+      "value": "123 M"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486512048,
+      "selector": "#address.line1",
+      "value": "123 Ma"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486512196,
+      "selector": "#address.line1",
+      "value": "123 Mai"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486512285,
+      "selector": "#address.line1",
+      "value": "123 Main"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486512794,
+      "selector": "#address.line1",
+      "value": "123 Main "
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486512971,
+      "selector": "#address.line1",
+      "value": "123 Main S"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486513201,
+      "selector": "#address.line1",
+      "value": "123 Main St"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486513377,
+      "selector": "#address.line1",
+      "value": "123 Main Str"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486513455,
+      "selector": "#address.line1",
+      "value": "123 Main Stre"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486513661,
+      "selector": "#address.line1",
+      "value": "123 Main Stree"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486513919,
+      "selector": "#address.line1",
+      "value": "123 Main Street"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486514239,
+      "key": "Tab"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486514763,
+      "key": "Tab"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486515207,
+      "selector": "#text.partstownaccelerator.register.city",
+      "value": "S"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486515346,
+      "selector": "#text.partstownaccelerator.register.city",
+      "value": "Sp"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486515492,
+      "selector": "#text.partstownaccelerator.register.city",
+      "value": "Spr"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486515604,
+      "selector": "#text.partstownaccelerator.register.city",
+      "value": "Spri"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486515694,
+      "selector": "#text.partstownaccelerator.register.city",
+      "value": "Sprin"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486515788,
+      "selector": "#text.partstownaccelerator.register.city",
+      "value": "Spring"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486516173,
+      "selector": "#text.partstownaccelerator.register.city",
+      "value": "Springf"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486516271,
+      "selector": "#text.partstownaccelerator.register.city",
+      "value": "Springfi"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486516459,
+      "selector": "#text.partstownaccelerator.register.city",
+      "value": "Springfie"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486516578,
+      "selector": "#text.partstownaccelerator.register.city",
+      "value": "Springfiel"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486516922,
+      "selector": "#text.partstownaccelerator.register.city",
+      "value": "Springfield"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486517245,
+      "key": "Tab"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486517345,
+      "key": "I"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486517445,
+      "key": "L"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486519293,
+      "key": "Tab"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486528780,
+      "selector": "#text.partstownaccelerator.register.zipPostalCode",
+      "value": "6"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486529095,
+      "selector": "#text.partstownaccelerator.register.zipPostalCode",
+      "value": "62"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486529419,
+      "selector": "#text.partstownaccelerator.register.zipPostalCode",
+      "value": "627"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486529930,
+      "selector": "#text.partstownaccelerator.register.zipPostalCode",
+      "value": "6270"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486530038,
+      "selector": "#text.partstownaccelerator.register.zipPostalCode",
+      "value": "62701"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530731,
+      "x": 0,
+      "y": 283
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530740,
+      "x": 0,
+      "y": 289
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530757,
+      "x": 0,
+      "y": 302
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530773,
+      "x": 0,
+      "y": 324
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530790,
+      "x": 0,
+      "y": 345
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530807,
+      "x": 0,
+      "y": 371
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530824,
+      "x": 0,
+      "y": 391
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530840,
+      "x": 0,
+      "y": 409
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530857,
+      "x": 0,
+      "y": 421
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530874,
+      "x": 0,
+      "y": 432
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530890,
+      "x": 0,
+      "y": 439
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530907,
+      "x": 0,
+      "y": 445
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530924,
+      "x": 0,
+      "y": 450
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530940,
+      "x": 0,
+      "y": 453
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530957,
+      "x": 0,
+      "y": 455
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530974,
+      "x": 0,
+      "y": 457
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486530990,
+      "x": 0,
+      "y": 458
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531007,
+      "x": 0,
+      "y": 459
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531024,
+      "x": 0,
+      "y": 461
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531040,
+      "x": 0,
+      "y": 464
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531057,
+      "x": 0,
+      "y": 468
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531074,
+      "x": 0,
+      "y": 472
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531090,
+      "x": 0,
+      "y": 476
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531107,
+      "x": 0,
+      "y": 480
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531124,
+      "x": 0,
+      "y": 486
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531140,
+      "x": 0,
+      "y": 494
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531157,
+      "x": 0,
+      "y": 501
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531174,
+      "x": 0,
+      "y": 509
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531190,
+      "x": 0,
+      "y": 514
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531207,
+      "x": 0,
+      "y": 519
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531224,
+      "x": 0,
+      "y": 522
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531240,
+      "x": 0,
+      "y": 524
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531257,
+      "x": 0,
+      "y": 526
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531274,
+      "x": 0,
+      "y": 530
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531290,
+      "x": 0,
+      "y": 534
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531306,
+      "x": 0,
+      "y": 538
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531324,
+      "x": 0,
+      "y": 542
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531340,
+      "x": 0,
+      "y": 546
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531357,
+      "x": 0,
+      "y": 550
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531374,
+      "x": 0,
+      "y": 554
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531390,
+      "x": 0,
+      "y": 558
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531407,
+      "x": 0,
+      "y": 561
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531424,
+      "x": 0,
+      "y": 564
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531514,
+      "x": 0,
+      "y": 565
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531524,
+      "x": 0,
+      "y": 572
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531540,
+      "x": 0,
+      "y": 593
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531557,
+      "x": 0,
+      "y": 617
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531574,
+      "x": 0,
+      "y": 639
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531590,
+      "x": 0,
+      "y": 668
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531607,
+      "x": 0,
+      "y": 688
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531624,
+      "x": 0,
+      "y": 712
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531640,
+      "x": 0,
+      "y": 730
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531657,
+      "x": 0,
+      "y": 743
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531674,
+      "x": 0,
+      "y": 751
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531690,
+      "x": 0,
+      "y": 757
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531707,
+      "x": 0,
+      "y": 760
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531724,
+      "x": 0,
+      "y": 761
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486531740,
+      "x": 0,
+      "y": 762
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486533274,
+      "key": "Tab"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486533854,
+      "key": "Tab"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486536195,
+      "key": "Tab"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486537537,
+      "selector": "#text.partstownaccelerator.register.phone",
+      "value": "5"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486537708,
+      "selector": "#text.partstownaccelerator.register.phone",
+      "value": "55"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486537928,
+      "selector": "#text.partstownaccelerator.register.phone",
+      "value": "555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486538462,
+      "selector": "#text.partstownaccelerator.register.phone",
+      "value": "555-1"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486538659,
+      "selector": "#text.partstownaccelerator.register.phone",
+      "value": "555-12"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486538865,
+      "selector": "#text.partstownaccelerator.register.phone",
+      "value": "555-123"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486539295,
+      "selector": "#text.partstownaccelerator.register.phone",
+      "value": "555-123-4"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486539497,
+      "selector": "#text.partstownaccelerator.register.phone",
+      "value": "555-123-45"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486539739,
+      "selector": "#text.partstownaccelerator.register.phone",
+      "value": "555-123-456"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486539959,
+      "selector": "#text.partstownaccelerator.register.phone",
+      "value": "555-123-4567"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486541875,
+      "x": 0,
+      "y": 763
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486541891,
+      "x": 0,
+      "y": 766
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486541906,
+      "x": 0,
+      "y": 779
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486541924,
+      "x": 0,
+      "y": 800
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486541940,
+      "x": 0,
+      "y": 827
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486541957,
+      "x": 0,
+      "y": 855
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486541974,
+      "x": 0,
+      "y": 885
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486541990,
+      "x": 0,
+      "y": 908
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542007,
+      "x": 0,
+      "y": 925
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542024,
+      "x": 0,
+      "y": 939
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542040,
+      "x": 0,
+      "y": 949
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542057,
+      "x": 0,
+      "y": 957
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542074,
+      "x": 0,
+      "y": 962
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542090,
+      "x": 0,
+      "y": 966
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542107,
+      "x": 0,
+      "y": 969
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542124,
+      "x": 0,
+      "y": 972
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542140,
+      "x": 0,
+      "y": 974
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542157,
+      "x": 0,
+      "y": 976
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542174,
+      "x": 0,
+      "y": 977
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542190,
+      "x": 0,
+      "y": 978
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542207,
+      "x": 0,
+      "y": 979
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486542240,
+      "x": 0,
+      "y": 978
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486542920,
+      "x": 301,
+      "y": 515,
+      "selector": "#addressSubmit",
+      "textContent": "CONTINUE TO Review Items & Shipping"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486545187,
+      "key": "Tab"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486545872,
+      "key": "Enter"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1749486549382,
+      "url": "https://www.partstown.com/checkout/multi/delivery-method/choose"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486550044,
+      "x": 0,
+      "y": 208
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486550114,
+      "x": 0,
+      "y": 423
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486550135,
+      "x": 0,
+      "y": 458.5
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486550146,
+      "x": 0,
+      "y": 467
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486550183,
+      "x": 0,
+      "y": 468
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486554272,
+      "x": 373,
+      "y": 300,
+      "selector": ".radio-control__label",
+      "textContent": "I Don't Like Saving $"
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486554320,
+      "x": 373,
+      "y": 300,
+      "selector": "#id1",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486554365,
+      "selector": "#id1",
+      "value": "N"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555174,
+      "x": 0,
+      "y": 469
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555191,
+      "x": 0,
+      "y": 470
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555207,
+      "x": 0,
+      "y": 472
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555274,
+      "x": 0,
+      "y": 473
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555274,
+      "x": 0,
+      "y": 480
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555290,
+      "x": 0,
+      "y": 491
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555307,
+      "x": 0,
+      "y": 506
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555324,
+      "x": 0,
+      "y": 523
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555340,
+      "x": 0,
+      "y": 545
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555357,
+      "x": 0,
+      "y": 571
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555374,
+      "x": 0,
+      "y": 596
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555390,
+      "x": 0,
+      "y": 636
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555407,
+      "x": 0,
+      "y": 676
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555424,
+      "x": 0,
+      "y": 713
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555440,
+      "x": 0,
+      "y": 746
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555457,
+      "x": 0,
+      "y": 767
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555474,
+      "x": 0,
+      "y": 782
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555490,
+      "x": 0,
+      "y": 792
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555507,
+      "x": 0,
+      "y": 799
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555524,
+      "x": 0,
+      "y": 803
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555540,
+      "x": 0,
+      "y": 806
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555557,
+      "x": 0,
+      "y": 809
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555574,
+      "x": 0,
+      "y": 811
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555590,
+      "x": 0,
+      "y": 813
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555606,
+      "x": 0,
+      "y": 815
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555624,
+      "x": 0,
+      "y": 816
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555640,
+      "x": 0,
+      "y": 818
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555657,
+      "x": 0,
+      "y": 822
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555674,
+      "x": 0,
+      "y": 828
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555690,
+      "x": 0,
+      "y": 834
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555707,
+      "x": 0,
+      "y": 838
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555724,
+      "x": 0,
+      "y": 842
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555744,
+      "x": 0,
+      "y": 845
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555757,
+      "x": 0,
+      "y": 847
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555774,
+      "x": 0,
+      "y": 849
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555790,
+      "x": 0,
+      "y": 852
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555807,
+      "x": 0,
+      "y": 854
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555824,
+      "x": 0,
+      "y": 856
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486555840,
+      "x": 0,
+      "y": 857
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486558407,
+      "x": 504,
+      "y": 571,
+      "selector": ".radio-control__label",
+      "textContent": "Ground\n                - Arrives End of Day Tuesda"
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486558442,
+      "x": 504,
+      "y": 571,
+      "selector": "#PT_01_ground_0",
+      "textContent": ""
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560057,
+      "x": 0,
+      "y": 860
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560074,
+      "x": 0,
+      "y": 871
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560090,
+      "x": 0,
+      "y": 886
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560107,
+      "x": 0,
+      "y": 912
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560124,
+      "x": 0,
+      "y": 937
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560140,
+      "x": 0,
+      "y": 966
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560157,
+      "x": 0,
+      "y": 990
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560174,
+      "x": 0,
+      "y": 1014
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560190,
+      "x": 0,
+      "y": 1035
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560207,
+      "x": 0,
+      "y": 1055
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560224,
+      "x": 0,
+      "y": 1073
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560240,
+      "x": 0,
+      "y": 1088
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560257,
+      "x": 0,
+      "y": 1102
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560274,
+      "x": 0,
+      "y": 1116
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560290,
+      "x": 0,
+      "y": 1134
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560307,
+      "x": 0,
+      "y": 1158
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560324,
+      "x": 0,
+      "y": 1192
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560340,
+      "x": 0,
+      "y": 1211
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560357,
+      "x": 0,
+      "y": 1240
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560374,
+      "x": 0,
+      "y": 1272
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560390,
+      "x": 0,
+      "y": 1305
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560407,
+      "x": 0,
+      "y": 1338
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560424,
+      "x": 0,
+      "y": 1371
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486560440,
+      "x": 0,
+      "y": 1376
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486561853,
+      "x": 264,
+      "y": 449,
+      "selector": ".delivery-method-submit-continue",
+      "textContent": "Continue to payment & billing information"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1749486563426,
+      "url": "https://www.partstown.com/checkout/multi/payment-method/add"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486563685,
+      "x": 0,
+      "y": 186.5
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486563823,
+      "x": 0,
+      "y": 748
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486564535,
+      "width": 508,
+      "height": 216
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486564535,
+      "width": 1280,
+      "height": 1
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486564957,
+      "width": 508,
+      "height": 214
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486564990,
+      "width": 508,
+      "height": 204
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565007,
+      "width": 508,
+      "height": 196
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565024,
+      "width": 508,
+      "height": 188
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565040,
+      "width": 508,
+      "height": 181
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565057,
+      "width": 508,
+      "height": 174
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565074,
+      "width": 508,
+      "height": 168
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565090,
+      "width": 508,
+      "height": 164
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565106,
+      "width": 508,
+      "height": 159
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565124,
+      "width": 508,
+      "height": 156
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565140,
+      "width": 508,
+      "height": 153
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565157,
+      "width": 508,
+      "height": 151
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565174,
+      "width": 508,
+      "height": 149
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565190,
+      "width": 508,
+      "height": 147
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565207,
+      "width": 508,
+      "height": 146
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565224,
+      "width": 508,
+      "height": 145
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565239,
+      "width": 508,
+      "height": 144
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486565290,
+      "width": 508,
+      "height": 143
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486567252,
+      "x": 39,
+      "y": 50,
+      "selector": "#Field-numberInput",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486568415,
+      "selector": "#Field-numberInput",
+      "value": "5"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486568628,
+      "selector": "#Field-numberInput",
+      "value": "55"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486568861,
+      "selector": "#Field-numberInput",
+      "value": "555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486569322,
+      "selector": "#Field-numberInput",
+      "value": "5555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486569557,
+      "selector": "#Field-numberInput",
+      "value": "5555 5"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486569799,
+      "selector": "#Field-numberInput",
+      "value": "5555 55"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486570022,
+      "selector": "#Field-numberInput",
+      "value": "5555 555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486570253,
+      "selector": "#Field-numberInput",
+      "value": "5555 5555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486570500,
+      "selector": "#Field-numberInput",
+      "value": "5555 5555 5"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486570733,
+      "selector": "#Field-numberInput",
+      "value": "5555 5555 55"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486570949,
+      "selector": "#Field-numberInput",
+      "value": "5555 5555 555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486571180,
+      "selector": "#Field-numberInput",
+      "value": "5555 5555 5555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486571429,
+      "selector": "#Field-numberInput",
+      "value": "5555 5555 5555 5"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486571930,
+      "selector": "#Field-numberInput",
+      "value": "5555 5555 5555 55"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486572385,
+      "selector": "#Field-numberInput",
+      "value": "5555 5555 5555 555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486572842,
+      "selector": "#Field-numberInput",
+      "value": "5555 5555 5555 5555"
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486572924,
+      "width": 508,
+      "height": 144
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486572957,
+      "width": 508,
+      "height": 147
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486572974,
+      "width": 508,
+      "height": 149
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486572990,
+      "width": 508,
+      "height": 151
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486573007,
+      "width": 508,
+      "height": 153
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486573024,
+      "width": 508,
+      "height": 155
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486573040,
+      "width": 508,
+      "height": 157
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486573057,
+      "width": 508,
+      "height": 158
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486573074,
+      "width": 508,
+      "height": 160
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486573090,
+      "width": 508,
+      "height": 161
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486573124,
+      "width": 508,
+      "height": 162
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486573140,
+      "width": 508,
+      "height": 163
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486573174,
+      "width": 508,
+      "height": 164
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486574524,
+      "key": "Tab"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486575844,
+      "selector": "#Field-expiryInput",
+      "value": "1"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486576441,
+      "selector": "#Field-expiryInput",
+      "value": "12"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749486576697,
+      "key": "Tab"
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486576774,
+      "width": 508,
+      "height": 166
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486576807,
+      "width": 508,
+      "height": 171
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486576824,
+      "width": 508,
+      "height": 175
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486576840,
+      "width": 508,
+      "height": 179
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486576856,
+      "width": 508,
+      "height": 183
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486576874,
+      "width": 508,
+      "height": 186
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486576890,
+      "width": 508,
+      "height": 189
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486576907,
+      "width": 508,
+      "height": 192
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486576924,
+      "width": 508,
+      "height": 194
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486576940,
+      "width": 508,
+      "height": 196
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486576957,
+      "width": 508,
+      "height": 197
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486576974,
+      "width": 508,
+      "height": 199
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486576990,
+      "width": 508,
+      "height": 200
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486577007,
+      "width": 508,
+      "height": 201
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486577040,
+      "width": 508,
+      "height": 202
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749486577090,
+      "width": 508,
+      "height": 203
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486578440,
+      "selector": "#Field-cvcInput",
+      "value": "1"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486578675,
+      "selector": "#Field-cvcInput",
+      "value": "12"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486578835,
+      "selector": "#Field-cvcInput",
+      "value": "122"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486578855,
+      "selector": "#Field-cvcInput",
+      "value": "1223"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486580719,
+      "selector": "#Field-cvcInput",
+      "value": "12"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749486580825,
+      "selector": "#Field-cvcInput",
+      "value": "123"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486582809,
+      "x": 0,
+      "y": 750
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486582824,
+      "x": 0,
+      "y": 760
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486582840,
+      "x": 0,
+      "y": 778
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486582857,
+      "x": 0,
+      "y": 804
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486582874,
+      "x": 0,
+      "y": 830
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486582890,
+      "x": 0,
+      "y": 858
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486582907,
+      "x": 0,
+      "y": 890
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486582924,
+      "x": 0,
+      "y": 918
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486582940,
+      "x": 0,
+      "y": 943
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749486582957,
+      "x": 0,
+      "y": 962.5
+    },
+    {
+      "type": "click",
+      "timestamp": 1749486583870,
+      "x": 186,
+      "y": 531,
+      "selector": ".btn.btn-primary.submit_silentOrderPostForm.checkout-next.js-restricted-country-submit.js-flex-microform",
+      "textContent": "Use this payment method"
+    }
+  ]
+}

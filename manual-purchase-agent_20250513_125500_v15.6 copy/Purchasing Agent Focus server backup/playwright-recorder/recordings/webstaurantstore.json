@@ -1,0 +1,252 @@
+{
+  "version": "1.0",
+  "timestamp": 1747944849591,
+  "startUrl": "https://www.webstaurantstore.com/avantco-17815678-reversible-door/17815678.html",
+  "actions": [
+    {
+      "type": "navigation",
+      "timestamp": 1747944828183,
+      "url": "https://www.webstaurantstore.com/avantco-17815678-reversible-door/17815678.html"
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1747944829213,
+      "width": 256,
+      "height": 60
+    },
+    {
+      "type": "window_size",
+      "timestamp": 1747944829740,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "type": "click",
+      "timestamp": 1747944831373,
+      "x": 991,
+      "y": 407,
+      "selector": "#buyButton",
+      "textContent": ""
+    },
+    {
+      "type": "click",
+      "timestamp": 1747944836306,
+      "x": 1200,
+      "y": 77,
+      "selector": "div.flex.items-center.justify-end.xl:min-w-[360px]:nth-child(4) > a.group.flex.flex-nowrap.rounded-tl.rounded-bl.overflow-hidden > span.flex.items-center.px-2.transition.ease-in-out.duration-300.h-[30px].md:h-[34px].lt:h-10.bg-green-700.hover:bg-green-800.lt:bg-green-500.lt:hover:bg-green-800:nth-child(1) > svg",
+      "textContent": ""
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1747944836727,
+      "url": "https://www.webstaurantstore.com/cart/"
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1747944837796,
+      "width": 256,
+      "height": 60
+    },
+    {
+      "type": "click",
+      "timestamp": 1747944839223,
+      "x": 1089,
+      "y": 346,
+      "selector": ".pl-1",
+      "textContent": "Continue to Checkout"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1747944839556,
+      "url": "https://www.webstaurantstore.com/shipping-billinginfo.cfm"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747944841562,
+      "x": 0,
+      "y": 6
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747944841578,
+      "x": 0,
+      "y": 17
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747944841594,
+      "x": 0,
+      "y": 31
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747944841610,
+      "x": 0,
+      "y": 43
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747944841627,
+      "x": 0,
+      "y": 53
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747944841644,
+      "x": 0,
+      "y": 60
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747944841660,
+      "x": 0,
+      "y": 65
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747944841677,
+      "x": 0,
+      "y": 68
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747944841694,
+      "x": 0,
+      "y": 69
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747944841710,
+      "x": 0,
+      "y": 70
+    },
+    {
+      "type": "click",
+      "timestamp": 1747944842206,
+      "x": 347,
+      "y": 565,
+      "selector": "#email",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944842414,
+      "selector": "#email",
+      "value": "t"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944842510,
+      "selector": "#email",
+      "value": "te"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944842621,
+      "selector": "#email",
+      "value": "tes"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944842752,
+      "selector": "#email",
+      "value": "test"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944843294,
+      "selector": "#email",
+      "value": "test@"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944843566,
+      "selector": "#email",
+      "value": "test@e"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944843795,
+      "selector": "#email",
+      "value": "test@ex"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944844076,
+      "selector": "#email",
+      "value": "test@exa"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944844178,
+      "selector": "#email",
+      "value": "test@exam"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944844242,
+      "selector": "#email",
+      "value": "test@examp"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944844426,
+      "selector": "#email",
+      "value": "test@exampl"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944844556,
+      "selector": "#email",
+      "value": "test@example"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944844798,
+      "selector": "#email",
+      "value": "test@example,"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944844829,
+      "selector": "#email",
+      "value": "test@example,."
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944845384,
+      "selector": "#email",
+      "value": "test@example,"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944845511,
+      "selector": "#email",
+      "value": "test@example"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944845686,
+      "selector": "#email",
+      "value": "test@example."
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944845855,
+      "selector": "#email",
+      "value": "test@example.c"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944845971,
+      "selector": "#email",
+      "value": "test@example.co"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747944846072,
+      "selector": "#email",
+      "value": "test@example.com"
+    }
+  ]
+}

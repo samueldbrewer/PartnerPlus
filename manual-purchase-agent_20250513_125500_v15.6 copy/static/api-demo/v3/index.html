@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PartPro v15.5 - Professional Parts Management with GPT-4.1-Nano</title>
+    <!-- Prevent Caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css?v=" id="styles-link">
+    <script>
+        // Dynamic cache busting
+        const timestamp = new Date().getTime();
+        document.getElementById('styles-link').href = 'styles.css?v=' + timestamp;
+    </script>
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-background"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <i class="fas fa-cogs"></i>
+                <span class="gradient-text">PartPro</span>
+            </h1>
+        </div>
+        <!-- Settings Control -->
+        <button class="settings-btn" onclick="app.showSettings()" title="Settings">
+            <i class="fas fa-cog"></i>
+        </button>
+    </div>
+
+    <!-- Main App Container -->
+    <div class="app-container">
+        <!-- Input Section -->
+        <div class="input-section card glass">
+            <h2 class="section-title">What part do you need?</h2>
+            <form id="searchForm" class="search-form">
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <input type="text" 
+                               id="make" 
+                               placeholder="" 
+                               required
+                               autocomplete="off">
+                        <label for="make">Make</label>
+                        <span class="input-hint">e.g., Carrier, American Standard</span>
+                    </div>
+                    <div class="input-wrapper">
+                        <input type="text" 
+                               id="model" 
+                               placeholder="" 
+                               required
+                               autocomplete="off">
+                        <label for="model">Model</label>
+                        <span class="input-hint">e.g., 58STA, XR15</span>
+                    </div>
+                    <div class="input-wrapper">
+                        <input type="text" 
+                               id="partName" 
+                               placeholder="" 
+                               required
+                               autocomplete="off">
+                        <label for="partName">Part Description</label>
+                        <span class="input-hint">e.g., hi limit switch</span>
+                    </div>
+                </div>
+                <button type="submit" class="search-button">
+                    <span class="button-text">Find Part</span>
+                    <span class="button-icon"><i class="fas fa-search"></i></span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="progress-section" id="progressSection">
+            <div class="progress-steps">
+                <div class="progress-step" data-step="model">
+                    <div class="step-icon"><i class="fas fa-cube"></i></div>
+                    <div class="step-label">Model Info</div>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="manuals">
+                    <div class="step-icon"><i class="fas fa-book"></i></div>
+                    <div class="step-label">Manuals</div>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="part">
+                    <div class="step-icon"><i class="fas fa-cog"></i></div>
+                    <div class="step-label">OEM Part</div>
+                </div>
+                <div class="progress-line"></div>
+                <div class="progress-step" data-step="suppliers">
+                    <div class="step-icon"><i class="fas fa-store"></i></div>
+                    <div class="step-label">Suppliers</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Info Section -->
+        <div class="model-section hidden" id="modelSection">
+            <div class="card glass fade-in">
+                <h3 class="card-title">Equipment</h3>
+                <div class="model-content">
+                    <div class="model-image-container">
+                        <img id="modelImage" src="" alt="Model Image" class="model-image">
+                        <div class="model-image-loading">
+                            <div class="skeleton-loader"></div>
+                        </div>
+                    </div>
+                    <div class="model-info">
+                        <h4 id="modelName" class="model-name"></h4>
+                        <p id="modelDescription" class="model-description"></p>
+                        <div class="model-specs" id="modelSpecs"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manuals Section -->
+        <div class="manuals-section hidden" id="manualsSection">
+            <div class="card glass fade-in">
+                <h3 class="card-title">Technical Manuals Found</h3>
+                <div class="manuals-grid" id="manualsGrid">
+                    <!-- Manual cards will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Part Resolution Section -->
+        <div class="part-section hidden" id="partSection">
+            <div class="card glass fade-in">
+                <h3 class="card-title">OEM Part</h3>
+                <div class="part-content">
+                    <div class="part-image-container">
+                        <img id="partImage" src="" alt="Part Image" class="part-image">
+                        <div class="part-image-loading">
+                            <div class="skeleton-loader"></div>
+                        </div>
+                    </div>
+                    <div class="part-info">
+                        <div class="part-number" id="partNumber"></div>
+                        <div class="part-description" id="partDescription"></div>
+                        
+                        <!-- Verification Status -->
+                        <div class="part-verification" id="partVerification" style="margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 600;">
+                            <!-- Verification status will be inserted here -->
+                        </div>
+                        
+                        <!-- Verified Parts Actions -->
+                        <div id="verifiedPartsActions" style="display: none; margin-top: 1rem;">
+                            <!-- Alternate Parts Button -->
+                            <div id="alternatePartsSection" style="display: none; margin-bottom: 0.5rem;">
+                                <button onclick="app.showAlternatePartsModal()" 
+                                        onmouseover="this.style.background='#4a5568'" 
+                                        onmouseout="this.style.background='#718096'"
+                                        style="width: 100%; padding: 12px; background: #718096; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s;">
+                                    View Alternate Parts (<span id="alternatePartsCount">0</span>)
+                                </button>
+                            </div>
+                            
+                            <!-- Generic Parts Button -->
+                            <div id="genericPartsSection" style="display: none;">
+                                <button onclick="app.findGenericAlternatives()" 
+                                        onmouseover="this.style.background='#2563eb'" 
+                                        onmouseout="this.style.background='#3b82f6'"
+                                        style="width: 100%; padding: 12px; background: #3b82f6; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s;">
+                                    Find Generic Match
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Similar Parts Section (for unverified parts) -->
+                        <div id="similarPartsSection" style="display: none; margin-top: 1rem;">
+                            <h4 style="margin-bottom: 0.5rem; color: #4a5568;">Similar Parts</h4>
+                            <div id="similarPartsList" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                <!-- Similar parts will be inserted here -->
+                            </div>
+                        </div>
+                        
+                        <div class="part-details" id="partDetails"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suppliers Section -->
+        <div class="suppliers-section hidden" id="suppliersSection">
+            <div class="card glass fade-in">
+                <h3 class="card-title">Available Suppliers</h3>
+                <div class="suppliers-list" id="suppliersList">
+                    <!-- Supplier cards will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Purchase Modal -->
+        <div class="purchase-modal hidden" id="purchaseModal">
+            <div class="modal-backdrop" onclick="closePurchaseModal()"></div>
+            <div class="modal-content">
+                <button class="modal-close" onclick="closePurchaseModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h3 class="modal-title">Automated Purchase</h3>
+                <div class="purchase-flow">
+                    <div class="purchase-status" id="purchaseStatus">
+                        <div class="status-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="status-message">Initializing purchase agent...</div>
+                    </div>
+                    <div class="purchase-details" id="purchaseDetails"></div>
+                    <div class="purchase-actions hidden" id="purchaseActions">
+                        <button class="button button-primary" onclick="viewOrder()">View Order</button>
+                        <button class="button button-secondary" onclick="closePurchaseModal()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PDF Viewer Modal -->
+        <div class="pdf-modal hidden" id="pdfModal">
+            <div class="modal-backdrop" onclick="closePdfModal()"></div>
+            <div class="modal-content pdf-viewer">
+                <div class="pdf-header">
+                    <h3 class="pdf-title" id="pdfTitle">Manual Viewer</h3>
+                    <button class="modal-close" onclick="closePdfModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <iframe id="pdfFrame" src="" class="pdf-frame"></iframe>
+            </div>
+        </div>
+        
+        <!-- Alternate Parts Modal -->
+        <div class="alternate-parts-modal hidden" id="alternatePartsModal">
+            <div class="modal-backdrop" onclick="app.closeAlternatePartsModal()"></div>
+            <div class="modal-content alternate-parts-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <i class="fas fa-exchange-alt"></i>
+                        Alternative Parts
+                    </h3>
+                    <button class="modal-close" onclick="app.closeAlternatePartsModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="current-part-section">
+                        <h4>Currently Selected</h4>
+                        <div class="current-part-display" id="currentPartDisplay">
+                            <!-- Current part will be shown here -->
+                        </div>
+                    </div>
+                    <div class="alternate-parts-grid" id="alternatePartsGrid">
+                        <!-- Alternate parts will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Generic Parts Modal -->
+        <div class="generic-parts-modal hidden" id="genericPartsModal">
+            <div class="modal-backdrop" onclick="app.closeGenericPartsModal()"></div>
+            <div class="modal-content generic-parts-content" style="max-width: 95vw; max-height: 95vh; overflow-y: auto;">
+                <div class="modal-header">
+                    <h3 class="modal-title">
+                        <i class="fas fa-dollar-sign"></i>
+                        Generic Match
+                    </h3>
+                    <button class="modal-close" onclick="app.closeGenericPartsModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="modal-body">
+                    <!-- Status Section -->
+                    <div class="generic-status" id="genericStatus">
+                        <div class="status-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="status-message">Initializing search...</div>
+                    </div>
+                    
+                    <!-- OEM Reference Section -->
+                    <div class="oem-reference-section" id="oemReferenceSection" style="display: none; margin-bottom: 1.5rem;">
+                        <div class="section-card">
+                            <h4 class="section-title">
+                                <i class="fas fa-star text-primary"></i> 
+                                Original OEM Part
+                            </h4>
+                            <div class="oem-part-display" id="oemPartReference">
+                                <!-- OEM part details -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Generic Parts Results -->
+                    <div class="generic-parts-results" id="genericPartsResults">
+                        <!-- Generic parts results will be displayed here -->
+                    </div>
+                </div>
+                
+                <div class="modal-actions" id="genericModalActions" style="display: none;">
+                    <button class="btn-secondary" onclick="app.closeGenericPartsModal()">
+                        Close
+                    </button>
+                    <button class="btn-primary" onclick="app.exportGenericParts()">
+                        <i class="fas fa-download"></i>
+                        Export Results
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Padding for Navigation Buttons -->
+        <div class="bottom-padding"></div>
+    </div>
+
+    <!-- Logs Screen -->
+    <div class="screen logs-screen hidden" id="logsScreen">
+        <div class="screen-header">
+            <button class="back-button" onclick="app.showMainScreen()">
+                <i class="fas fa-arrow-left"></i>
+                Back
+            </button>
+            <h2>System Logs</h2>
+        </div>
+        <div class="logs-container">
+            <div class="logs-header">
+                <button class="clear-logs-button" onclick="app.clearLogs()">
+                    <i class="fas fa-trash"></i>
+                    Clear
+                </button>
+            </div>
+            <div class="logs-content" id="logsContent">
+                <div class="log-entry info">[08:46:21] INFO:System:PartPro initialized successfully</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Documentation Screen -->
+    <div class="screen api-docs-screen hidden" id="apiDocsScreen">
+        <div class="screen-header">
+            <button class="back-button" onclick="app.showMainScreen()">
+                <i class="fas fa-arrow-left"></i>
+                Back
+            </button>
+            <h2>API Documentation</h2>
+        </div>
+        <div class="api-docs-container">
+            <div class="api-endpoints" id="apiEndpoints">
+                <!-- API documentation will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal settings-modal hidden" id="settingsModal">
+        <div class="modal-backdrop" onclick="app.closeSettings()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <button class="modal-close" onclick="app.closeSettings()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="settings-tabs">
+                <button class="tab-button active" onclick="app.switchSettingsTab('billing')" id="billingTab">
+                    <i class="fas fa-credit-card"></i>
+                    Billing Profile
+                </button>
+                <button class="tab-button" onclick="app.switchSettingsTab('purchase')" id="purchaseTab">
+                    <i class="fas fa-robot"></i>
+                    Purchase Agent
+                </button>
+            </div>
+            
+            <!-- Tab Content -->
+            <div class="settings-content">
+                <!-- Billing Profile Tab -->
+                <div class="tab-content active" id="billingTabContent">
+                    <form class="billing-profile-form" id="profileEditForm" onsubmit="app.saveBillingProfile(event)">
+                <div class="form-grid">
+                    <!-- Personal Information -->
+                    <div class="form-section-title">Personal Information</div>
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" id="billingFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="billingLastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="billingEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="billingPhone" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Company</label>
+                        <input type="text" id="billingCompany">
+                    </div>
+                    
+                    <!-- Address Information -->
+                    <div class="form-section-title">Address Information</div>
+                    <div class="form-group full-width">
+                        <label>Street Address</label>
+                        <input type="text" id="billingAddress" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Address Line 2</label>
+                        <input type="text" id="billingAddress2">
+                    </div>
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" id="billingCity" required>
+                    </div>
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text" id="billingState" required>
+                    </div>
+                    <div class="form-group">
+                        <label>State Abbreviation</label>
+                        <input type="text" id="billingStateAbr" placeholder="e.g., IL" maxlength="2" required style="text-transform: uppercase;">
+                    </div>
+                    <div class="form-group">
+                        <label>ZIP Code</label>
+                        <input type="text" id="billingZip" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Country</label>
+                        <input type="text" id="billingCountry" value="United States" required>
+                    </div>
+                    
+                    <!-- Billing Address (Optional) -->
+                    <div class="form-section-title">Billing Address (if different)</div>
+                    <div class="form-group">
+                        <label>Billing First Name</label>
+                        <input type="text" id="billingBillFirstName">
+                    </div>
+                    <div class="form-group">
+                        <label>Billing Last Name</label>
+                        <input type="text" id="billingBillLastName">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Billing Address</label>
+                        <input type="text" id="billingBillAddress">
+                    </div>
+                    <div class="form-group">
+                        <label>Billing City</label>
+                        <input type="text" id="billingBillCity">
+                    </div>
+                    <div class="form-group">
+                        <label>Billing State</label>
+                        <input type="text" id="billingBillState">
+                    </div>
+                    <div class="form-group">
+                        <label>Billing State Abbreviation</label>
+                        <input type="text" id="billingBillStateAbr" placeholder="e.g., IL" maxlength="2" style="text-transform: uppercase;">
+                    </div>
+                    <div class="form-group">
+                        <label>Billing ZIP</label>
+                        <input type="text" id="billingBillZip">
+                    </div>
+                    
+                    <!-- Credit Card Information -->
+                    <div class="form-section-title">Credit Card Information</div>
+                    <div class="form-group full-width">
+                        <label>Card Number</label>
+                        <input type="text" id="billingCardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Expiry Month</label>
+                        <input type="text" id="billingCardExpMonth" placeholder="12" maxlength="2" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Expiry Year</label>
+                        <input type="text" id="billingCardExpYear" placeholder="2030" maxlength="4" required>
+                    </div>
+                    <div class="form-group">
+                        <label>CVV</label>
+                        <input type="text" id="billingCardCvv" placeholder="123" maxlength="4" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Name on Card</label>
+                        <input type="text" id="billingCardName" required>
+                    </div>
+                </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn-secondary" onclick="app.closeSettings()">Cancel</button>
+                            <button type="submit" class="btn-primary">Save Profile</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Purchase Agent Tab -->
+                <div class="tab-content" id="purchaseTabContent">
+                    <div class="purchase-agent-settings">
+                        <!-- Agent Status -->
+                        <div class="agent-status-section">
+                            <h4 style="margin-bottom: 1rem; color: var(--text-primary);">
+                                <i class="fas fa-robot"></i> Purchase Agent Status
+                            </h4>
+                            <div class="status-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                                <div class="status-card" style="padding: 1rem; background: var(--glass-bg); border-radius: 8px; border: 1px solid var(--glass-border);">
+                                    <div style="font-size: 0.875rem; color: var(--text-muted);">Available Sites</div>
+                                    <div style="font-size: 1.5rem; font-weight: 600; color: var(--primary-color);" id="availableSitesCount">0</div>
+                                </div>
+                                <div class="status-card" style="padding: 1rem; background: var(--glass-bg); border-radius: 8px; border: 1px solid var(--glass-border);">
+                                    <div style="font-size: 0.875rem; color: var(--text-muted);">Agent Status</div>
+                                    <div style="font-size: 1rem; font-weight: 600; color: #4caf50;" id="agentStatus">
+                                        <i class="fas fa-check-circle"></i> Ready
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Purchase Settings -->
+                        <div class="settings-section">
+                            <h4 style="margin-bottom: 1rem; color: var(--text-primary);">
+                                <i class="fas fa-cog"></i> Purchase Settings
+                            </h4>
+                            <form id="purchaseSettingsForm" onsubmit="app.savePurchaseSettings(event)">
+                                <div class="form-grid">
+                                    <div class="form-group full-width">
+                                        <label>
+                                            <input type="checkbox" id="enableRealPurchases" onchange="app.toggleRealPurchases(this)">
+                                            Enable Real Purchases (Use with caution!)
+                                        </label>
+                                        <div style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                            When enabled, the agent will make actual purchases using your billing profile
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>Purchase Speed (ms)</label>
+                                        <input type="number" id="purchaseSpeed" value="5000" min="500" max="20000" step="500">
+                                        <div style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                            Delay between actions in milliseconds (500-20000ms)
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label>Max Purchase Attempts</label>
+                                        <input type="number" id="maxPurchaseAttempts" value="3" min="1" max="5">
+                                    </div>
+                                    
+                                    <div class="form-group full-width">
+                                        <label>
+                                            <input type="checkbox" id="captureScreenshots" checked>
+                                            Capture Screenshots During Purchase
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-group full-width">
+                                        <label>
+                                            <input type="checkbox" id="headlessMode">
+                                            Run in Headless Mode (No Browser Window)
+                                        </label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Available Sites -->
+                        <div class="sites-section" style="margin-top: 2rem;">
+                            <h4 style="margin-bottom: 1rem; color: var(--text-primary);">
+                                <i class="fas fa-store"></i> Supported E-commerce Sites
+                            </h4>
+                            <div id="availableSitesList" style="display: grid; gap: 0.5rem;">
+                                <!-- Sites will be populated here -->
+                            </div>
+                        </div>
+
+
+                        <div class="modal-actions" style="margin-top: 2rem;">
+                            <button type="button" class="btn-secondary" onclick="app.closeSettings()">Close</button>
+                            <button type="submit" form="purchaseSettingsForm" class="btn-primary">Save Settings</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons (only on main screen) -->
+    <div class="nav-buttons" id="navButtons">
+        <button class="nav-button left" onclick="app.showLogsScreen()" title="System Logs">
+            <i class="fas fa-code"></i>
+        </button>
+        <button class="nav-button right" onclick="app.showApiDocsScreen()" title="API Documentation">
+            <i class="fas fa-list-ul"></i>
+        </button>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="app.js?v=15.6"></script>
+</body>
+</html>

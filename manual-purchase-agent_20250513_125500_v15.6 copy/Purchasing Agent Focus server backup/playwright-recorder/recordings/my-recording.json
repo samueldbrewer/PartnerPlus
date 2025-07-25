@@ -1,0 +1,271 @@
+{
+  "version": "1.0",
+  "timestamp": 1747856067932,
+  "startUrl": "https://www.etundra.com/restaurant-parts/beverage-equipment-parts/drink-dispenser/faucets/mavrik-26010-sweet-unsweet-iced-tea-faucet/",
+  "actions": [
+    {
+      "type": "navigation",
+      "timestamp": 1747856019259,
+      "url": "https://www.etundra.com/restaurant-parts/beverage-equipment-parts/drink-dispenser/faucets/mavrik-26010-sweet-unsweet-iced-tea-faucet/"
+    },
+    {
+      "type": "click",
+      "timestamp": 1747856023780,
+      "x": 599,
+      "y": 394,
+      "selector": ".btn.btn-primary.addtocart",
+      "textContent": "ADD TO CART"
+    },
+    {
+      "type": "click",
+      "timestamp": 1747856026787,
+      "x": 1169,
+      "y": 16,
+      "selector": ".menu-indicator",
+      "textContent": "1\n\t\t\t\t\n\t\t\t\tCART"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1747856027505,
+      "url": "https://www.etundra.com/cart/"
+    },
+    {
+      "type": "click",
+      "timestamp": 1747856028968,
+      "x": 1024,
+      "y": 310,
+      "selector": "#ZipCode",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856030251,
+      "selector": "#ZipCode",
+      "value": "4"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856030382,
+      "selector": "#ZipCode",
+      "value": "40"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856030534,
+      "selector": "#ZipCode",
+      "value": "400"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856031308,
+      "selector": "#ZipCode",
+      "value": "4001"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856031551,
+      "selector": "#ZipCode",
+      "value": "40014"
+    },
+    {
+      "type": "click",
+      "timestamp": 1747856032780,
+      "x": 1027,
+      "y": 363,
+      "selector": ".big.btn.btn-primary.col-xs-12",
+      "textContent": "Calculate Shipping"
+    },
+    {
+      "type": "click",
+      "timestamp": 1747856037614,
+      "x": 1040,
+      "y": 249,
+      "selector": ".big.btn.btn-primary.btn-checkout.col-xs-12.checkout-button",
+      "textContent": "Proceed to Checkout"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1747856047660,
+      "url": "https://www.etundra.com/account/signinbeforecheckout/"
+    },
+    {
+      "type": "click",
+      "timestamp": 1747856050155,
+      "x": 740,
+      "y": 439,
+      "selector": ".no-thanks.btn.btn-primary",
+      "textContent": "Checkout as Guest"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1747856051733,
+      "url": "https://www.etundra.com/checkout/"
+    },
+    {
+      "type": "click",
+      "timestamp": 1747856053896,
+      "x": 227,
+      "y": 163,
+      "selector": "#FirstName",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856054713,
+      "selector": "#FirstName",
+      "value": "["
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856055542,
+      "selector": "#FirstName",
+      "value": "[z"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856055609,
+      "selector": "#FirstName",
+      "value": "[zi"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856055875,
+      "selector": "#FirstName",
+      "value": "[zip"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856057084,
+      "selector": "#FirstName",
+      "value": "[zip_"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856057277,
+      "selector": "#FirstName",
+      "value": "[zip_c"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856057407,
+      "selector": "#FirstName",
+      "value": "[zip_co"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856057508,
+      "selector": "#FirstName",
+      "value": "[zip_cod"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856057641,
+      "selector": "#FirstName",
+      "value": "[zip_code"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856058437,
+      "selector": "#FirstName",
+      "value": "[zip_code]"
+    },
+    {
+      "type": "click",
+      "timestamp": 1747856061480,
+      "x": 487,
+      "y": 155,
+      "selector": "#LastName",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856061718,
+      "selector": "#LastName",
+      "value": "f"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856061731,
+      "selector": "#LastName",
+      "value": "fa"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856062350,
+      "selector": "#LastName",
+      "value": "fas"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856062375,
+      "selector": "#LastName",
+      "value": "fasa"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856062560,
+      "selector": "#LastName",
+      "value": "fasad"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856062571,
+      "selector": "#LastName",
+      "value": "fasadf"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856062617,
+      "selector": "#LastName",
+      "value": "fasadfa"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856062860,
+      "selector": "#LastName",
+      "value": "fasadfat"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856062944,
+      "selector": "#LastName",
+      "value": "fasadfate"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856063244,
+      "selector": "#LastName",
+      "value": "fasadfat"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856063393,
+      "selector": "#LastName",
+      "value": "fasadfa"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856063494,
+      "selector": "#LastName",
+      "value": "fasadfaT"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856063615,
+      "selector": "#LastName",
+      "value": "fasadfaTE"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856063867,
+      "selector": "#LastName",
+      "value": "fasadfaTES"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747856063998,
+      "selector": "#LastName",
+      "value": "fasadfaTEST"
+    }
+  ]
+}

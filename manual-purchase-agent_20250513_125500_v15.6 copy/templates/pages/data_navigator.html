@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipment Data Navigator - Manual Purchase Agent</title>
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body style="background: #f8f9fa;">
+    <!-- Main Content -->
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="h2 fw-bold text-primary">
+                <i class="fas fa-database me-2"></i>Equipment Data Navigator
+            </h1>
+            <p class="text-muted">Browse and explore processed equipment records with parts, manuals, and suppliers</p>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search...">
+                        <label for="searchInput"><i class="fas fa-search me-1"></i>Search equipment, parts, or models</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <select class="form-select" id="makeFilter">
+                            <option value="">All Makes</option>
+                        </select>
+                        <label for="makeFilter">Filter by Make</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <select class="form-select" id="verificationFilter">
+                            <option value="">All Parts</option>
+                            <option value="verified">Verified Parts Only</option>
+                            <option value="unverified">Unverified Parts Only</option>
+                        </select>
+                        <label for="verificationFilter">Verification Status</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100 h-100" onclick="resetFilters()">
+                        <i class="fas fa-redo me-1"></i>Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4" id="statsCards">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Records</h5>
+                    <h2 class="mb-0" id="totalRecords">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Verified Parts</h5>
+                    <h2 class="mb-0" id="verifiedParts">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Manuals</h5>
+                    <h2 class="mb-0" id="totalManuals">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">Unique Makes</h5>
+                    <h2 class="mb-0" id="uniqueMakes">0</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Data Table -->
+    <div class="card shadow">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Equipment Records</h5>
+                <button class="btn btn-sm btn-success" onclick="exportToCSV()">
+                    <i class="fas fa-download me-1"></i>Export Filtered Data
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="dataTable">
+                    <thead class="table-light sticky-top">
+                        <tr>
+                            <th width="50">#</th>
+                            <th>Equipment</th>
+                            <th>Part Name</th>
+                            <th>OEM Part #</th>
+                            <th>Status</th>
+                            <th>Manuals</th>
+                            <th>Suppliers</th>
+                            <th width="100">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <nav>
+                <ul class="pagination mb-0" id="pagination">
+                    <!-- Pagination will be generated here -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Equipment Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div id="loadingSpinner" class="position-fixed top-50 start-50 translate-middle" style="display: none; z-index: 9999;">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<style>
+    /* Hide any navigation elements */
+    .navbar, nav, .navigation {
+        display: none !important;
+    }
+    
+    .table th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .badge {
+        font-weight: 500;
+    }
+    
+    .img-thumbnail {
+        max-height: 60px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    
+    .img-thumbnail:hover {
+        transform: scale(1.1);
+    }
+    
+    .manual-link {
+        display: inline-block;
+        margin: 2px;
+        padding: 2px 8px;
+        background: #e9ecef;
+        border-radius: 3px;
+        font-size: 0.85rem;
+        text-decoration: none;
+        color: #495057;
+        transition: background 0.2s;
+    }
+    
+    .manual-link:hover {
+        background: #dee2e6;
+        color: #212529;
+    }
+    
+    .supplier-link {
+        display: inline-block;
+        margin: 2px;
+        padding: 2px 8px;
+        background: #d1ecf1;
+        border-radius: 3px;
+        font-size: 0.85rem;
+        text-decoration: none;
+        color: #0c5460;
+        transition: background 0.2s;
+    }
+    
+    .supplier-link:hover {
+        background: #bee5eb;
+        color: #062c33;
+    }
+    
+    .modal-body img {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    .equipment-image, .part-image {
+        max-width: 300px;
+        margin: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .alternate-parts {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .table {
+            font-size: 0.85rem;
+        }
+        
+        .modal-dialog {
+            margin: 0.5rem;
+        }
+    }
+</style>
+
+<script src="{{ url_for('static', filename='js/data-navigator.js') }}?v={{ range(1, 9999) | random }}"></script>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

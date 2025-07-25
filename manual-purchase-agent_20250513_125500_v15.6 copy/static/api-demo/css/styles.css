@@ -1,0 +1,188 @@
+/* 
+ * Manual Purchase Agent - API Demo Styles
+ * Version 7.0.0
+ */
+
+/* Body & Typography */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-bottom: 70px;
+}
+
+/* Sticky Nav */
+.sticky-top {
+    top: 20px;
+}
+
+/* Nav Active Link */
+.list-group-item.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* API Section Styles */
+.api-section {
+    padding-top: 20px;
+    scroll-margin-top: 20px;
+}
+
+/* Response Container */
+.response-container {
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+    min-height: 150px;
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.response-container pre {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.response-container.success {
+    background-color: rgba(25, 135, 84, 0.05);
+    border-left: 4px solid #198754;
+}
+
+.response-container.error {
+    background-color: rgba(220, 53, 69, 0.05);
+    border-left: 4px solid #dc3545;
+}
+
+/* Code Examples */
+.example-code {
+    margin-top: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+}
+
+.example-code pre {
+    margin-bottom: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Badge Styles */
+.badge.bg-primary {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.35em 0.65em;
+}
+
+.badge.bg-success {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.35em 0.65em;
+}
+
+/* Copy Button Animation */
+.copy-endpoint.copied {
+    background-color: #198754;
+    color: #fff;
+    border-color: #198754;
+    transition: all 0.3s ease;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 0.25rem solid rgba(0, 0, 0, 0.1);
+    border-top-color: #0d6efd;
+    border-radius: 50%;
+    animation: spinner 1s linear infinite;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Form Controls */
+.form-label {
+    font-weight: 500;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* JSON Formatting */
+.json-key {
+    color: #dc3545;
+}
+
+.json-string {
+    color: #198754;
+}
+
+.json-number {
+    color: #0d6efd;
+}
+
+.json-boolean {
+    color: #fd7e14;
+}
+
+.json-null {
+    color: #6c757d;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+/* Form Switches */
+.form-check-input[type="checkbox"] {
+    width: 2.5em;
+    height: 1.25em;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.form-switch .form-check-input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Mobile Responsiveness Tweaks */
+@media (max-width: 767.98px) {
+    .sticky-top {
+        position: relative;
+        top: 0;
+        margin-bottom: 2rem;
+    }
+    
+    /* Make switches full width on mobile */
+    .form-check.form-switch {
+        margin-bottom: 10px;
+    }
+}

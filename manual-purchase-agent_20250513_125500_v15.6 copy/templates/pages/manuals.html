@@ -1,0 +1,810 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Manuals - Manual Purchase Agent{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2"><i class="fas fa-book me-2"></i>Technical Manuals</h1>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchManualModal">
+            <i class="fas fa-search me-1"></i> Find New Manual
+        </button>
+    </div>
+
+    <!-- Manual Search Filters -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Make</label>
+                    <select class="form-select" id="make-filter">
+                        <option value="">All Makes</option>
+                        <option value="Toyota">Toyota</option>
+                        <option value="Honda">Honda</option>
+                        <option value="Ford">Ford</option>
+                        <option value="Chevrolet">Chevrolet</option>
+                        <option value="BMW">BMW</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Model</label>
+                    <select class="form-select" id="model-filter">
+                        <option value="">All Models</option>
+                        <option value="Camry">Camry</option>
+                        <option value="Accord">Accord</option>
+                        <option value="F-150">F-150</option>
+                        <option value="Silverado">Silverado</option>
+                        <option value="X5">X5</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Year</label>
+                    <select class="form-select" id="year-filter">
+                        <option value="">All Years</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                        <option value="2019">2019</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Manual Type</label>
+                    <select class="form-select" id="type-filter">
+                        <option value="">All Types</option>
+                        <option value="technical">Technical</option>
+                        <option value="parts">Parts</option>
+                        <option value="repair">Repair</option>
+                        <option value="owner">Owner's</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" id="status-filter">
+                        <option value="">All Status</option>
+                        <option value="processed">Processed</option>
+                        <option value="unprocessed">Unprocessed</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual Gallery -->
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4" id="manuals-gallery">
+        <!-- No manual cards by default - will be populated dynamically -->
+        <div class="col-12 text-center py-5" id="no-manuals-message">
+            <div class="py-5">
+                <i class="fas fa-book fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No manuals found</h4>
+                <p class="text-muted">Search for a manual to get started</p>
+                <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#searchManualModal">
+                    <i class="fas fa-search me-1"></i> Find A Manual
+                </button>
+            </div>
+        </div>
+
+        <!-- Manual cards template - will be populated by JavaScript -->
+        <template id="manual-card-template">
+            <div class="col manual-card">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title"><i class="fas fa-file-pdf text-danger me-2"></i><span class="manual-title"></span></h5>
+                            <span class="manual-status badge"></span>
+                        </div>
+                        <div class="mb-3">
+                            <p class="card-text text-muted small">Make: <span class="manual-make"></span></p>
+                            <p class="card-text text-muted small">Model: <span class="manual-model"></span></p>
+                            <p class="card-text text-muted small">Year: <span class="manual-year"></span></p>
+                            <p class="card-text text-muted small">Type: <span class="manual-type"></span></p>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <span class="badge bg-light text-dark me-1"><i class="fas fa-cogs me-1"></i><span class="manual-parts-count"></span> Parts</span>
+                                <span class="badge bg-light text-dark"><i class="fas fa-exclamation-triangle me-1"></i><span class="manual-errors-count"></span> Error Codes</span>
+                            </div>
+                            <div>
+                                <span class="text-muted small">Added: <span class="manual-date"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <div class="d-flex gap-2">
+                            <a href="#" class="btn btn-sm btn-outline-primary flex-grow-1 view-manual-btn">
+                                <i class="fas fa-eye me-1"></i> View
+                            </a>
+                            <a href="#" class="btn btn-sm process-manual-btn flex-grow-1">
+                                <i class="fas fa-cog me-1"></i> <span class="process-btn-text">Process</span>
+                            </a>
+                            <button class="btn btn-sm btn-outline-danger delete-manual-btn">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+    
+    <!-- Pagination -->
+    <nav aria-label="Manuals pagination" id="manuals-pagination" style="display: none;">
+        <ul class="pagination justify-content-center" id="pagination-container">
+            <!-- Pagination will be populated dynamically -->
+        </ul>
+    </nav>
+</div>
+
+<!-- Search Manual Modal -->
+<div class="modal fade" id="searchManualModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-search me-2"></i>Find Technical Manual</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-4">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="search-make" class="form-label">Make</label>
+                            <input type="text" class="form-control" id="search-make" placeholder="e.g. Toyota">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="search-model" class="form-label">Model</label>
+                            <input type="text" class="form-control" id="search-model" placeholder="e.g. Camry">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="search-year" class="form-label">Year</label>
+                            <input type="text" class="form-control" id="search-year" placeholder="e.g. 2023">
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <label class="form-label">Manual Type</label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="manualType" id="type-technical" checked>
+                                <label class="form-check-label" for="type-technical">Technical</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="manualType" id="type-parts">
+                                <label class="form-check-label" for="type-parts">Parts</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="manualType" id="type-repair">
+                                <label class="form-check-label" for="type-repair">Repair</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="manualType" id="type-owner">
+                                <label class="form-check-label" for="type-owner">Owner's</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-grid">
+                    <button type="button" class="btn btn-primary" id="search-manual-btn">
+                        <i class="fas fa-search me-2"></i>Search Manuals
+                    </button>
+                </div>
+                
+                <div id="search-results" class="mt-4" style="display: none;">
+                    <h6 class="border-bottom pb-2 mb-3">Search Results</h6>
+                    <div class="manual-result-list" id="search-results-container">
+                        <!-- Will be populated with search results dynamically -->
+                    </div>
+                    <div id="search-loading" class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Searching for manuals...</p>
+                    </div>
+                    <div id="search-no-results" class="text-center py-4" style="display: none;">
+                        <i class="fas fa-search fa-2x text-muted mb-3"></i>
+                        <p>No manuals found for your search criteria.</p>
+                        <p class="text-muted">Try different keywords or terms.</p>
+                    </div>
+                </div>
+                
+                <!-- Search result template -->
+                <template id="search-result-template">
+                    <div class="manual-result p-3 border rounded mb-2">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="result-title">Manual Title</h6>
+                            <div>
+                                <span class="result-format badge bg-success">PDF</span>
+                            </div>
+                        </div>
+                        <p class="text-muted small mb-2">Source: <span class="result-source">source.com</span></p>
+                        <p class="mb-3 small result-description">Description text...</p>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-sm btn-primary add-manual-btn">
+                                <i class="fas fa-plus me-1"></i> Add
+                            </button>
+                            <a href="#" class="btn btn-sm btn-outline-secondary preview-manual-btn" target="_blank">
+                                <i class="fas fa-external-link-alt me-1"></i> Preview
+                            </a>
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Manual Modal -->
+<div class="modal fade" id="viewManualModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-file-pdf text-danger me-2"></i>Toyota Camry 2022 Technical Manual</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <!-- Manual Viewer (PDF renderer would go here) -->
+                        <div class="bg-light p-3 rounded text-center" style="height: 600px;">
+                            <img src="{{ url_for('static', filename='img/pdf-placeholder.svg') }}" alt="PDF Placeholder" class="img-fluid h-100">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <ul class="nav nav-tabs" id="manualTabContent" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">Info</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="parts-tab" data-bs-toggle="tab" data-bs-target="#parts" type="button" role="tab">Parts</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="errors-tab" data-bs-toggle="tab" data-bs-target="#errors" type="button" role="tab">Errors</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="notes-tab" data-bs-toggle="tab" data-bs-target="#notes" type="button" role="tab">Notes</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content p-3 border border-top-0 rounded-bottom" style="height: 550px; overflow-y: auto;">
+                            <div class="tab-pane fade show active" id="info" role="tabpanel">
+                                <h6>Manual Details</h6>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th>Title</th>
+                                        <td>Toyota Camry 2022 Technical Manual</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Make</th>
+                                        <td>Toyota</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Model</th>
+                                        <td>Camry</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Year</th>
+                                        <td>2022</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Source</th>
+                                        <td>toyota.com</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Format</th>
+                                        <td>PDF</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Pages</th>
+                                        <td>487</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Added</th>
+                                        <td>April 28, 2025</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Processed</th>
+                                        <td>Yes (April 28, 2025)</td>
+                                    </tr>
+                                </table>
+                                <div class="d-grid gap-2 mt-3">
+                                    <button class="btn btn-primary btn-sm">
+                                        <i class="fas fa-download me-1"></i> Download Original
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-sync-alt me-1"></i> Re-process Manual
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="parts" role="tabpanel">
+                                <h6>Extracted Parts (45)</h6>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control form-control-sm" placeholder="Search parts...">
+                                    <button class="btn btn-outline-secondary btn-sm" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                                <div class="list-group small">
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex justify-content-between">
+                                            <span>87139-06030</span>
+                                            <span class="badge bg-success">OEM</span>
+                                        </div>
+                                        <p class="mb-0 text-muted">Cabin Air Filter</p>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex justify-content-between">
+                                            <span>04465-33450</span>
+                                            <span class="badge bg-success">OEM</span>
+                                        </div>
+                                        <p class="mb-0 text-muted">Front Brake Pads</p>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex justify-content-between">
+                                            <span>42410-06180</span>
+                                            <span class="badge bg-success">OEM</span>
+                                        </div>
+                                        <p class="mb-0 text-muted">Steering Wheel</p>
+                                    </a>
+                                    <!-- More parts would be listed here -->
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="errors" role="tabpanel">
+                                <h6>Error Codes (12)</h6>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control form-control-sm" placeholder="Search error codes...">
+                                    <button class="btn btn-outline-secondary btn-sm" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                                <div class="list-group small">
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex justify-content-between">
+                                            <span>P0300</span>
+                                            <span class="badge bg-danger">Critical</span>
+                                        </div>
+                                        <p class="mb-0 text-muted">Random/Multiple Cylinder Misfire Detected</p>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex justify-content-between">
+                                            <span>P0171</span>
+                                            <span class="badge bg-warning">Warning</span>
+                                        </div>
+                                        <p class="mb-0 text-muted">System Too Lean (Bank 1)</p>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex justify-content-between">
+                                            <span>C1201</span>
+                                            <span class="badge bg-secondary">Info</span>
+                                        </div>
+                                        <p class="mb-0 text-muted">Engine Control System Malfunction</p>
+                                    </a>
+                                    <!-- More error codes would be listed here -->
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="notes" role="tabpanel">
+                                <h6>Notes</h6>
+                                <div class="mb-3">
+                                    <textarea class="form-control" rows="10" placeholder="Add notes about this manual..."></textarea>
+                                </div>
+                                <button class="btn btn-primary btn-sm">
+                                    <i class="fas fa-save me-1"></i> Save Notes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Elements
+    const makeFilter = document.getElementById('make-filter');
+    const modelFilter = document.getElementById('model-filter');
+    const yearFilter = document.getElementById('year-filter');
+    const typeFilter = document.getElementById('type-filter');
+    const statusFilter = document.getElementById('status-filter');
+    const searchManualBtn = document.getElementById('search-manual-btn');
+    const searchMake = document.getElementById('search-make');
+    const searchModel = document.getElementById('search-model');
+    const searchYear = document.getElementById('search-year');
+    const noManualsMessage = document.getElementById('no-manuals-message');
+    const manualsPagination = document.getElementById('manuals-pagination');
+    const paginationContainer = document.getElementById('pagination-container');
+    const searchResults = document.getElementById('search-results');
+    const searchResultsContainer = document.getElementById('search-results-container');
+    const searchLoading = document.getElementById('search-loading');
+    const searchNoResults = document.getElementById('search-no-results');
+    
+    // Templates
+    const manualCardTemplate = document.getElementById('manual-card-template');
+    const searchResultTemplate = document.getElementById('search-result-template');
+    
+    // State
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentManuals = [];
+    let currentFilters = {
+        make: '',
+        model: '',
+        year: '',
+        type: '',
+        status: ''
+    };
+    
+    // Initialize
+    loadManuals();
+    
+    // Load manuals from API
+    function loadManuals() {
+        // Build query parameters
+        const params = new URLSearchParams();
+        if (currentFilters.make) params.append('make', currentFilters.make);
+        if (currentFilters.model) params.append('model', currentFilters.model);
+        if (currentFilters.year) params.append('year', currentFilters.year);
+        if (currentFilters.type) params.append('type', currentFilters.type);
+        if (currentFilters.status) params.append('status', currentFilters.status);
+        params.append('page', currentPage);
+        params.append('per_page', 9);
+        
+        // Show loading state
+        renderManuals([]);
+        
+        // Fetch manuals from API
+        fetch(`/api/manuals?${params.toString()}`)
+            .then(response => response.json())
+            .then(data => {
+                currentManuals = data.manuals || [];
+                totalPages = data.pages || 1;
+                renderManuals(currentManuals);
+                renderPagination();
+            })
+            .catch(error => {
+                console.error('Error loading manuals:', error);
+                noManualsMessage.style.display = 'block';
+            });
+    }
+    
+    // Render manuals in the gallery
+    function renderManuals(manuals) {
+        const galleryContainer = document.getElementById('manuals-gallery');
+        
+        // Clear existing manual cards (except the template and no-manuals message)
+        const existingCards = galleryContainer.querySelectorAll('.manual-card');
+        existingCards.forEach(card => card.remove());
+        
+        // Show/hide no manuals message
+        noManualsMessage.style.display = manuals.length > 0 ? 'none' : 'block';
+        manualsPagination.style.display = manuals.length > 0 ? 'block' : 'none';
+        
+        // Create manual cards
+        manuals.forEach(manual => {
+            const cardClone = manualCardTemplate.content.cloneNode(true);
+            
+            // Fill in data
+            cardClone.querySelector('.manual-title').textContent = manual.title;
+            cardClone.querySelector('.manual-make').textContent = manual.make;
+            cardClone.querySelector('.manual-model').textContent = manual.model;
+            cardClone.querySelector('.manual-year').textContent = manual.year || '-';
+            cardClone.querySelector('.manual-type').textContent = manual.file_format;
+            cardClone.querySelector('.manual-date').textContent = new Date(manual.created_at).toLocaleDateString();
+            
+            // Status badge
+            const statusBadge = cardClone.querySelector('.manual-status');
+            if (manual.processed) {
+                statusBadge.classList.add('bg-success');
+                statusBadge.textContent = 'Processed';
+            } else {
+                statusBadge.classList.add('bg-warning');
+                statusBadge.textContent = 'Unprocessed';
+            }
+            
+            // Parts and errors count
+            cardClone.querySelector('.manual-parts-count').textContent = manual.parts_count || '-';
+            cardClone.querySelector('.manual-errors-count').textContent = manual.errors_count || '-';
+            
+            // Process button
+            const processBtn = cardClone.querySelector('.process-manual-btn');
+            const processBtnText = cardClone.querySelector('.process-btn-text');
+            
+            if (manual.processed) {
+                processBtn.classList.add('btn-outline-success');
+                processBtnText.textContent = 'Re-Process';
+            } else {
+                processBtn.classList.add('btn-primary');
+                processBtnText.textContent = 'Process';
+            }
+            
+            // Event listeners
+            cardClone.querySelector('.view-manual-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                viewManual(manual.id);
+            });
+            
+            processBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                processManual(manual.id);
+            });
+            
+            cardClone.querySelector('.delete-manual-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                if (confirm(`Are you sure you want to delete "${manual.title}"?`)) {
+                    deleteManual(manual.id);
+                }
+            });
+            
+            // Add to gallery
+            galleryContainer.appendChild(cardClone);
+        });
+    }
+    
+    // Render pagination
+    function renderPagination() {
+        paginationContainer.innerHTML = '';
+        
+        // Skip if only one page
+        if (totalPages <= 1) return;
+        
+        // Previous button
+        const prevLi = document.createElement('li');
+        prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+        
+        const prevLink = document.createElement('a');
+        prevLink.className = 'page-link';
+        prevLink.href = '#';
+        prevLink.textContent = 'Previous';
+        if (currentPage > 1) {
+            prevLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                goToPage(currentPage - 1);
+            });
+        }
+        
+        prevLi.appendChild(prevLink);
+        paginationContainer.appendChild(prevLi);
+        
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            const pageLi = document.createElement('li');
+            pageLi.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            
+            const pageLink = document.createElement('a');
+            pageLink.className = 'page-link';
+            pageLink.href = '#';
+            pageLink.textContent = i;
+            pageLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                goToPage(i);
+            });
+            
+            pageLi.appendChild(pageLink);
+            paginationContainer.appendChild(pageLi);
+        }
+        
+        // Next button
+        const nextLi = document.createElement('li');
+        nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+        
+        const nextLink = document.createElement('a');
+        nextLink.className = 'page-link';
+        nextLink.href = '#';
+        nextLink.textContent = 'Next';
+        if (currentPage < totalPages) {
+            nextLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                goToPage(currentPage + 1);
+            });
+        }
+        
+        nextLi.appendChild(nextLink);
+        paginationContainer.appendChild(nextLi);
+    }
+    
+    // Go to specific page
+    function goToPage(page) {
+        currentPage = page;
+        loadManuals();
+    }
+    
+    // View manual details
+    function viewManual(manualId) {
+        // Fetch manual details from API and show modal
+        fetch(`/api/manuals/${manualId}`)
+            .then(response => response.json())
+            .then(manual => {
+                // Here you would populate the view modal with the manual data
+                // For now, just show the existing modal
+                const viewModal = new bootstrap.Modal(document.getElementById('viewManualModal'));
+                viewModal.show();
+            })
+            .catch(error => {
+                console.error('Error loading manual details:', error);
+                alert('Failed to load manual details');
+            });
+    }
+    
+    // Process manual
+    function processManual(manualId) {
+        // Send API request to process the manual
+        fetch(`/api/manuals/${manualId}/process`, {
+            method: 'POST'
+        })
+            .then(response => response.json())
+            .then(result => {
+                alert(`Manual processed: ${result.error_codes_count} error codes and ${result.part_numbers_count} part numbers found.`);
+                loadManuals(); // Reload to update UI
+            })
+            .catch(error => {
+                console.error('Error processing manual:', error);
+                alert('Failed to process manual');
+            });
+    }
+    
+    // Delete manual
+    function deleteManual(manualId) {
+        // Send API request to delete the manual
+        fetch(`/api/manuals/${manualId}`, {
+            method: 'DELETE'
+        })
+            .then(response => response.json())
+            .then(result => {
+                alert('Manual deleted successfully');
+                loadManuals(); // Reload to update UI
+            })
+            .catch(error => {
+                console.error('Error deleting manual:', error);
+                alert('Failed to delete manual');
+            });
+    }
+    
+    // Search for manuals
+    function searchManuals() {
+        const make = searchMake.value.trim();
+        const model = searchModel.value.trim();
+        const year = searchYear.value.trim();
+        
+        // Get selected manual type
+        let manualType = 'technical';
+        document.querySelectorAll('input[name="manualType"]').forEach(radio => {
+            if (radio.checked) {
+                manualType = radio.id.replace('type-', '');
+            }
+        });
+        
+        // Validate input
+        if (!make || !model) {
+            alert('Please enter both make and model to search');
+            return;
+        }
+        
+        // Show loading state
+        searchResults.style.display = 'block';
+        searchResultsContainer.innerHTML = '';
+        searchLoading.style.display = 'block';
+        searchNoResults.style.display = 'none';
+        searchManualBtn.disabled = true;
+        searchManualBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Searching...';
+        
+        // Call the API to search for manuals
+        fetch('/api/manuals/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                make: make,
+                model: model,
+                manual_type: manualType,
+                year: year || undefined
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Reset button
+                searchManualBtn.disabled = false;
+                searchManualBtn.innerHTML = '<i class="fas fa-search me-2"></i>Search Manuals';
+                searchLoading.style.display = 'none';
+                
+                // Process results
+                const results = data.results || [];
+                if (results.length === 0) {
+                    searchNoResults.style.display = 'block';
+                    return;
+                }
+                
+                // Render search results
+                results.forEach(result => {
+                    const resultClone = searchResultTemplate.content.cloneNode(true);
+                    
+                    // Fill in data
+                    resultClone.querySelector('.result-title').textContent = result.title;
+                    resultClone.querySelector('.result-source').textContent = new URL(result.url).hostname;
+                    resultClone.querySelector('.result-description').textContent = result.snippet || 'No description available';
+                    
+                    // Format badge
+                    const formatBadge = resultClone.querySelector('.result-format');
+                    formatBadge.textContent = result.file_format || 'PDF';
+                    
+                    // Set preview link
+                    resultClone.querySelector('.preview-manual-btn').href = result.url;
+                    
+                    // Add manual button
+                    resultClone.querySelector('.add-manual-btn').addEventListener('click', () => {
+                        addManual(result);
+                    });
+                    
+                    // Add to results container
+                    searchResultsContainer.appendChild(resultClone);
+                });
+            })
+            .catch(error => {
+                console.error('Error searching manuals:', error);
+                searchManualBtn.disabled = false;
+                searchManualBtn.innerHTML = '<i class="fas fa-search me-2"></i>Search Manuals';
+                searchLoading.style.display = 'none';
+                searchNoResults.style.display = 'block';
+            });
+    }
+    
+    // Add a manual from search results
+    function addManual(manualData) {
+        // Send API request to create the manual
+        fetch('/api/manuals', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: manualData.title,
+                make: manualData.make,
+                model: manualData.model,
+                year: manualData.year,
+                url: manualData.url,
+                file_format: manualData.file_format || 'PDF'
+            })
+        })
+            .then(response => response.json())
+            .then(result => {
+                alert(`Manual added: ${result.title}`);
+                
+                // Close modal and reload manuals
+                const modal = bootstrap.Modal.getInstance(document.getElementById('searchManualModal'));
+                modal.hide();
+                loadManuals();
+            })
+            .catch(error => {
+                console.error('Error adding manual:', error);
+                alert('Failed to add manual');
+            });
+    }
+    
+    // Event listeners
+    if (searchManualBtn) {
+        searchManualBtn.addEventListener('click', searchManuals);
+    }
+    
+    // Filter event handlers
+    const filters = [makeFilter, modelFilter, yearFilter, typeFilter, statusFilter];
+    filters.forEach(filter => {
+        if (filter) {
+            filter.addEventListener('change', function() {
+                // Update current filters
+                const filterId = filter.id.replace('-filter', '');
+                currentFilters[filterId] = filter.value;
+                currentPage = 1; // Reset to first page when filtering
+                loadManuals();
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

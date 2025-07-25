@@ -1,0 +1,2024 @@
+{
+  "version": "1.0",
+  "timestamp": 1749490341232,
+  "startUrl": "https://www.webstaurantstore.com/avantco-17815678-reversible-door/17815678.html",
+  "actions": [
+    {
+      "type": "navigation",
+      "timestamp": 1749490245202,
+      "url": "https://www.webstaurantstore.com/avantco-17815678-reversible-door/17815678.html"
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749490246339,
+      "width": 256,
+      "height": 60
+    },
+    {
+      "type": "window_size",
+      "timestamp": 1749490246850,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "type": "click",
+      "timestamp": 1749490247406,
+      "x": 1042,
+      "y": 403,
+      "selector": "#buyButton",
+      "textContent": ""
+    },
+    {
+      "type": "click",
+      "timestamp": 1749490249706,
+      "x": 1131,
+      "y": 558,
+      "selector": ".btn.btn-orange",
+      "textContent": "Checkout"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1749490250086,
+      "url": "https://www.webstaurantstore.com/shipping-billinginfo.cfm"
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749490250863,
+      "width": 256,
+      "height": 60
+    },
+    {
+      "type": "click",
+      "timestamp": 1749490252223,
+      "x": 324,
+      "y": 655,
+      "selector": "#email",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490253261,
+      "selector": "#email",
+      "value": "j"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490253447,
+      "selector": "#email",
+      "value": "jo"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490253614,
+      "selector": "#email",
+      "value": "joh"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490253997,
+      "selector": "#email",
+      "value": "john"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490254518,
+      "selector": "#email",
+      "value": "john."
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490254872,
+      "selector": "#email",
+      "value": "john.s"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490254998,
+      "selector": "#email",
+      "value": "john.sm"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490255091,
+      "selector": "#email",
+      "value": "john.smi"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490255292,
+      "selector": "#email",
+      "value": "john.smit"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490255444,
+      "selector": "#email",
+      "value": "john.smith"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490256383,
+      "selector": "#email",
+      "value": "john.smith@"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490256841,
+      "selector": "#email",
+      "value": "john.smith@e"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490257131,
+      "selector": "#email",
+      "value": "john.smith@ex"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490257271,
+      "selector": "#email",
+      "value": "john.smith@exa"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490257419,
+      "selector": "#email",
+      "value": "john.smith@exam"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490257560,
+      "selector": "#email",
+      "value": "john.smith@examp"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490257845,
+      "selector": "#email",
+      "value": "john.smith@exampl"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490258042,
+      "selector": "#email",
+      "value": "john.smith@example"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490258289,
+      "selector": "#email",
+      "value": "john.smith@example."
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490258584,
+      "selector": "#email",
+      "value": "john.smith@example.c"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490258759,
+      "selector": "#email",
+      "value": "john.smith@example.co"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490258915,
+      "selector": "#email",
+      "value": "john.smith@example.com"
+    },
+    {
+      "type": "click",
+      "timestamp": 1749490261689,
+      "x": 276,
+      "y": 685,
+      "selector": "fieldset:nth-child(1) > div.control-group:nth-child(2) > label.control-label > input:nth-child(1)",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490261699,
+      "selector": "fieldset:nth-child(1) > div.control-group:nth-child(2) > label.control-label > input:nth-child(1)",
+      "value": "on"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262178,
+      "x": 0,
+      "y": 3
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262194,
+      "x": 0,
+      "y": 11
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262211,
+      "x": 0,
+      "y": 21
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262227,
+      "x": 0,
+      "y": 38
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262244,
+      "x": 0,
+      "y": 60
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262260,
+      "x": 0,
+      "y": 81
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262277,
+      "x": 0,
+      "y": 113
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262294,
+      "x": 0,
+      "y": 143
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262310,
+      "x": 0,
+      "y": 177
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262327,
+      "x": 0,
+      "y": 211
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262344,
+      "x": 0,
+      "y": 240
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262360,
+      "x": 0,
+      "y": 271
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262377,
+      "x": 0,
+      "y": 292
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262394,
+      "x": 0,
+      "y": 313
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262410,
+      "x": 0,
+      "y": 332
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262427,
+      "x": 0,
+      "y": 348
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262444,
+      "x": 0,
+      "y": 361
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262460,
+      "x": 0,
+      "y": 373
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262477,
+      "x": 0,
+      "y": 381
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262494,
+      "x": 0,
+      "y": 387
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262510,
+      "x": 0,
+      "y": 392
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262527,
+      "x": 0,
+      "y": 395
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262544,
+      "x": 0,
+      "y": 397
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262560,
+      "x": 0,
+      "y": 399
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262577,
+      "x": 0,
+      "y": 401
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262594,
+      "x": 0,
+      "y": 403
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262610,
+      "x": 0,
+      "y": 404
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262626,
+      "x": 0,
+      "y": 406
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262644,
+      "x": 0,
+      "y": 408
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262660,
+      "x": 0,
+      "y": 409
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262677,
+      "x": 0,
+      "y": 410
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262694,
+      "x": 0,
+      "y": 411
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262710,
+      "x": 0,
+      "y": 413
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262727,
+      "x": 0,
+      "y": 415
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262744,
+      "x": 0,
+      "y": 417
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262760,
+      "x": 0,
+      "y": 419
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262777,
+      "x": 0,
+      "y": 421
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262794,
+      "x": 0,
+      "y": 422
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262810,
+      "x": 0,
+      "y": 423
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262827,
+      "x": 0,
+      "y": 424
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490262844,
+      "x": 0,
+      "y": 425
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264144,
+      "x": 0,
+      "y": 430
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264160,
+      "x": 0,
+      "y": 435
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264177,
+      "x": 0,
+      "y": 440
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264194,
+      "x": 0,
+      "y": 445
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264210,
+      "x": 0,
+      "y": 451
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264227,
+      "x": 0,
+      "y": 458
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264244,
+      "x": 0,
+      "y": 466
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264260,
+      "x": 0,
+      "y": 478
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264277,
+      "x": 0,
+      "y": 490
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264294,
+      "x": 0,
+      "y": 505
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264310,
+      "x": 0,
+      "y": 522
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264327,
+      "x": 0,
+      "y": 543
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264344,
+      "x": 0,
+      "y": 567
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264360,
+      "x": 0,
+      "y": 592
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264377,
+      "x": 0,
+      "y": 622
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264394,
+      "x": 0,
+      "y": 645
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264410,
+      "x": 0,
+      "y": 669
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264427,
+      "x": 0,
+      "y": 690
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264444,
+      "x": 0,
+      "y": 705
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264460,
+      "x": 0,
+      "y": 716
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264477,
+      "x": 0,
+      "y": 723
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264494,
+      "x": 0,
+      "y": 728
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264511,
+      "x": 0,
+      "y": 730
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264526,
+      "x": 0,
+      "y": 731
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264927,
+      "x": 0,
+      "y": 729
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490264944,
+      "x": 0,
+      "y": 728
+    },
+    {
+      "type": "click",
+      "timestamp": 1749490265873,
+      "x": 363,
+      "y": 53,
+      "selector": "#BillingAddress.Name",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490266276,
+      "selector": "#BillingAddress.Name",
+      "value": "J"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490266510,
+      "selector": "#BillingAddress.Name",
+      "value": "Jo"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490266839,
+      "selector": "#BillingAddress.Name",
+      "value": "Joh"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490267055,
+      "selector": "#BillingAddress.Name",
+      "value": "John"
+    },
+    {
+      "type": "click",
+      "timestamp": 1749490269091,
+      "x": 300,
+      "y": 235,
+      "selector": "#BillingAddress.AddressLine1",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490271079,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "1"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490271268,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "12"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490271476,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "123"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490271897,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "123 "
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490272084,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "123 M"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490272285,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "123 Ma"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490272396,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "123 Mai"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490272484,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "123 Main"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490272766,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "123 Main "
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490273024,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "123 Main S"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490273409,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "123 Main St"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490273618,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "123 Main Str"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490273814,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "123 Main Stre"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490274009,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "123 Main Stree"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490274133,
+      "selector": "#BillingAddress.AddressLine1",
+      "value": "123 Main Street"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749490278529,
+      "key": "Tab"
+    },
+    {
+      "type": "click",
+      "timestamp": 1749490283040,
+      "x": 529,
+      "y": 374,
+      "selector": "#BillingAddress.PostalCode",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490284198,
+      "selector": "#BillingAddress.PostalCode",
+      "value": "6"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490285131,
+      "selector": "#BillingAddress.PostalCode",
+      "value": "62"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490285534,
+      "selector": "#BillingAddress.PostalCode",
+      "value": "627"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490286054,
+      "selector": "#BillingAddress.PostalCode",
+      "value": "6270"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490286325,
+      "selector": "#BillingAddress.PostalCode",
+      "value": "62701"
+    },
+    {
+      "type": "click",
+      "timestamp": 1749490288240,
+      "x": 300,
+      "y": 551,
+      "selector": "#BillingAddress.PhoneNumber",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490300167,
+      "selector": "#BillingAddress.PhoneNumber",
+      "value": "5"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490300320,
+      "selector": "#BillingAddress.PhoneNumber",
+      "value": "55"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490300538,
+      "selector": "#BillingAddress.PhoneNumber",
+      "value": "555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490305755,
+      "selector": "#BillingAddress.PhoneNumber",
+      "value": "(5551)"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490305983,
+      "selector": "#BillingAddress.PhoneNumber",
+      "value": "(555) 12"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490306225,
+      "selector": "#BillingAddress.PhoneNumber",
+      "value": "(555) 123"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490306943,
+      "selector": "#BillingAddress.PhoneNumber",
+      "value": "(555) 1234"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490307273,
+      "selector": "#BillingAddress.PhoneNumber",
+      "value": "(555) 123-45"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490307629,
+      "selector": "#BillingAddress.PhoneNumber",
+      "value": "(555) 123-456"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490308277,
+      "selector": "#BillingAddress.PhoneNumber",
+      "value": "(555) 123-4567"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310244,
+      "x": 0,
+      "y": 730
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310261,
+      "x": 0,
+      "y": 734
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310276,
+      "x": 0,
+      "y": 740
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310294,
+      "x": 0,
+      "y": 748
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310310,
+      "x": 0,
+      "y": 757
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310327,
+      "x": 0,
+      "y": 767
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310344,
+      "x": 0,
+      "y": 779
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310360,
+      "x": 0,
+      "y": 791
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310377,
+      "x": 0,
+      "y": 804
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310394,
+      "x": 0,
+      "y": 819
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310411,
+      "x": 0,
+      "y": 833
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310427,
+      "x": 0,
+      "y": 852
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310444,
+      "x": 0,
+      "y": 867
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310461,
+      "x": 0,
+      "y": 879
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310477,
+      "x": 0,
+      "y": 890
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310494,
+      "x": 0,
+      "y": 899
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310510,
+      "x": 0,
+      "y": 906
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310527,
+      "x": 0,
+      "y": 911
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310544,
+      "x": 0,
+      "y": 915
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310560,
+      "x": 0,
+      "y": 917
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310577,
+      "x": 0,
+      "y": 918
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490310594,
+      "x": 0,
+      "y": 919
+    },
+    {
+      "type": "click",
+      "timestamp": 1749490311758,
+      "x": 735,
+      "y": 638,
+      "selector": "form > div.fieldset-bottom.checkout.clearfix > button.btn.btn-checkout.btn-jumbo > span",
+      "textContent": "Continue to"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1749490312949,
+      "url": "https://www.webstaurantstore.com/shipping-billinginfo.cfm?goto=validate_address"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490314527,
+      "x": 0,
+      "y": 1
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490314544,
+      "x": 0,
+      "y": 4
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490314561,
+      "x": 0,
+      "y": 14
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490314576,
+      "x": 0,
+      "y": 33
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490314593,
+      "x": 0,
+      "y": 60
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490314611,
+      "x": 0,
+      "y": 89
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490314627,
+      "x": 0,
+      "y": 113
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490314644,
+      "x": 0,
+      "y": 133
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490314660,
+      "x": 0,
+      "y": 145
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490314677,
+      "x": 0,
+      "y": 172
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490314694,
+      "x": 0,
+      "y": 184
+    },
+    {
+      "type": "click",
+      "timestamp": 1749490315991,
+      "x": 123,
+      "y": 643,
+      "selector": ".padded.clears",
+      "textContent": "Use selected Address& Continue to Checkout"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749490316530,
+      "key": "Tab"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749490316837,
+      "key": "Enter"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1749490318556,
+      "url": "https://www.webstaurantstore.com/viewinfo.cfm"
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749490318994,
+      "width": 256,
+      "height": 60
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749490319613,
+      "width": 369,
+      "height": 100
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320527,
+      "x": 0,
+      "y": 6
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320545,
+      "x": 0,
+      "y": 11
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320560,
+      "x": 0,
+      "y": 19
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320577,
+      "x": 0,
+      "y": 28
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320594,
+      "x": 0,
+      "y": 40
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320610,
+      "x": 0,
+      "y": 53
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320627,
+      "x": 0,
+      "y": 64
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320644,
+      "x": 0,
+      "y": 75
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320661,
+      "x": 0,
+      "y": 86
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320677,
+      "x": 0,
+      "y": 95
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320694,
+      "x": 0,
+      "y": 104
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320711,
+      "x": 0,
+      "y": 115
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320727,
+      "x": 0,
+      "y": 124
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320744,
+      "x": 0,
+      "y": 138
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320760,
+      "x": 0,
+      "y": 153
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320776,
+      "x": 0,
+      "y": 172
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320794,
+      "x": 0,
+      "y": 190
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320811,
+      "x": 0,
+      "y": 209
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320827,
+      "x": 0,
+      "y": 224
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320844,
+      "x": 0,
+      "y": 245
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320861,
+      "x": 0,
+      "y": 268
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320877,
+      "x": 0,
+      "y": 291
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320894,
+      "x": 0,
+      "y": 315
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320911,
+      "x": 0,
+      "y": 338
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320927,
+      "x": 0,
+      "y": 361
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320944,
+      "x": 0,
+      "y": 386
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320960,
+      "x": 0,
+      "y": 410
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320977,
+      "x": 0,
+      "y": 432
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490320994,
+      "x": 0,
+      "y": 452
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321011,
+      "x": 0,
+      "y": 471
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321027,
+      "x": 0,
+      "y": 488
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321044,
+      "x": 0,
+      "y": 504
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321061,
+      "x": 0,
+      "y": 518
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321076,
+      "x": 0,
+      "y": 531
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321094,
+      "x": 0,
+      "y": 543
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749490321111,
+      "width": 369,
+      "height": 266
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321111,
+      "x": 0,
+      "y": 554
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321128,
+      "x": 0,
+      "y": 564
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321144,
+      "x": 0,
+      "y": 573
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321161,
+      "x": 0,
+      "y": 581
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321177,
+      "x": 0,
+      "y": 589
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321194,
+      "x": 0,
+      "y": 596
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321211,
+      "x": 0,
+      "y": 603
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321227,
+      "x": 0,
+      "y": 609
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321244,
+      "x": 0,
+      "y": 614
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321261,
+      "x": 0,
+      "y": 619
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321277,
+      "x": 0,
+      "y": 624
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321294,
+      "x": 0,
+      "y": 629
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321610,
+      "x": 0,
+      "y": 630
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321627,
+      "x": 0,
+      "y": 632
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321644,
+      "x": 0,
+      "y": 634
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321661,
+      "x": 0,
+      "y": 637
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321677,
+      "x": 0,
+      "y": 639
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321694,
+      "x": 0,
+      "y": 642
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321711,
+      "x": 0,
+      "y": 645
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321727,
+      "x": 0,
+      "y": 649
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321744,
+      "x": 0,
+      "y": 653
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321760,
+      "x": 0,
+      "y": 657
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321777,
+      "x": 0,
+      "y": 662
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321794,
+      "x": 0,
+      "y": 667
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321811,
+      "x": 0,
+      "y": 673
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321827,
+      "x": 0,
+      "y": 679
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321844,
+      "x": 0,
+      "y": 683
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321861,
+      "x": 0,
+      "y": 689
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321877,
+      "x": 0,
+      "y": 695
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321894,
+      "x": 0,
+      "y": 700
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321911,
+      "x": 0,
+      "y": 705
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321927,
+      "x": 0,
+      "y": 709
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321944,
+      "x": 0,
+      "y": 714
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321961,
+      "x": 0,
+      "y": 718
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321977,
+      "x": 0,
+      "y": 723
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490321994,
+      "x": 0,
+      "y": 728
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322011,
+      "x": 0,
+      "y": 733
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322027,
+      "x": 0,
+      "y": 738
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322044,
+      "x": 0,
+      "y": 743
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322061,
+      "x": 0,
+      "y": 748
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322077,
+      "x": 0,
+      "y": 753
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322094,
+      "x": 0,
+      "y": 758
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322111,
+      "x": 0,
+      "y": 762
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322127,
+      "x": 0,
+      "y": 766
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322144,
+      "x": 0,
+      "y": 770
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322161,
+      "x": 0,
+      "y": 773
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322177,
+      "x": 0,
+      "y": 776
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322194,
+      "x": 0,
+      "y": 779
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322211,
+      "x": 0,
+      "y": 781
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322226,
+      "x": 0,
+      "y": 783
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322244,
+      "x": 0,
+      "y": 785
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322261,
+      "x": 0,
+      "y": 787
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322277,
+      "x": 0,
+      "y": 789
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322294,
+      "x": 0,
+      "y": 790
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322311,
+      "x": 0,
+      "y": 791
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322327,
+      "x": 0,
+      "y": 792
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322344,
+      "x": 0,
+      "y": 793
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322361,
+      "x": 0,
+      "y": 794
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322652,
+      "x": 0,
+      "y": 795
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322661,
+      "x": 0,
+      "y": 797
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322677,
+      "x": 0,
+      "y": 801
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322694,
+      "x": 0,
+      "y": 805
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322710,
+      "x": 0,
+      "y": 810
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322727,
+      "x": 0,
+      "y": 813
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322744,
+      "x": 0,
+      "y": 815
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322760,
+      "x": 0,
+      "y": 816
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322777,
+      "x": 0,
+      "y": 817
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322794,
+      "x": 0,
+      "y": 818
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322810,
+      "x": 0,
+      "y": 821
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322827,
+      "x": 0,
+      "y": 824
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322844,
+      "x": 0,
+      "y": 828
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322860,
+      "x": 0,
+      "y": 833
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322877,
+      "x": 0,
+      "y": 839
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322894,
+      "x": 0,
+      "y": 846
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322910,
+      "x": 0,
+      "y": 855
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322927,
+      "x": 0,
+      "y": 869
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322944,
+      "x": 0,
+      "y": 886
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322960,
+      "x": 0,
+      "y": 900
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322977,
+      "x": 0,
+      "y": 911
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490322994,
+      "x": 0,
+      "y": 919
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490323010,
+      "x": 0,
+      "y": 926
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490323027,
+      "x": 0,
+      "y": 932
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490323044,
+      "x": 0,
+      "y": 937
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490323060,
+      "x": 0,
+      "y": 941
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490323077,
+      "x": 0,
+      "y": 946
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490323094,
+      "x": 0,
+      "y": 949
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490323110,
+      "x": 0,
+      "y": 951
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490323127,
+      "x": 0,
+      "y": 952
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1749490323144,
+      "x": 0,
+      "y": 953
+    },
+    {
+      "type": "click",
+      "timestamp": 1749490324273,
+      "x": 71,
+      "y": 86,
+      "selector": "#cardholder-name-id",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490325163,
+      "selector": "#cardholder-name-id",
+      "value": "J"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490325380,
+      "selector": "#cardholder-name-id",
+      "value": "Jo"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490325489,
+      "selector": "#cardholder-name-id",
+      "value": "Joh"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490325663,
+      "selector": "#cardholder-name-id",
+      "value": "John"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749490327136,
+      "key": "Tab"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490328348,
+      "selector": "#credit-card-number-id",
+      "value": "5"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490329294,
+      "selector": "#credit-card-number-id",
+      "value": "55"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490329538,
+      "selector": "#credit-card-number-id",
+      "value": "555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490329710,
+      "selector": "#credit-card-number-id",
+      "value": "5555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490329858,
+      "selector": "#credit-card-number-id",
+      "value": "55555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490329981,
+      "selector": "#credit-card-number-id",
+      "value": "5555 55"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490330119,
+      "selector": "#credit-card-number-id",
+      "value": "5555 555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490330265,
+      "selector": "#credit-card-number-id",
+      "value": "5555 5555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490330405,
+      "selector": "#credit-card-number-id",
+      "value": "5555 55555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490330556,
+      "selector": "#credit-card-number-id",
+      "value": "5555 5555 55"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490330713,
+      "selector": "#credit-card-number-id",
+      "value": "5555 5555 555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490330885,
+      "selector": "#credit-card-number-id",
+      "value": "5555 5555 5555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490331232,
+      "selector": "#credit-card-number-id",
+      "value": "5555 5555 55555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490331441,
+      "selector": "#credit-card-number-id",
+      "value": "5555 5555 5555 55"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490331723,
+      "selector": "#credit-card-number-id",
+      "value": "5555 5555 5555 555"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490332069,
+      "selector": "#credit-card-number-id",
+      "value": "5555 5555 5555 5555"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749490332963,
+      "key": "Tab"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749490334025,
+      "key": "Tab"
+    },
+    {
+      "type": "keypress",
+      "timestamp": 1749490336525,
+      "key": "Tab"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490337011,
+      "selector": "#card-security-code-id",
+      "value": "1"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490337160,
+      "selector": "#card-security-code-id",
+      "value": "12"
+    },
+    {
+      "type": "input",
+      "timestamp": 1749490337363,
+      "selector": "#card-security-code-id",
+      "value": "123"
+    },
+    {
+      "type": "click",
+      "timestamp": 1749490339207,
+      "x": 648,
+      "y": 684,
+      "selector": ".complete-checkout__payment",
+      "textContent": "Secure CheckoutCompleteCheckout"
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1749490339261,
+      "width": 369,
+      "height": 288
+    }
+  ]
+}

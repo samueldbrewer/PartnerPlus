@@ -1,0 +1,621 @@
+{
+  "version": "1.0",
+  "timestamp": 1747942951641,
+  "startUrl": "https://www.etundra.com/restaurant-parts/beverage-equipment-parts/drink-dispenser/faucets/mavrik-26010-sweet-unsweet-iced-tea-faucet/",
+  "actions": [
+    {
+      "type": "navigation",
+      "timestamp": 1747942909602,
+      "url": "https://www.etundra.com/restaurant-parts/beverage-equipment-parts/drink-dispenser/faucets/mavrik-26010-sweet-unsweet-iced-tea-faucet/"
+    },
+    {
+      "type": "window_size",
+      "timestamp": 1747942912178,
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "type": "click",
+      "timestamp": 1747942918161,
+      "x": 599,
+      "y": 447,
+      "selector": ".btn.btn-primary.addtocart",
+      "textContent": "ADD TO CART"
+    },
+    {
+      "type": "click",
+      "timestamp": 1747942919844,
+      "x": 1176,
+      "y": 19,
+      "selector": ".caption.hidden-xs",
+      "textContent": "CART"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1747942920807,
+      "url": "https://www.etundra.com/cart/"
+    },
+    {
+      "type": "window_resize",
+      "timestamp": 1747942921072,
+      "width": 305,
+      "height": 50
+    },
+    {
+      "type": "click",
+      "timestamp": 1747942921851,
+      "x": 999,
+      "y": 383,
+      "selector": "#ZipCode",
+      "textContent": ""
+    },
+    {
+      "type": "input",
+      "timestamp": 1747942923083,
+      "selector": "#ZipCode",
+      "value": "6"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747942923251,
+      "selector": "#ZipCode",
+      "value": "60"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747942923562,
+      "selector": "#ZipCode",
+      "value": "601"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747942923713,
+      "selector": "#ZipCode",
+      "value": "6010"
+    },
+    {
+      "type": "input",
+      "timestamp": 1747942923901,
+      "selector": "#ZipCode",
+      "value": "60101"
+    },
+    {
+      "type": "click",
+      "timestamp": 1747942925032,
+      "x": 1001,
+      "y": 435,
+      "selector": ".big.btn.btn-primary.col-xs-12",
+      "textContent": "Calculate Shipping"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926533,
+      "x": 0,
+      "y": 1
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926549,
+      "x": 0,
+      "y": 6
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926565,
+      "x": 0,
+      "y": 11
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926581,
+      "x": 0,
+      "y": 17
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926598,
+      "x": 0,
+      "y": 24
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926615,
+      "x": 0,
+      "y": 31
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926631,
+      "x": 0,
+      "y": 40
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926648,
+      "x": 0,
+      "y": 51
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926665,
+      "x": 0,
+      "y": 63
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926682,
+      "x": 0,
+      "y": 77
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926698,
+      "x": 0,
+      "y": 93
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926715,
+      "x": 0,
+      "y": 109
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926731,
+      "x": 0,
+      "y": 126
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926748,
+      "x": 0,
+      "y": 144
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926765,
+      "x": 0,
+      "y": 163
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926822,
+      "x": 0,
+      "y": 182
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926831,
+      "x": 0,
+      "y": 240
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926848,
+      "x": 0,
+      "y": 259
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926865,
+      "x": 0,
+      "y": 277
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926881,
+      "x": 0,
+      "y": 293
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926898,
+      "x": 0,
+      "y": 307
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926915,
+      "x": 0,
+      "y": 321
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926932,
+      "x": 0,
+      "y": 334
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926948,
+      "x": 0,
+      "y": 346
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926965,
+      "x": 0,
+      "y": 356
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926982,
+      "x": 0,
+      "y": 365
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942926998,
+      "x": 0,
+      "y": 374
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927015,
+      "x": 0,
+      "y": 382
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927098,
+      "x": 0,
+      "y": 384
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927115,
+      "x": 0,
+      "y": 390
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927131,
+      "x": 0,
+      "y": 398
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927148,
+      "x": 0,
+      "y": 412
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927165,
+      "x": 0,
+      "y": 428
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927181,
+      "x": 0,
+      "y": 445
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927198,
+      "x": 0,
+      "y": 462
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927215,
+      "x": 0,
+      "y": 479
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927231,
+      "x": 0,
+      "y": 493
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927248,
+      "x": 0,
+      "y": 507
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927265,
+      "x": 0,
+      "y": 521
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927281,
+      "x": 0,
+      "y": 534
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927298,
+      "x": 0,
+      "y": 546
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927315,
+      "x": 0,
+      "y": 563
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927331,
+      "x": 0,
+      "y": 582
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927348,
+      "x": 0,
+      "y": 602
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927365,
+      "x": 0,
+      "y": 621
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927381,
+      "x": 0,
+      "y": 640
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927398,
+      "x": 0,
+      "y": 658
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927414,
+      "x": 0,
+      "y": 679
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927430,
+      "x": 0,
+      "y": 698
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927448,
+      "x": 0,
+      "y": 716
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942927465,
+      "x": 0,
+      "y": 732
+    },
+    {
+      "type": "click",
+      "timestamp": 1747942928161,
+      "x": 1015,
+      "y": 334,
+      "selector": ".big.btn.btn-primary.btn-checkout.col-xs-12.checkout-button",
+      "textContent": "Proceed to Checkout"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1747942936670,
+      "url": "https://www.etundra.com/account/signinbeforecheckout/"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942938678,
+      "x": 0,
+      "y": 1
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942938732,
+      "x": 0,
+      "y": 12
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942938748,
+      "x": 0,
+      "y": 37
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942938780,
+      "x": 0,
+      "y": 56
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942938797,
+      "x": 0,
+      "y": 93
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942938832,
+      "x": 0,
+      "y": 104
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942938848,
+      "x": 0,
+      "y": 119
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942938880,
+      "x": 0,
+      "y": 122
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942938898,
+      "x": 0,
+      "y": 125
+    },
+    {
+      "type": "click",
+      "timestamp": 1747942939565,
+      "x": 746,
+      "y": 393,
+      "selector": ".no-thanks.btn.btn-primary",
+      "textContent": "Checkout as Guest"
+    },
+    {
+      "type": "navigation",
+      "timestamp": 1747942941551,
+      "url": "https://www.etundra.com/checkout/"
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943512,
+      "x": 0,
+      "y": 6
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943531,
+      "x": 0,
+      "y": 12
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943553,
+      "x": 0,
+      "y": 18
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943567,
+      "x": 0,
+      "y": 23
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943581,
+      "x": 0,
+      "y": 31
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943598,
+      "x": 0,
+      "y": 46.5
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943643,
+      "x": 0,
+      "y": 76
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943650,
+      "x": 0,
+      "y": 85.5
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943666,
+      "x": 0,
+      "y": 99
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943682,
+      "x": 0,
+      "y": 112
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943699,
+      "x": 0,
+      "y": 127.5
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943716,
+      "x": 0,
+      "y": 142.5
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943755,
+      "x": 0,
+      "y": 157
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943756,
+      "x": 0,
+      "y": 178.5
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943798,
+      "x": 0,
+      "y": 200.5
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943799,
+      "x": 0,
+      "y": 215
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943817,
+      "x": 0,
+      "y": 227
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943832,
+      "x": 0,
+      "y": 239
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943848,
+      "x": 0,
+      "y": 249.5
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943881,
+      "x": 0,
+      "y": 259
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943898,
+      "x": 0,
+      "y": 274
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943931,
+      "x": 0,
+      "y": 279.5
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943948,
+      "x": 0,
+      "y": 286
+    },
+    {
+      "type": "scroll",
+      "timestamp": 1747942943965,
+      "x": 0,
+      "y": 287
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "7777:7777"
+    environment:
+      - DATABASE_URI=postgresql://postgres:postgres@db:5432/manual_purchase_agent
+      - SECRET_KEY=${SECRET_KEY:-development-key}
+      - SERPAPI_KEY=${SERPAPI_KEY:-7219228e748003a6e5394610456ef659f7c7884225b2df7fb0a890da61ad7f48}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-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}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY:-generate-a-secure-encryption-key}
+      - PLAYWRIGHT_RECORDER_API_URL=http://playwright-recorder:3001
+    volumes:
+      - ./uploads:/app/uploads
+    depends_on:
+      - db
+      - playwright-recorder
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=manual_purchase_agent
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  playwright-recorder:
+    build: "./Purchasing Agent Focus server backup/playwright-recorder"
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+    volumes:
+      - "./Purchasing Agent Focus server backup/playwright-recorder/recordings:/app/recordings"
+      - "./Purchasing Agent Focus server backup/playwright-recorder/screenshots:/app/screenshots"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

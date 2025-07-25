@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="600px" viewBox="0 0 800 600" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Hero Illustration</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#0D6EFD" offset="0%"></stop>
+            <stop stop-color="#0B5ED7" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#E9ECEF" offset="0%"></stop>
+            <stop stop-color="#CED4DA" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Hero-Illustration" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <!-- Background Elements -->
+        <circle id="Background-Circle-1" fill="#E9ECEF" cx="150" cy="450" r="80"></circle>
+        <circle id="Background-Circle-2" fill="#E9ECEF" cx="700" cy="100" r="60"></circle>
+        
+        <!-- Main Manual -->
+        <g id="Main-Manual" transform="translate(300.000000, 200.000000)">
+            <rect id="Manual-Cover" fill="url(#linearGradient-1)" x="0" y="0" width="200" height="250" rx="8"></rect>
+            <rect id="Manual-Pages" fill="#FFFFFF" x="10" y="10" width="180" height="230" rx="4"></rect>
+            <text id="MANUAL" font-family="Arial-BoldMT, Arial" font-size="24" font-weight="bold" fill="#0D6EFD">
+                <tspan x="55" y="45">MANUAL</tspan>
+            </text>
+            <line x1="30" y1="70" x2="170" y2="70" id="Line-1" stroke="#CED4DA" stroke-width="2"></line>
+            <line x1="30" y1="100" x2="170" y2="100" id="Line-2" stroke="#CED4DA" stroke-width="2"></line>
+            <line x1="30" y1="130" x2="170" y2="130" id="Line-3" stroke="#CED4DA" stroke-width="2"></line>
+            <line x1="30" y1="160" x2="170" y2="160" id="Line-4" stroke="#CED4DA" stroke-width="2"></line>
+            <line x1="30" y1="190" x2="170" y2="190" id="Line-5" stroke="#CED4DA" stroke-width="2"></line>
+            <line x1="30" y1="220" x2="130" y2="220" id="Line-6" stroke="#CED4DA" stroke-width="2"></line>
+        </g>
+        
+        <!-- Cog Wheel Large -->
+        <g id="Cog-Large" transform="translate(480.000000, 300.000000)">
+            <circle id="Cog-Base" fill="url(#linearGradient-2)" cx="50" cy="50" r="50"></circle>
+            <circle id="Cog-Inner" fill="#FFFFFF" cx="50" cy="50" r="20"></circle>
+            <rect id="Tooth-1" fill="#ADB5BD" x="46" y="0" width="8" height="20" rx="2"></rect>
+            <rect id="Tooth-2" fill="#ADB5BD" transform="translate(85.142136, 14.857864) rotate(45.000000) translate(-85.142136, -14.857864) " x="81.1421356" y="4.85786438" width="8" height="20" rx="2"></rect>
+            <rect id="Tooth-3" fill="#ADB5BD" transform="translate(100.000000, 50.000000) rotate(90.000000) translate(-100.000000, -50.000000) " x="96" y="40" width="8" height="20" rx="2"></rect>
+            <rect id="Tooth-4" fill="#ADB5BD" transform="translate(85.142136, 85.142136) rotate(135.000000) translate(-85.142136, -85.142136) " x="81.1421356" y="75.1421356" width="8" height="20" rx="2"></rect>
+            <rect id="Tooth-5" fill="#ADB5BD" transform="translate(50.000000, 100.000000) rotate(180.000000) translate(-50.000000, -100.000000) " x="46" y="90" width="8" height="20" rx="2"></rect>
+            <rect id="Tooth-6" fill="#ADB5BD" transform="translate(14.857864, 85.142136) rotate(225.000000) translate(-14.857864, -85.142136) " x="10.8578644" y="75.1421356" width="8" height="20" rx="2"></rect>
+            <rect id="Tooth-7" fill="#ADB5BD" transform="translate(0.000000, 50.000000) rotate(270.000000) translate(-0.000000, -50.000000) " x="-4" y="40" width="8" height="20" rx="2"></rect>
+            <rect id="Tooth-8" fill="#ADB5BD" transform="translate(14.857864, 14.857864) rotate(315.000000) translate(-14.857864, -14.857864) " x="10.8578644" y="4.85786438" width="8" height="20" rx="2"></rect>
+        </g>
+        
+        <!-- Cog Wheel Small -->
+        <g id="Cog-Small" transform="translate(410.000000, 250.000000)">
+            <circle id="Cog-Base" fill="url(#linearGradient-2)" cx="30" cy="30" r="30"></circle>
+            <circle id="Cog-Inner" fill="#FFFFFF" cx="30" cy="30" r="12"></circle>
+            <rect id="Tooth-1" fill="#ADB5BD" x="28" y="0" width="4" height="12" rx="1"></rect>
+            <rect id="Tooth-2" fill="#ADB5BD" transform="translate(51.485281, 8.514719) rotate(45.000000) translate(-51.485281, -8.514719) " x="49.4852814" y="2.51471863" width="4" height="12" rx="1"></rect>
+            <rect id="Tooth-3" fill="#ADB5BD" transform="translate(60.000000, 30.000000) rotate(90.000000) translate(-60.000000, -30.000000) " x="58" y="24" width="4" height="12" rx="1"></rect>
+            <rect id="Tooth-4" fill="#ADB5BD" transform="translate(51.485281, 51.485281) rotate(135.000000) translate(-51.485281, -51.485281) " x="49.4852814" y="45.4852814" width="4" height="12" rx="1"></rect>
+            <rect id="Tooth-5" fill="#ADB5BD" transform="translate(30.000000, 60.000000) rotate(180.000000) translate(-30.000000, -60.000000) " x="28" y="54" width="4" height="12" rx="1"></rect>
+            <rect id="Tooth-6" fill="#ADB5BD" transform="translate(8.514719, 51.485281) rotate(225.000000) translate(-8.514719, -51.485281) " x="6.51471863" y="45.4852814" width="4" height="12" rx="1"></rect>
+            <rect id="Tooth-7" fill="#ADB5BD" transform="translate(0.000000, 30.000000) rotate(270.000000) translate(-0.000000, -30.000000) " x="-2" y="24" width="4" height="12" rx="1"></rect>
+            <rect id="Tooth-8" fill="#ADB5BD" transform="translate(8.514719, 8.514719) rotate(315.000000) translate(-8.514719, -8.514719) " x="6.51471863" y="2.51471863" width="4" height="12" rx="1"></rect>
+        </g>
+        
+        <!-- Shopping Cart -->
+        <g id="Shopping-Cart" transform="translate(200.000000, 350.000000)">
+            <circle id="Cart-Base" fill="#FFC107" cx="30" cy="60" r="20"></circle>
+            <circle id="Cart-Wheel-1" fill="#6C757D" cx="20" cy="70" r="6"></circle>
+            <circle id="Cart-Wheel-2" fill="#6C757D" cx="45" cy="70" r="6"></circle>
+            <path d="M0,0 L15,0 L25,40 L55,40 L60,15 L20,15" id="Cart-Shape" stroke="#212529" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+        </g>
+        
+        <!-- Search Icon -->
+        <g id="Search-Icon" transform="translate(180.000000, 220.000000)">
+            <circle id="Search-Base" fill="#0D6EFD" cx="30" cy="30" r="30"></circle>
+            <circle id="Search-Glass" stroke="#FFFFFF" stroke-width="4" cx="25" cy="25" r="15"></circle>
+            <line x1="35" y1="35" x2="45" y2="45" id="Search-Handle" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"></line>
+        </g>
+        
+        <!-- Part Icons -->
+        <g id="Parts" transform="translate(550.000000, 380.000000)">
+            <rect id="Part-Base" fill="#6610F2" x="0" y="0" width="40" height="40" rx="4"></rect>
+            <text id="Part-Number" font-family="Arial-BoldMT, Arial" font-size="12" font-weight="bold" fill="#FFFFFF">
+                <tspan x="8" y="24">P/N</tspan>
+            </text>
+        </g>
+        
+        <!-- Connection Lines -->
+        <path d="M230,230 C250,250 270,280 300,300" id="Connection-1" stroke="#ADB5BD" stroke-width="2" stroke-dasharray="4,4"></path>
+        <path d="M400,300 C420,290 440,280 480,310" id="Connection-2" stroke="#ADB5BD" stroke-width="2" stroke-dasharray="4,4"></path>
+        <path d="M550,350 C530,350 510,360 490,360" id="Connection-3" stroke="#ADB5BD" stroke-width="2" stroke-dasharray="4,4"></path>
+        <path d="M400,400 C380,390 360,380 260,370" id="Connection-4" stroke="#ADB5BD" stroke-width="2" stroke-dasharray="4,4"></path>
+    </g>
+</svg>

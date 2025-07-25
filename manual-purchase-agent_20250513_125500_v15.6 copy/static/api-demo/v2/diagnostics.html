@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Diagnostics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .json-key {
+            color: #d63384;
+        }
+        .json-string {
+            color: #198754;
+        }
+        .json-number {
+            color: #0d6efd;
+        }
+        .json-boolean {
+            color: #fd7e14;
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="mb-4">API Diagnostics</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Test Enrichment API</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <input type="text" id="make" class="form-control" placeholder="Make (e.g. Toyota)" value="Toyota">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="model" class="form-control" placeholder="Model (e.g. Camry)" value="Camry">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="year" class="form-control" placeholder="Year (e.g. 2023)" value="2023">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <input type="text" id="part" class="form-control" placeholder="Part Number (optional)">
+                </div>
+                <button id="test-button" class="btn btn-primary">Test Enrichment API</button>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Response Overview</h5>
+            </div>
+            <div class="card-body">
+                <div id="summary"></div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Sample Data</h5>
+            </div>
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="dataTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="images-tab" data-bs-toggle="tab" data-bs-target="#images-panel" type="button" role="tab">Images</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="videos-tab" data-bs-toggle="tab" data-bs-target="#videos-panel" type="button" role="tab">Videos</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="articles-tab" data-bs-toggle="tab" data-bs-target="#articles-panel" type="button" role="tab">Articles</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="raw-tab" data-bs-toggle="tab" data-bs-target="#raw-panel" type="button" role="tab">Raw Response</button>
+                    </li>
+                </ul>
+                <div class="tab-content p-3" id="dataTabContent">
+                    <div class="tab-pane fade show active" id="images-panel" role="tabpanel">
+                        <pre id="image-data">No data available</pre>
+                    </div>
+                    <div class="tab-pane fade" id="videos-panel" role="tabpanel">
+                        <pre id="video-data">No data available</pre>
+                    </div>
+                    <div class="tab-pane fade" id="articles-panel" role="tabpanel">
+                        <pre id="article-data">No data available</pre>
+                    </div>
+                    <div class="tab-pane fade" id="raw-panel" role="tabpanel">
+                        <pre id="raw-data">No data available</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // API client
+            const API = {
+                async fetch(url, options = {}) {
+                    try {
+                        console.log(`API Request: ${options.method || 'GET'} ${url}`);
+                        if (options.body) {
+                            console.log('Request Body:', JSON.parse(options.body));
+                        }
+                        
+                        const urlObj = new URL(url, window.location.origin);
+                        const response = await fetch(urlObj.toString(), options);
+                        const data = await response.json();
+                        
+                        console.log('API Response:', data);
+                        return data;
+                    } catch (error) {
+                        console.error('API fetch error:', error);
+                        return { error: error.message };
+                    }
+                }
+            };
+            
+            // Test button click handler
+            document.getElementById('test-button').addEventListener('click', async function() {
+                const make = document.getElementById('make').value.trim();
+                const model = document.getElementById('model').value.trim();
+                const year = document.getElementById('year').value.trim();
+                const part = document.getElementById('part').value.trim();
+                
+                // Validate inputs
+                if (!make || !model) {
+                    alert('Please enter both make and model');
+                    return;
+                }
+                
+                // Clear previous results
+                document.getElementById('summary').innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
+                document.getElementById('image-data').textContent = 'Loading...';
+                document.getElementById('video-data').textContent = 'Loading...';
+                document.getElementById('article-data').textContent = 'Loading...';
+                document.getElementById('raw-data').textContent = 'Loading...';
+                
+                // Build request body
+                const body = {
+                    make: make,
+                    model: model
+                };
+                if (year) body.year = year;
+                if (part) body.part_number = part;
+                
+                try {
+                    // Call the enrichment API
+                    const response = await API.fetch('/api/enrichment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body)
+                    });
+                    
+                    // Update UI with results
+                    displayResults(response);
+                } catch (error) {
+                    console.error('Error:', error);
+                    document.getElementById('summary').innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+                }
+            });
+            
+            /**
+             * Display the API results
+             */
+            function displayResults(response) {
+                // Show raw response
+                document.getElementById('raw-data').textContent = JSON.stringify(response, null, 2);
+                
+                // Find the data - might be in response.data or directly in response
+                const data = response.data || response;
+                
+                // Determine if we have content
+                const hasData = data && 
+                    ((data.images && data.images.length > 0) || 
+                     (data.videos && data.videos.length > 0) || 
+                     (data.articles && data.articles.length > 0));
+                
+                // Update summary
+                let summaryHtml = '';
+                if (hasData) {
+                    const imageCount = (data.images || []).length;
+                    const videoCount = (data.videos || []).length;
+                    const articleCount = (data.articles || []).length;
+                    
+                    summaryHtml = `
+                        <div class="alert alert-success">
+                            <h5>Enrichment data successfully retrieved</h5>
+                            <p class="mb-0">Found: ${imageCount} images, ${videoCount} videos, ${articleCount} articles</p>
+                        </div>
+                        <div class="alert alert-info">
+                            <h5>Response Structure</h5>
+                            <code>${Object.keys(response).join(', ')}</code>
+                            ${response.data ? `<p class="mt-2 mb-0">Data fields: <code>${Object.keys(response.data).join(', ')}</code></p>` : ''}
+                        </div>
+                    `;
+                } else {
+                    summaryHtml = `
+                        <div class="alert alert-warning">
+                            <h5>No enrichment data found</h5>
+                            <p class="mb-0">The API response did not contain expected enrichment data.</p>
+                        </div>
+                    `;
+                }
+                document.getElementById('summary').innerHTML = summaryHtml;
+                
+                // Display sample data if available
+                if (data.images && data.images.length > 0) {
+                    const sample = data.images[0];
+                    document.getElementById('image-data').textContent = JSON.stringify(sample, null, 2);
+                    
+                    // Add fields summary
+                    const fieldsHtml = `<div class="alert alert-info mb-2">
+                        <h6>Image Fields</h6>
+                        <code>${Object.keys(sample).join(', ')}</code>
+                    </div>`;
+                    document.getElementById('images-panel').insertAdjacentHTML('afterbegin', fieldsHtml);
+                } else {
+                    document.getElementById('image-data').textContent = 'No image data available';
+                }
+                
+                if (data.videos && data.videos.length > 0) {
+                    const sample = data.videos[0];
+                    document.getElementById('video-data').textContent = JSON.stringify(sample, null, 2);
+                    
+                    // Add fields summary
+                    const fieldsHtml = `<div class="alert alert-info mb-2">
+                        <h6>Video Fields</h6>
+                        <code>${Object.keys(sample).join(', ')}</code>
+                    </div>`;
+                    document.getElementById('videos-panel').insertAdjacentHTML('afterbegin', fieldsHtml);
+                } else {
+                    document.getElementById('video-data').textContent = 'No video data available';
+                }
+                
+                if (data.articles && data.articles.length > 0) {
+                    const sample = data.articles[0];
+                    document.getElementById('article-data').textContent = JSON.stringify(sample, null, 2);
+                    
+                    // Add fields summary
+                    const fieldsHtml = `<div class="alert alert-info mb-2">
+                        <h6>Article Fields</h6>
+                        <code>${Object.keys(sample).join(', ')}</code>
+                    </div>`;
+                    document.getElementById('articles-panel').insertAdjacentHTML('afterbegin', fieldsHtml);
+                } else {
+                    document.getElementById('article-data').textContent = 'No article data available';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

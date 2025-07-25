@@ -1,0 +1,604 @@
+{
+  "timestamp": 1749148433.3268511,
+  "test_summary": {
+    "total_endpoints": 18,
+    "successful_endpoints": 16,
+    "failed_endpoints": 2
+  },
+  "detailed_results": {
+    "System - Clear Cache": {
+      "endpoint": "/api/system/clear-cache",
+      "method": "POST",
+      "stats": {
+        "min_ms": 4.317045211791992,
+        "max_ms": 48.96378517150879,
+        "avg_ms": 19.282976786295574,
+        "median_ms": 4.5680999755859375,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 48.96378517150879,
+          "status_code": 200,
+          "success": true,
+          "response_size": 77
+        },
+        {
+          "elapsed_ms": 4.5680999755859375,
+          "status_code": 200,
+          "success": true,
+          "response_size": 77
+        },
+        {
+          "elapsed_ms": 4.317045211791992,
+          "status_code": 200,
+          "success": true,
+          "response_size": 77
+        }
+      ]
+    },
+    "Recordings - Available Domains": {
+      "endpoint": "/api/recordings/available",
+      "method": "GET",
+      "stats": {
+        "min_ms": 2.151012420654297,
+        "max_ms": 3.2727718353271484,
+        "avg_ms": 2.603928248087565,
+        "median_ms": 2.38800048828125,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 3.2727718353271484,
+          "status_code": 200,
+          "success": true,
+          "response_size": 40
+        },
+        {
+          "elapsed_ms": 2.38800048828125,
+          "status_code": 200,
+          "success": true,
+          "response_size": 40
+        },
+        {
+          "elapsed_ms": 2.151012420654297,
+          "status_code": 200,
+          "success": true,
+          "response_size": 40
+        }
+      ]
+    },
+    "Recordings - Health Check": {
+      "endpoint": "/api/recordings/health",
+      "method": "GET",
+      "stats": {
+        "min_ms": 1.6531944274902344,
+        "max_ms": 2.0241737365722656,
+        "avg_ms": 1.8111864725748699,
+        "median_ms": 1.7561912536621094,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 1.6531944274902344,
+          "status_code": 200,
+          "success": true,
+          "response_size": 337
+        },
+        {
+          "elapsed_ms": 2.0241737365722656,
+          "status_code": 200,
+          "success": true,
+          "response_size": 337
+        },
+        {
+          "elapsed_ms": 1.7561912536621094,
+          "status_code": 200,
+          "success": true,
+          "response_size": 337
+        }
+      ]
+    },
+    "Recordings - List All": {
+      "endpoint": "/api/recordings/recordings",
+      "method": "GET",
+      "stats": {
+        "min_ms": 2.1407604217529297,
+        "max_ms": 2.8960704803466797,
+        "avg_ms": 2.429326375325521,
+        "median_ms": 2.251148223876953,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 2.251148223876953,
+          "status_code": 200,
+          "success": true,
+          "response_size": 190
+        },
+        {
+          "elapsed_ms": 2.1407604217529297,
+          "status_code": 200,
+          "success": true,
+          "response_size": 190
+        },
+        {
+          "elapsed_ms": 2.8960704803466797,
+          "status_code": 200,
+          "success": true,
+          "response_size": 190
+        }
+      ]
+    },
+    "Recordings - Get Variables": {
+      "endpoint": "/api/recordings/variables",
+      "method": "GET",
+      "stats": {
+        "min_ms": 2.990245819091797,
+        "max_ms": 3.732919692993164,
+        "avg_ms": 3.267367680867513,
+        "median_ms": 3.078937530517578,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 3.732919692993164,
+          "status_code": 200,
+          "success": true,
+          "response_size": 561
+        },
+        {
+          "elapsed_ms": 2.990245819091797,
+          "status_code": 200,
+          "success": true,
+          "response_size": 561
+        },
+        {
+          "elapsed_ms": 3.078937530517578,
+          "status_code": 200,
+          "success": true,
+          "response_size": 561
+        }
+      ]
+    },
+    "Enrichment - Equipment Data": {
+      "endpoint": "/api/enrichment",
+      "method": "POST",
+      "stats": {
+        "min_ms": 2266.663074493408,
+        "max_ms": 2878.962755203247,
+        "avg_ms": 2511.2667083740234,
+        "median_ms": 2388.174295425415,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 2266.663074493408,
+          "status_code": 200,
+          "success": true,
+          "response_size": 2698
+        },
+        {
+          "elapsed_ms": 2878.962755203247,
+          "status_code": 200,
+          "success": true,
+          "response_size": 2599
+        },
+        {
+          "elapsed_ms": 2388.174295425415,
+          "status_code": 200,
+          "success": true,
+          "response_size": 2599
+        }
+      ]
+    },
+    "Manuals - Search": {
+      "endpoint": "/api/manuals/search",
+      "method": "POST",
+      "stats": {
+        "min_ms": 3262.485980987549,
+        "max_ms": 4740.9069538116455,
+        "avg_ms": 3802.112658818563,
+        "median_ms": 3402.945041656494,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 4740.9069538116455,
+          "status_code": 200,
+          "success": true,
+          "response_size": 3591
+        },
+        {
+          "elapsed_ms": 3402.945041656494,
+          "status_code": 200,
+          "success": true,
+          "response_size": 3591
+        },
+        {
+          "elapsed_ms": 3262.485980987549,
+          "status_code": 200,
+          "success": true,
+          "response_size": 3591
+        }
+      ]
+    },
+    "Manuals - List All": {
+      "endpoint": "/api/manuals",
+      "method": "GET",
+      "stats": {
+        "min_ms": 3.4949779510498047,
+        "max_ms": 15.933990478515625,
+        "avg_ms": 7.9203446706136065,
+        "median_ms": 4.332065582275391,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 15.933990478515625,
+          "status_code": 200,
+          "success": true,
+          "response_size": 58
+        },
+        {
+          "elapsed_ms": 4.332065582275391,
+          "status_code": 200,
+          "success": true,
+          "response_size": 58
+        },
+        {
+          "elapsed_ms": 3.4949779510498047,
+          "status_code": 200,
+          "success": true,
+          "response_size": 58
+        }
+      ]
+    },
+    "Parts - Resolve Generic": {
+      "endpoint": "/api/parts/resolve",
+      "method": "POST",
+      "stats": {
+        "min_ms": 12204.064846038818,
+        "max_ms": 21544.695138931274,
+        "avg_ms": 15595.59734662374,
+        "median_ms": 13038.032054901123,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 12204.064846038818,
+          "status_code": 200,
+          "success": true,
+          "response_size": 5131
+        },
+        {
+          "elapsed_ms": 13038.032054901123,
+          "status_code": 200,
+          "success": true,
+          "response_size": 5081
+        },
+        {
+          "elapsed_ms": 21544.695138931274,
+          "status_code": 200,
+          "success": true,
+          "response_size": 4685
+        }
+      ]
+    },
+    "Parts - Find Similar": {
+      "endpoint": "/api/parts/find-similar",
+      "method": "POST",
+      "stats": {
+        "min_ms": 0,
+        "max_ms": 0,
+        "avg_ms": 0,
+        "median_ms": 0,
+        "success_rate": 0,
+        "trials": 3,
+        "successful_trials": 0
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 8.037805557250977,
+          "status_code": 400,
+          "success": false,
+          "response_size": 36
+        },
+        {
+          "elapsed_ms": 2.9811859130859375,
+          "status_code": 400,
+          "success": false,
+          "response_size": 36
+        },
+        {
+          "elapsed_ms": 2.7751922607421875,
+          "status_code": 400,
+          "success": false,
+          "response_size": 36
+        }
+      ]
+    },
+    "Parts - List All": {
+      "endpoint": "/api/parts",
+      "method": "GET",
+      "stats": {
+        "min_ms": 3.242015838623047,
+        "max_ms": 13.778209686279297,
+        "avg_ms": 7.013797760009766,
+        "median_ms": 4.021167755126953,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 13.778209686279297,
+          "status_code": 200,
+          "success": true,
+          "response_size": 536
+        },
+        {
+          "elapsed_ms": 4.021167755126953,
+          "status_code": 200,
+          "success": true,
+          "response_size": 536
+        },
+        {
+          "elapsed_ms": 3.242015838623047,
+          "status_code": 200,
+          "success": true,
+          "response_size": 536
+        }
+      ]
+    },
+    "Parts - Find Generic": {
+      "endpoint": "/api/parts/find-generic",
+      "method": "POST",
+      "stats": {
+        "min_ms": 0,
+        "max_ms": 0,
+        "avg_ms": 0,
+        "median_ms": 0,
+        "success_rate": 0,
+        "trials": 3,
+        "successful_trials": 0
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 2.8939247131347656,
+          "status_code": 400,
+          "success": false,
+          "response_size": 73
+        },
+        {
+          "elapsed_ms": 2.0139217376708984,
+          "status_code": 400,
+          "success": false,
+          "response_size": 73
+        },
+        {
+          "elapsed_ms": 2.0749568939208984,
+          "status_code": 400,
+          "success": false,
+          "response_size": 73
+        }
+      ]
+    },
+    "Parts - Validate Compatibility": {
+      "endpoint": "/api/parts/validate-compatibility",
+      "method": "POST",
+      "stats": {
+        "min_ms": 1.8529891967773438,
+        "max_ms": 2.2068023681640625,
+        "avg_ms": 2.063194910685221,
+        "median_ms": 2.129793167114258,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 2.2068023681640625,
+          "status_code": 200,
+          "success": true,
+          "response_size": 383
+        },
+        {
+          "elapsed_ms": 2.129793167114258,
+          "status_code": 200,
+          "success": true,
+          "response_size": 383
+        },
+        {
+          "elapsed_ms": 1.8529891967773438,
+          "status_code": 200,
+          "success": true,
+          "response_size": 383
+        }
+      ]
+    },
+    "Suppliers - Search Parts": {
+      "endpoint": "/api/suppliers/search",
+      "method": "POST",
+      "stats": {
+        "min_ms": 10642.9762840271,
+        "max_ms": 12558.497667312622,
+        "avg_ms": 11411.785046259562,
+        "median_ms": 11033.881187438965,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 12558.497667312622,
+          "status_code": 200,
+          "success": true,
+          "response_size": 3965
+        },
+        {
+          "elapsed_ms": 11033.881187438965,
+          "status_code": 200,
+          "success": true,
+          "response_size": 3962
+        },
+        {
+          "elapsed_ms": 10642.9762840271,
+          "status_code": 200,
+          "success": true,
+          "response_size": 3798
+        }
+      ]
+    },
+    "Suppliers - List All": {
+      "endpoint": "/api/suppliers",
+      "method": "GET",
+      "stats": {
+        "min_ms": 2.1681785583496094,
+        "max_ms": 11.033058166503906,
+        "avg_ms": 5.269050598144531,
+        "median_ms": 2.605915069580078,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 11.033058166503906,
+          "status_code": 200,
+          "success": true,
+          "response_size": 3499
+        },
+        {
+          "elapsed_ms": 2.605915069580078,
+          "status_code": 200,
+          "success": true,
+          "response_size": 3499
+        },
+        {
+          "elapsed_ms": 2.1681785583496094,
+          "status_code": 200,
+          "success": true,
+          "response_size": 3499
+        }
+      ]
+    },
+    "Profiles - List All": {
+      "endpoint": "/api/profiles",
+      "method": "GET",
+      "stats": {
+        "min_ms": 1.6169548034667969,
+        "max_ms": 2.020120620727539,
+        "avg_ms": 1.7850399017333984,
+        "median_ms": 1.7180442810058594,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 2.020120620727539,
+          "status_code": 200,
+          "success": true,
+          "response_size": 171
+        },
+        {
+          "elapsed_ms": 1.7180442810058594,
+          "status_code": 200,
+          "success": true,
+          "response_size": 171
+        },
+        {
+          "elapsed_ms": 1.6169548034667969,
+          "status_code": 200,
+          "success": true,
+          "response_size": 171
+        }
+      ]
+    },
+    "Purchases - List All": {
+      "endpoint": "/api/purchases",
+      "method": "GET",
+      "stats": {
+        "min_ms": 2.0117759704589844,
+        "max_ms": 3.599882125854492,
+        "avg_ms": 2.664963404337565,
+        "median_ms": 2.3832321166992188,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 3.599882125854492,
+          "status_code": 200,
+          "success": true,
+          "response_size": 60
+        },
+        {
+          "elapsed_ms": 2.3832321166992188,
+          "status_code": 200,
+          "success": true,
+          "response_size": 60
+        },
+        {
+          "elapsed_ms": 2.0117759704589844,
+          "status_code": 200,
+          "success": true,
+          "response_size": 60
+        }
+      ]
+    },
+    "Screenshots - Capture Suppliers": {
+      "endpoint": "/api/screenshots/suppliers",
+      "method": "POST",
+      "stats": {
+        "min_ms": 2.7310848236083984,
+        "max_ms": 2653.775930404663,
+        "avg_ms": 886.5269819895426,
+        "median_ms": 3.0739307403564453,
+        "success_rate": 100.0,
+        "trials": 3,
+        "successful_trials": 3
+      },
+      "trial_results": [
+        {
+          "elapsed_ms": 2653.775930404663,
+          "status_code": 200,
+          "success": true,
+          "response_size": 141
+        },
+        {
+          "elapsed_ms": 3.0739307403564453,
+          "status_code": 200,
+          "success": true,
+          "response_size": 64
+        },
+        {
+          "elapsed_ms": 2.7310848236083984,
+          "status_code": 200,
+          "success": true,
+          "response_size": 64
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Recording System Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: var(--bg-primary);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin: 0;
+            padding: 2rem;
+        }
+        .docs-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+        }
+        .docs-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--glass-border);
+        }
+        .docs-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .docs-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+        .section {
+            margin-bottom: 3rem;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .subsection-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 2rem 0 1rem 0;
+        }
+        .code-block {
+            background: #1e1e1e;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .command {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: monospace;
+            margin: 0.5rem 0;
+        }
+        .warning {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left: 4px solid #ff9800;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+        .success {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            border-left: 4px solid #4caf50;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+        .info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 4px solid #2196f3;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        .dummy-values-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        .dummy-values-table th,
+        .dummy-values-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .dummy-values-table th {
+            background: var(--glass-bg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .dummy-values-table td:first-child {
+            font-family: monospace;
+            font-weight: 500;
+        }
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+        .back-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        .toc {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .toc-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .toc-list {
+            list-style: none;
+            padding: 0;
+        }
+        .toc-list li {
+            margin: 0.5rem 0;
+        }
+        .toc-list a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .toc-list a:hover {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <a href="javascript:window.close()" class="back-button">
+        <i class="fas fa-times"></i> Close
+    </a>
+
+    <div class="docs-container">
+        <div class="docs-header">
+            <h1 class="docs-title">
+                <i class="fas fa-video"></i>
+                Purchase Recording System
+            </h1>
+            <p class="docs-subtitle">
+                Complete guide to recording and testing automated purchase flows
+            </p>
+        </div>
+
+        <div class="toc">
+            <div class="toc-title">Table of Contents</div>
+            <ul class="toc-list">
+                <li><a href="#overview">System Overview</a></li>
+                <li><a href="#setup">Setup & Prerequisites</a></li>
+                <li><a href="#dummy-values">Dummy Values for Recording</a></li>
+                <li><a href="#recording">Recording a Purchase Flow</a></li>
+                <li><a href="#testing">Testing Recordings</a></li>
+                <li><a href="#troubleshooting">Troubleshooting</a></li>
+                <li><a href="#best-practices">Best Practices</a></li>
+            </ul>
+        </div>
+
+        <section id="overview" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-info-circle"></i>
+                System Overview
+            </h2>
+            <p>
+                The Purchase Recording System captures user interactions on e-commerce websites and replays them 
+                automatically for purchase automation. The system records mouse clicks, keyboard inputs, and 
+                navigation actions, then substitutes real customer data during playback.
+            </p>
+            
+            <div class="info">
+                <strong>How it works:</strong>
+                <br>1. Record purchase flow using dummy data
+                <br>2. System captures all interactions
+                <br>3. During playback, dummy values are replaced with real customer data
+                <br>4. Purchase completes automatically using real billing information
+            </div>
+        </section>
+
+        <section id="setup" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-cog"></i>
+                Setup & Prerequisites
+            </h2>
+            
+            <div class="subsection-title">Required Tools</div>
+            <ul>
+                <li>Node.js (v16 or higher)</li>
+                <li>Chrome or Chromium browser</li>
+                <li>Terminal/Command prompt access</li>
+            </ul>
+
+            <div class="subsection-title">Installation</div>
+            <div class="code-block">cd recording_system
+npm install
+npx playwright install chromium</div>
+
+            <div class="subsection-title">Starting the Recording System</div>
+            <div class="command">node index.js --help</div>
+            <p>This will show all available commands and options.</p>
+        </section>
+
+        <section id="dummy-values" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-user-secret"></i>
+                Dummy Values for Recording
+            </h2>
+            <p>
+                <strong>IMPORTANT:</strong> Always use these exact dummy values when recording. 
+                The system will automatically replace them with real customer data during purchase automation.
+            </p>
+
+            <div class="warning">
+                <strong>Never use real personal information during recording!</strong> 
+                These dummy values are designed to be safe and will be replaced during actual purchases.
+            </div>
+
+            <table class="dummy-values-table">
+                <thead>
+                    <tr>
+                        <th>Field Type</th>
+                        <th>Use This Value</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>First Name</td>
+                        <td>John</td>
+                        <td>Simple, common name</td>
+                    </tr>
+                    <tr>
+                        <td>Last Name</td>
+                        <td>Smith</td>
+                        <td>Simple, common surname</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>john.smith@example.com</td>
+                        <td>Valid format, safe domain</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>555-123-4567</td>
+                        <td>Standard test phone number</td>
+                    </tr>
+                    <tr>
+                        <td>Company</td>
+                        <td>HVAC Solutions Inc.</td>
+                        <td>Generic business name</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>123 Main Street</td>
+                        <td>Generic street address</td>
+                    </tr>
+                    <tr>
+                        <td>Address 2</td>
+                        <td>Suite 100</td>
+                        <td>Optional secondary address</td>
+                    </tr>
+                    <tr>
+                        <td>City</td>
+                        <td>Springfield</td>
+                        <td>Common city name</td>
+                    </tr>
+                    <tr>
+                        <td>State</td>
+                        <td>Illinois</td>
+                        <td>Full state name</td>
+                    </tr>
+                    <tr>
+                        <td>State (Abbreviated)</td>
+                        <td>IL</td>
+                        <td>Two-letter state code</td>
+                    </tr>
+                    <tr>
+                        <td>ZIP Code</td>
+                        <td>62701</td>
+                        <td>Valid ZIP for Springfield, IL</td>
+                    </tr>
+                    <tr>
+                        <td>Credit Card</td>
+                        <td>4532123456789012</td>
+                        <td>Test Visa number (will be replaced)</td>
+                    </tr>
+                    <tr>
+                        <td>Card Name</td>
+                        <td>John Smith</td>
+                        <td>Match the name fields</td>
+                    </tr>
+                    <tr>
+                        <td>Expiry Month</td>
+                        <td>12</td>
+                        <td>December</td>
+                    </tr>
+                    <tr>
+                        <td>Expiry Year</td>
+                        <td>2028</td>
+                        <td>Future year</td>
+                    </tr>
+                    <tr>
+                        <td>CVV</td>
+                        <td>123</td>
+                        <td>Standard test CVV</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="recording" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-record-vinyl"></i>
+                Recording a Purchase Flow
+            </h2>
+
+            <div class="subsection-title">Step-by-Step Recording Process</div>
+            
+            <div style="margin: 2rem 0;">
+                <div style="display: flex; align-items: flex-start; margin: 1.5rem 0;">
+                    <span class="step-number">1</span>
+                    <div>
+                        <strong>Start Recording</strong>
+                        <div class="command">node index.js record https://partstown.com/product-page</div>
+                        <p>The system will auto-generate filename: <code>./recordings/partstown.json</code></p>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin: 1.5rem 0;">
+                    <span class="step-number">2</span>
+                    <div>
+                        <strong>Navigate the Site</strong>
+                        <p>The browser will open automatically. Navigate through the purchase flow exactly as a customer would:</p>
+                        <ul>
+                            <li>Add product to cart</li>
+                            <li>Go to checkout</li>
+                            <li>Fill out all forms using the dummy values above</li>
+                            <li>Complete the entire flow but <strong>STOP before final purchase submission</strong></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: flex-start; margin: 1.5rem 0;">
+                    <span class="step-number">3</span>
+                    <div>
+                        <strong>Stop Recording</strong>
+                        <p>Press <kbd>Ctrl+C</kbd> in the terminal to stop recording. The system will save the recording file.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning">
+                <strong>Important:</strong> Do NOT complete the actual purchase during recording! 
+                Stop just before the final "Place Order" or "Submit Payment" button.
+            </div>
+
+            <div class="subsection-title">What Gets Recorded</div>
+            <ul>
+                <li><strong>Mouse Clicks:</strong> All button clicks and element interactions</li>
+                <li><strong>Text Input:</strong> Form fields and text entry</li>
+                <li><strong>Navigation:</strong> Page transitions and URL changes</li>
+                <li><strong>Scrolling:</strong> Page scroll positions</li>
+                <li><strong>Window Events:</strong> Resize and focus changes</li>
+            </ul>
+        </section>
+
+        <section id="testing" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-test-tube"></i>
+                Testing Recordings
+            </h2>
+
+            <div class="subsection-title">Basic Playback Test</div>
+            <div class="command">node index.js play https://partstown.com/different-product --slow-mo 2000</div>
+            <p>This replays the recording on a different product page with 2-second delays between actions.</p>
+
+            <div class="subsection-title">Test with Variables</div>
+            <div class="code-block">node index.js play partstown.json --vars-file test-variables.json --headless</div>
+            
+            <div class="subsection-title">Creating Test Variables</div>
+            <p>Create a <code>test-variables.json</code> file with different data to test variable substitution:</p>
+            <div class="code-block">{
+  "first_name": "Jane",
+  "last_name": "Doe", 
+  "email": "jane.doe@testcompany.com",
+  "phone": "555-987-6543",
+  "company": "Test Company LLC",
+  "address": "456 Oak Avenue",
+  "city": "Chicago",
+  "state": "Illinois",
+  "zip_code": "60601"
+}</div>
+
+            <div class="subsection-title">Debugging Failed Recordings</div>
+            <div class="command">node index.js play partstown.json --slow-mo 5000 --ignore-errors</div>
+            <p>Use slow motion and error ignoring to see what's happening when recordings fail.</p>
+        </section>
+
+        <section id="troubleshooting" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-wrench"></i>
+                Troubleshooting
+            </h2>
+
+            <div class="subsection-title">Common Issues</div>
+            
+            <div style="margin: 1.5rem 0;">
+                <strong>Recording fails to start:</strong>
+                <ul>
+                    <li>Check that Playwright is installed: <code>npx playwright install</code></li>
+                    <li>Ensure the URL is accessible</li>
+                    <li>Try with <code>--headless=false</code> to see the browser</li>
+                </ul>
+            </div>
+
+            <div style="margin: 1.5rem 0;">
+                <strong>Playback doesn't work:</strong>
+                <ul>
+                    <li>Website layout may have changed since recording</li>
+                    <li>Try using <code>--slow-mo 2000</code> for slower playback</li>
+                    <li>Check that dummy values were used correctly during recording</li>
+                    <li>Use <code>--ignore-errors</code> to see where it stops</li>
+                </ul>
+            </div>
+
+            <div style="margin: 1.5rem 0;">
+                <strong>Variables not substituting:</strong>
+                <ul>
+                    <li>Ensure exact dummy values were used during recording</li>
+                    <li>Check variable names match between recording and substitution</li>
+                    <li>Verify JSON syntax in variables file</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="best-practices" class="section">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i>
+                Best Practices
+            </h2>
+
+            <div class="success">
+                <strong>Recording Best Practices:</strong>
+                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                    <li>Use consistent dummy values across all recordings</li>
+                    <li>Record the complete flow but stop before payment</li>
+                    <li>Test recordings immediately after creation</li>
+                    <li>Use descriptive filenames for recordings</li>
+                    <li>Record during off-peak hours to avoid site changes</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <strong>Testing Best Practices:</strong>
+                <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+                    <li>Always test with different products/URLs</li>
+                    <li>Test variable substitution thoroughly</li>
+                    <li>Use slow motion during testing to catch issues</li>
+                    <li>Test both headless and visual modes</li>
+                    <li>Keep test data sets organized</li>
+                </ul>
+            </div>
+
+            <div class="subsection-title">Security Considerations</div>
+            <ul>
+                <li><strong>Never record with real payment information</strong></li>
+                <li>Keep recordings in version control for team sharing</li>
+                <li>Regularly update recordings when sites change</li>
+                <li>Test recordings in staging environments first</li>
+                <li>Monitor automated purchases for anomalies</li>
+            </ul>
+
+            <div class="subsection-title">Maintenance</div>
+            <ul>
+                <li>Update recordings when website layouts change</li>
+                <li>Test recordings monthly for reliability</li>
+                <li>Keep backup copies of working recordings</li>
+                <li>Document any site-specific quirks or requirements</li>
+            </ul>
+        </section>
+
+        <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--glass-border);">
+            <p style="color: var(--text-muted);">
+                For technical support or questions about the recording system, 
+                check the system logs in the PartsPro interface.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "success": false,
+  "product_url": "https://www.etundra.com/kitchen-supplies/food-storage/dough-boxes/cambro-dbc1826cw148-pizza-dough-box-cover/",
+  "screenshots": [
+    "purchase_screenshots/20250602_143059_01_product_page.png",
+    "purchase_screenshots/20250602_143111_03_click.png",
+    "purchase_screenshots/20250602_143129_04_click.png",
+    "purchase_screenshots/20250602_143147_05_click.png"
+  ],
+  "errors": [
+    "Step 13 failed: {'action': 'click', 'selector': 'continue_to_payment', 'optional': True} - Target page, context or browser has been closed"
+  ],
+  "execution_time": 55.05384087562561,
+  "site": "eTundra",
+  "error": "Target page, context or browser has been closed",
+  "message": "Purchase failed: Target page, context or browser has been closed"
+}

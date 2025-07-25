@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Purchase Agent API Demo v10 - Simplified</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-robot me-2"></i>Manual Purchase Agent API v10
+            </a>
+            <span class="navbar-text text-light ms-3">
+                Simplified Interface
+            </span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">API Demo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="model-search.html">Model Search</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="part-search.html">Part Search</a>
+                    </li>
+                </ul>
+                <a href="/static/api-demo/index.html" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-external-link-alt me-1"></i> Switch to Full Demo
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">API Endpoint Selection</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="endpoint-selection" class="form-label">Select API Endpoint</label>
+                                <select class="form-select" id="endpoint-selection">
+                                    <option value="">-- Select an API Endpoint --</option>
+                                    <optgroup label="Manuals">
+                                        <option value="manuals-search">Search Manuals (POST /api/manuals/search)</option>
+                                        <option value="manuals-list">List Manuals (GET /api/manuals)</option>
+                                        <option value="manuals-get">Get Manual (GET /api/manuals/{id})</option>
+                                        <option value="manuals-create">Create Manual (POST /api/manuals)</option>
+                                        <option value="manuals-process">Process Manual (POST /api/manuals/{id}/process)</option>
+                                        <option value="manuals-multi-process">Process Multiple Manuals (POST /api/manuals/multi-process)</option>
+                                        <option value="manuals-components">Get Manual Components (GET /api/manuals/{id}/components)</option>
+                                        <option value="manuals-process-components">Process Components (POST /api/manuals/{id}/process-components)</option>
+                                    </optgroup>
+                                    <optgroup label="Parts">
+                                        <option value="parts-resolve">Resolve Part (POST /api/parts/resolve)</option>
+                                        <option value="parts-list">List Parts (GET /api/parts)</option>
+                                        <option value="parts-get">Get Part (GET /api/parts/{id})</option>
+                                    </optgroup>
+                                    <optgroup label="Suppliers">
+                                        <option value="suppliers-search">Search Suppliers (POST /api/suppliers/search)</option>
+                                        <option value="suppliers-list">List Suppliers (GET /api/suppliers)</option>
+                                    </optgroup>
+                                    <optgroup label="Profiles">
+                                        <option value="profiles-create">Create Profile (POST /api/profiles)</option>
+                                        <option value="profiles-list">List Profiles (GET /api/profiles)</option>
+                                        <option value="profiles-get">Get Profile (GET /api/profiles/{id})</option>
+                                    </optgroup>
+                                    <optgroup label="Purchases">
+                                        <option value="purchases-create">Create Purchase (POST /api/purchases)</option>
+                                        <option value="purchases-list">List Purchases (GET /api/purchases)</option>
+                                        <option value="purchases-get">Get Purchase (GET /api/purchases/{id})</option>
+                                        <option value="purchases-cancel">Cancel Purchase (POST /api/purchases/{id}/cancel)</option>
+                                    </optgroup>
+                                    <optgroup label="Enrichment">
+                                        <option value="enrichment-data">Get Enrichment Data (POST /api/enrichment)</option>
+                                    </optgroup>
+                                    <optgroup label="System">
+                                        <option value="system-clear">Clear Database (POST /api/system/clear-database)</option>
+                                        <option value="system-clear-cache">Clear Cache (POST /api/system/clear-cache)</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Request</h5>
+                        <div>
+                            <button class="btn btn-sm btn-primary" id="execute-request">
+                                <i class="fas fa-play me-1"></i> Execute Request
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary ms-2" id="format-json">
+                                <i class="fas fa-code me-1"></i> Format JSON
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="request-info" class="form-label">Request Method</label>
+                            <input type="text" class="form-control" id="request-method-display" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="request-url" class="form-label">Endpoint URL</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="request-url" placeholder="/api/...">
+                                <button class="btn btn-outline-secondary copy-button" type="button" data-target="request-url">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">Edit the URL to customize parameters like IDs or add query parameters</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="request-body" class="form-label">Request Body (JSON)</label>
+                            <div class="position-relative">
+                                <textarea class="form-control code-area" id="request-body" rows="8" placeholder='{ "key": "value" }'></textarea>
+                                <button class="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2 copy-button" data-target="request-body">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Console Log</h5>
+                        <button class="btn btn-sm btn-outline-secondary" id="clear-console">
+                            <i class="fas fa-broom me-1"></i> Clear
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="console-log"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Response</h5>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary copy-button" data-target="response-data">
+                                <i class="fas fa-copy me-1"></i> Copy
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary ms-2" id="clear-response">
+                                <i class="fas fa-broom me-1"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="response-data" class="response-container">
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-code fa-2x mb-3"></i>
+                                <p>Response will appear here after executing a request</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Database Actions -->
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Database Management</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center gap-3">
+                            <button class="btn btn-danger" id="clear-database-btn">
+                                <i class="fas fa-trash-alt me-1"></i> Clear Database
+                            </button>
+                            <button class="btn btn-warning" id="clear-cache-btn">
+                                <i class="fas fa-broom me-1"></i> Clear Cache
+                            </button>
+                        </div>
+                        <div class="text-center mt-2">
+                            <small class="text-muted">
+                                "Clear Database" will delete all manuals, parts, profiles, and other data from the database.<br>
+                                "Clear Cache" will remove cached search results and temporary files.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">
+                Manual Purchase Agent API Demo v10.0.0 &copy; 2025
+                <span class="mx-2">|</span>
+                <a href="/API_REFERENCE.md" class="text-decoration-none">API Reference</a>
+                <span class="mx-2">|</span>
+                <a href="mobile.html" class="text-decoration-none">Mobile Version</a>
+                <span class="mx-2">|</span>
+                <a href="model-search.html" class="text-decoration-none">Model Search</a>
+                <span class="mx-2">|</span>
+                <a href="part-search.html" class="text-decoration-none">Part Search</a>
+            </span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Prism.js for code highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    
+    <!-- API Client Library -->
+    <script src="/static/api-demo/js/api.js"></script>
+    
+    <!-- Demo JS -->
+    <script src="js/main.js"></script>
+</body>
+</html>

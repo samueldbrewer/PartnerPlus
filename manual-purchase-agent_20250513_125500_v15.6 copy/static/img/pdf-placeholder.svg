@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="600px" viewBox="0 0 800 600" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>PDF Document Placeholder</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="800" height="600" rx="8"></rect>
+    </defs>
+    <g id="PDF-Placeholder" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Background" fill="#F8F9FA" x="0" y="0" width="800" height="600"></rect>
+        <g id="Document">
+            <rect id="Paper" fill="#FFFFFF" x="150" y="100" width="500" height="400" rx="4"></rect>
+            <g id="PDF-Icon" transform="translate(325.000000, 175.000000)">
+                <rect id="Background" fill="#DC3545" x="0" y="0" width="150" height="150" rx="8"></rect>
+                <text id="PDF" font-family="Arial-BoldMT, Arial" font-size="60" font-weight="bold" fill="#FFFFFF">
+                    <tspan x="28" y="93">PDF</tspan>
+                </text>
+            </g>
+            <line x1="175" y1="340" x2="625" y2="340" id="Line" stroke="#CCCCCC" stroke-width="2" stroke-linecap="square"></line>
+            <line x1="175" y1="370" x2="625" y2="370" id="Line" stroke="#CCCCCC" stroke-width="2" stroke-linecap="square"></line>
+            <line x1="175" y1="400" x2="625" y2="400" id="Line" stroke="#CCCCCC" stroke-width="2" stroke-linecap="square"></line>
+            <line x1="175" y1="430" x2="500" y2="430" id="Line" stroke="#CCCCCC" stroke-width="2" stroke-linecap="square"></line>
+        </g>
+    </g>
+</svg>
