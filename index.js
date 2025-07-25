@@ -56,26 +56,36 @@ let emailService = null;
 
 // Create SMS service instance
 let smsService = null;
-console.log('Environment check - EMAIL_USER:', process.env.EMAIL_USER);
+// Helper function to clean environment variables from Railway
+function cleanEnvVar(value) {
+  if (!value) return value;
+  return value.replace(/^["']|["']$/g, '');
+}
+
+console.log('Environment check - EMAIL_USER:', cleanEnvVar(process.env.EMAIL_USER));
 console.log('Environment check - EMAIL_PASS:', process.env.EMAIL_PASS ? `***${process.env.EMAIL_PASS.slice(-4)}` : 'NOT SET');
 console.log('Password length:', process.env.EMAIL_PASS ? process.env.EMAIL_PASS.length : 0);
-if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-  console.log('Initializing email service for:', process.env.EMAIL_USER);
+
+const emailUser = cleanEnvVar(process.env.EMAIL_USER);
+const emailPass = cleanEnvVar(process.env.EMAIL_PASS);
+
+if (emailUser && emailPass) {
+  console.log('Initializing email service for:', emailUser);
   emailService = new EmailService({
     smtp: {
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: process.env.SMTP_PORT || 587,
+      host: cleanEnvVar(process.env.SMTP_HOST) || 'smtp.gmail.com',
+      port: parseInt(cleanEnvVar(process.env.SMTP_PORT)) || 587,
       secure: false,
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-      from: process.env.EMAIL_FROM || process.env.EMAIL_USER
+      user: emailUser,
+      pass: emailPass,
+      from: cleanEnvVar(process.env.EMAIL_FROM) || emailUser
     },
     imap: {
-      host: process.env.IMAP_HOST || 'imap.gmail.com',
-      port: process.env.IMAP_PORT || 993,
+      host: cleanEnvVar(process.env.IMAP_HOST) || 'imap.gmail.com',
+      port: parseInt(cleanEnvVar(process.env.IMAP_PORT)) || 993,
       tls: true,
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
+      user: emailUser,
+      pass: emailPass
     }
   });
   
@@ -91,16 +101,20 @@ if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
 }
 
 // Initialize SMS service if credentials are provided
-console.log('Environment check - TWILIO_ACCOUNT_SID:', process.env.TWILIO_ACCOUNT_SID ? `***${process.env.TWILIO_ACCOUNT_SID.slice(-4)}` : 'NOT SET');
-console.log('Environment check - TWILIO_AUTH_TOKEN:', process.env.TWILIO_AUTH_TOKEN ? `***${process.env.TWILIO_AUTH_TOKEN.slice(-4)}` : 'NOT SET');
-console.log('Environment check - TWILIO_PHONE_NUMBER:', process.env.TWILIO_PHONE_NUMBER || 'NOT SET');
+const twilioSid = cleanEnvVar(process.env.TWILIO_ACCOUNT_SID);
+const twilioToken = cleanEnvVar(process.env.TWILIO_AUTH_TOKEN);
+const twilioPhone = cleanEnvVar(process.env.TWILIO_PHONE_NUMBER);
 
-if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER) {
+console.log('Environment check - TWILIO_ACCOUNT_SID:', twilioSid ? `***${twilioSid.slice(-4)}` : 'NOT SET');
+console.log('Environment check - TWILIO_AUTH_TOKEN:', twilioToken ? `***${twilioToken.slice(-4)}` : 'NOT SET');
+console.log('Environment check - TWILIO_PHONE_NUMBER:', twilioPhone || 'NOT SET');
+
+if (twilioSid && twilioToken && twilioPhone) {
   console.log('Initializing SMS service');
   smsService = new SMSService({
-    accountSid: process.env.TWILIO_ACCOUNT_SID,
-    authToken: process.env.TWILIO_AUTH_TOKEN,
-    phoneNumber: process.env.TWILIO_PHONE_NUMBER
+    accountSid: twilioSid,
+    authToken: twilioToken,
+    phoneNumber: twilioPhone
   });
   
   smsService.initialize().catch(err => {
