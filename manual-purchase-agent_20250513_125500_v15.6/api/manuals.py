@@ -1,11 +1,26 @@
 from flask import Blueprint, request, jsonify, current_app
 from models import db, Manual, ErrorCode, PartReference
-from services.manual_finder import search_manuals as search_manuals_service
-from services.manual_finder import download_manual as download_manual_service
-from services.manual_finder import verify_manual_contains_model, get_pdf_page_count
-from services.manual_parser import extract_text_from_pdf, extract_information, extract_components
-from services.pdf_preview_generator import PDFPreviewGenerator
-from services.pdf_two_page_preview import PDFTwoPagePreview
+# Import dual manual search
+from services.dual_manual_search import find_manual_with_dual_search
+# Temporarily disabled missing services
+# from services.manual_finder import download_manual as download_manual_service
+# from services.manual_finder import verify_manual_contains_model, get_pdf_page_count
+# from services.manual_parser import extract_text_from_pdf, extract_information, extract_components
+# from services.pdf_preview_generator import PDFPreviewGenerator
+# from services.pdf_two_page_preview import PDFTwoPagePreview
+
+# Stub functions for disabled services
+def download_manual_service(url):
+    raise NotImplementedError("Manual download service is temporarily disabled")
+
+def extract_text_from_pdf(path):
+    raise NotImplementedError("PDF text extraction service is temporarily disabled")
+
+def extract_information(text, manual_id):
+    raise NotImplementedError("Information extraction service is temporarily disabled")
+
+def extract_components(text, prompt):
+    raise NotImplementedError("Component extraction service is temporarily disabled")
 import os
 import logging
 import re
@@ -41,21 +56,34 @@ def search_manuals():
         return jsonify({'error': 'Make and model parameters are required'}), 400
     
     try:
-        if year:
-            logger.info(f"Searching for {manual_type} manuals for {make} {model} {year}")
-            results = search_manuals_service(make, model, manual_type, year)
-        else:
-            logger.info(f"Searching for {manual_type} manuals for {make} {model}")
-            results = search_manuals_service(make, model, manual_type)
+        logger.info(f"Searching for {manual_type} manuals for {make} {model} {year}")
         
-        # Add two-page preview generation for PDFs
-        two_page_preview = PDFTwoPagePreview()
-        preview_generator = PDFPreviewGenerator()  # Fallback
+        # Use dual manual search to get top 5 results 
+        dual_results = find_manual_with_dual_search(make, model, year, manual_type, max_results=5)
+        logger.info(f"Dual search found {len(dual_results)} results")
+        
+        # Convert dual search results to expected format
+        results = []
+        for dual_result in dual_results:
+            if dual_result and dual_result.get('manual_url'):
+                results.append({
+                    'title': dual_result.get('manual_title', f"{make} {model} {manual_type}"),
+                    'url': dual_result.get('manual_url'),
+                    'snippet': f"Rank #{dual_result.get('ranking_position', '?')}, Confidence: {dual_result.get('confidence', 0):.0%}, Method: {dual_result.get('selected_method', 'unknown')}",
+                    'source_domain': 'dual_manual_search',
+                    'is_official': dual_result.get('manufacturer_source', False),
+                    'file_format': dual_result.get('file_format', 'PDF'),
+                    'document_id': dual_result.get('document_id'),
+                    'confidence': dual_result.get('confidence', 0),
+                    'selected_method': dual_result.get('selected_method'),
+                    'arbitrator_reasoning': dual_result.get('arbitrator_reasoning'),
+                    'ranking_position': dual_result.get('ranking_position', 0),
+                    'sources_count': len(dual_result.get('sources', []))
+                })
         
         # Add source domain to each result
         for result in results:
-            # The source_domain should already be added in search_manuals_service
-            # Ensure it's there
+            # Ensure source_domain is set
             if 'source_domain' not in result:
                 try:
                     from urllib.parse import urlparse
@@ -63,72 +91,14 @@ def search_manuals():
                     result['source_domain'] = domain.replace('www.', '')
                 except:
                     result['source_domain'] = 'unknown'
-        
-        # Generate preview images and verify manuals asynchronously
-        def generate_preview_and_verify_async(result):
-            try:
-                pdf_url = result.get('url', '')
-                logger.info(f"Attempting to generate preview for: {pdf_url}")
-                
-                # Download the PDF temporarily for verification and page count
-                temp_path = None
-                try:
-                    temp_path = download_manual_service(pdf_url)
-                    
-                    # Get page count
-                    page_count = get_pdf_page_count(temp_path)
-                    if page_count:
-                        result['pages'] = page_count
-                    else:
-                        result['pages'] = None
-                    
-                    # Verify model is in the manual
-                    if verify_manual_contains_model(temp_path, model):
-                        result['model_verified'] = True
-                    else:
-                        result['model_verified'] = False
-                        logger.info(f"Model '{model}' not found in manual: {result.get('title', 'Unknown')}")
-                    
-                    # Clean up temp file
-                    if temp_path and os.path.exists(temp_path):
-                        os.remove(temp_path)
-                except Exception as ve:
-                    logger.error(f"Error verifying manual: {ve}")
-                    result['model_verified'] = True  # Default to include if can't verify
-                    result['pages'] = None
-                
-                # Try two-page preview first
-                preview_url = two_page_preview.generate_from_url(pdf_url)
-                if not preview_url:
-                    logger.info("Two-page preview failed, trying simple screenshot")
-                    # Fall back to simple screenshot
-                    preview_url = preview_generator.generate_preview_from_url(pdf_url)
-                
-                if preview_url:
-                    result['preview_image'] = preview_url
-                    logger.info(f"Generated preview for: {result.get('title', 'Unknown')}")
-                else:
-                    logger.error(f"Failed to generate any preview for: {pdf_url}")
-            except Exception as e:
-                logger.error(f"Error generating preview: {e}", exc_info=True)
-                result['model_verified'] = True  # Default to include
-                result['pages'] = None
-        
-        # Start preview generation and verification in background threads
-        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
-            futures = []
-            for result in results[:4]:  # Reduced to 4 for two-page previews (slower)
-                result['preview_image'] = None  # Initialize
-                result['model_verified'] = True  # Default
-                result['pages'] = None  # Initialize
-                future = executor.submit(generate_preview_and_verify_async, result)
-                futures.append(future)
             
-            # Wait briefly for some previews to complete (max 3 seconds for two-page)
-            concurrent.futures.wait(futures, timeout=3.0)
+            # Set default values for disabled services
+            result['preview_image'] = None
+            result['model_verified'] = True
+            result['pages'] = None
         
-        # Filter out manuals that don't contain the model (after verification)
-        verified_results = [r for r in results if r.get('model_verified', True)]
+        # Use results as verified_results since we're not doing verification
+        verified_results = results
         
         # Generate proxy URLs for PDFs to avoid ad blocker issues
         import uuid
@@ -310,6 +280,9 @@ def download_manual(manual_id):
             'message': 'Manual downloaded successfully',
             'local_path': local_path
         })
+    except NotImplementedError as e:
+        logger.error(f"Manual download service disabled: {e}")
+        return jsonify({'error': 'Manual download service is temporarily disabled'}), 503
     except Exception as e:
         logger.error(f"Error downloading manual: {e}")
         return jsonify({'error': str(e)}), 500
@@ -393,6 +366,9 @@ def process_manual(manual_id):
             'safety_warnings': extracted_info.get('safety_warnings', [])
         })
         
+    except NotImplementedError as e:
+        logger.error(f"Manual processing service disabled: {e}")
+        return jsonify({'error': 'Manual processing service is temporarily disabled'}), 503
     except Exception as e:
         logger.error(f"Error processing manual: {e}")
         return jsonify({'error': str(e)}), 500

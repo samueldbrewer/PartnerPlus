@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models import db, Supplier
+from services.dual_supplier_search import find_supplier_with_dual_search
 from services.supplier_finder import find_suppliers
 from services.supplier_finder_v2 import search_suppliers_v2
 import logging
@@ -21,21 +22,61 @@ def search_suppliers():
         make = data.get('make')
         model = data.get('model')
         use_v2 = data.get('use_v2', True)  # Default to v2
-        logger.info(f"Parsed use_v2: {use_v2} (type: {type(use_v2)})")
+        use_dual = data.get('use_dual', False)  # Option for dual search
+        location = data.get('location')
+        logger.info(f"Parsed use_v2: {use_v2}, use_dual: {use_dual} (type: {type(use_v2)})")
     else:
         part_number = request.args.get('part_number')
         oem_only = request.args.get('oem_only', 'false').lower() == 'true'
         make = request.args.get('make')
         model = request.args.get('model')
         use_v2 = request.args.get('use_v2', 'true').lower() == 'true'  # Default to v2
+        use_dual = request.args.get('use_dual', 'false').lower() == 'true'
+        location = request.args.get('location')
     
     if not part_number:
         return jsonify({'error': 'Part number is required'}), 400
     
     try:
-        logger.info(f"Searching suppliers for part {part_number} (v2: {use_v2})")
+        logger.info(f"Searching suppliers for part {part_number} (v2: {use_v2}, dual: {use_dual})")
         
-        if use_v2:
+        if use_dual:
+            # Use dual supplier search
+            part_description = f"{make} {model}" if make and model else None
+            dual_result = find_supplier_with_dual_search(part_number, part_description, location)
+            
+            # Convert dual search result to expected format
+            suppliers = []
+            if dual_result.get('supplier_name') and dual_result.get('supplier_url'):
+                suppliers.append({
+                    'url': dual_result.get('supplier_url'),
+                    'title': dual_result.get('supplier_name'),
+                    'snippet': f"Confidence: {dual_result.get('confidence', 0):.0%}, Method: {dual_result.get('selected_method', 'unknown')}, Type: {dual_result.get('supplier_type', 'Unknown')}",
+                    'domain': 'dual_supplier_search',
+                    'score': dual_result.get('confidence', 0) * 100,
+                    'has_part_number': True,
+                    'is_product_page': True,
+                    'contact_info': dual_result.get('contact_info'),
+                    'part_availability': dual_result.get('part_availability'),
+                    'pricing_info': dual_result.get('pricing_info'),
+                    'is_authorized': dual_result.get('is_authorized', False),
+                    'supplier_type': dual_result.get('supplier_type'),
+                    'location': dual_result.get('location'),
+                    'arbitrator_reasoning': dual_result.get('arbitrator_reasoning'),
+                    'sources_count': len(dual_result.get('sources', [])),
+                    'ai_ranking': True
+                })
+            
+            return jsonify({
+                'part_number': part_number,
+                'oem_only': oem_only,
+                'count': len(suppliers),
+                'suppliers': suppliers,
+                'ai_ranked': True,
+                'ranking_method': 'Dual AI-based supplier search with arbitrator',
+                'version': 'dual'
+            })
+        elif use_v2:
             # Use the new v2 supplier finder with PartsTown boosting
             result = search_suppliers_v2(
                 part_number=part_number,

@@ -148,13 +148,49 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Helper function to generate navigation HTML with dropdown
+function generateNavigation(currentPage) {
+  return `
+    <div class="header">
+      <div class="header-inner">
+        <div class="nav">
+          <h1>PartnerPlus</h1>
+          <a href="/" class="${currentPage === 'wo-agent' ? 'active' : ''}">WO Agent</a>
+          <div class="dropdown">
+            <a href="#" class="dropdown-toggle ${['ai-agent', 'ai-chat', 'email', 'sms', 'executor', 'purchase-agent'].includes(currentPage) ? 'active' : ''}">AI Tools ▼</a>
+            <div class="dropdown-menu">
+              <a href="/ai-agent">AI Agent</a>
+              <a href="/ai-chat">AI Chat</a>
+              <a href="/email">Email Service</a>
+              <a href="/sms">SMS Service</a>
+              <a href="/executor">Code Executor</a>
+              <a href="/purchase-agent">Purchase Agent</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Common dropdown styles
+const dropdownStyles = `
+  .dropdown { position: relative; display: inline-block; }
+  .dropdown-toggle { cursor: pointer; }
+  .dropdown-menu { display: none; position: absolute; background-color: white; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; border-radius: 4px; top: 100%; margin-top: 5px; }
+  .dropdown-menu a { color: #333 !important; padding: 12px 16px; text-decoration: none; display: block; margin: 0; border-radius: 0; }
+  .dropdown-menu a:hover { background-color: #f1f1f1; }
+  .dropdown:hover .dropdown-menu { display: block; }
+  .dropdown:hover .dropdown-toggle { background-color: rgba(255,255,255,0.2); }
+`;
+
 // Routes
-app.get('/ai-agent', (req, res) => {
+app.get('/ai-chat', (req, res) => {
   res.send(`
     <!DOCTYPE html>
     <html>
     <head>
-      <title>PartnerPlus Agent</title>
+      <title>AI Chat - PartnerPlus</title>
       <link rel="icon" type="image/svg+xml" href="/favicon.svg">
       <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
@@ -177,30 +213,14 @@ app.get('/ai-agent', (req, res) => {
         button:disabled { background-color: #ccc; cursor: not-allowed; }
         .cursor { animation: blink 1s infinite; color: #1976d2; }
         @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+        ${dropdownStyles}
       </style>
     </head>
     <body>
-      <div class="header">
-        <div class="header-inner">
-          <div class="nav">
-            <h1><a href="/" style="color: white; text-decoration: none;">PartnerPlus</a></h1>
-            <div class="main-nav">
-              <a href="/">🤖 Agent Hub</a>
-            </div>
-            <div class="support-nav">
-              <span class="nav-label">Tools:</span>
-              <a href="/ai-agent" class="active">AI Chat</a>
-              <a href="/email">Email</a>
-              <a href="/sms">SMS</a>
-              <a href="/purchase-agent">Parts</a>
-              <a href="/executor">Code</a>
-            </div>
-          </div>
-        </div>
-      </div>
+      ${generateNavigation('ai-chat')}
       <div class="content">
-        <h2>AI Agent</h2>
-        <p>Chat with an AI agent that can use tools to help you!</p>
+        <h2>AI Chat</h2>
+        <p>Chat with an AI assistant with web search capabilities and streaming responses!</p>
       <div id="chatContainer" class="chat-container"></div>
       <div class="input-container">
         <input type="text" id="messageInput" placeholder="Type your message..." />
@@ -313,13 +333,72 @@ app.get('/ai-agent', (req, res) => {
   `);
 });
 
-// Agent Hub route - Main page
+// WO Agent - New main landing page
 app.get('/', (req, res) => {
   res.send(`
     <!DOCTYPE html>
     <html>
     <head>
-      <title>Agent Hub - PartnerPlus</title>
+      <title>WO Agent - PartnerPlus</title>
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+      <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .nav { display: flex; align-items: center; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
+        .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
+        .nav a:hover { background-color: rgba(255,255,255,0.1); }
+        .nav a.active { background-color: rgba(255,255,255,0.2); }
+        ${dropdownStyles}
+        .content { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px 20px; }
+        .main-container { text-align: center; padding: 60px 20px; }
+        .main-container h1 { font-size: 48px; color: #1976d2; margin-bottom: 20px; }
+        .main-container p { font-size: 20px; color: #666; margin-bottom: 40px; }
+        .demo-section { background-color: #f5f5f5; padding: 40px; border-radius: 10px; margin: 40px auto; max-width: 800px; }
+        .cta-button { display: inline-block; padding: 15px 30px; background-color: #1976d2; color: white; text-decoration: none; border-radius: 5px; font-size: 18px; transition: background-color 0.3s; }
+        .cta-button:hover { background-color: #1565c0; }
+        .features-list { text-align: left; display: inline-block; margin-top: 20px; }
+        .features-list li { margin: 10px 0; font-size: 16px; }
+      </style>
+    </head>
+    <body>
+      ${generateNavigation('wo-agent')}
+      <div class="content">
+        <div class="main-container">
+          <h1>Work Order Agent</h1>
+          <p>Intelligent work order management powered by AI</p>
+          
+          <div class="demo-section">
+            <h2>Coming Soon</h2>
+            <p>Our advanced Work Order Agent will revolutionize how you manage service requests, maintenance tasks, and equipment repairs.</p>
+            <p><strong>Features will include:</strong></p>
+            <ul class="features-list">
+              <li>🔧 Automated work order creation from emails and messages</li>
+              <li>🔍 Intelligent parts and supplier matching</li>
+              <li>👷 Service technician scheduling and dispatch</li>
+              <li>📊 Real-time status updates and tracking</li>
+              <li>🤖 Predictive maintenance recommendations</li>
+              <li>📧 Automated customer communication</li>
+              <li>💰 Cost estimation and approval workflows</li>
+            </ul>
+            <br><br>
+            <a href="/ai-agent" class="cta-button">Try AI Agent Demo</a>
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
+// Agent Hub route - Main AI agent with orchestrator tools
+app.get('/ai-agent', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>AI Agent - PartnerPlus</title>
       <link rel="icon" type="image/svg+xml" href="/favicon.svg">
       <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
@@ -367,29 +446,13 @@ app.get('/', (req, res) => {
         button:disabled { background-color: #ccc; cursor: not-allowed; }
         .cursor { animation: blink 1s infinite; color: #1976d2; }
         @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+        ${dropdownStyles}
       </style>
     </head>
     <body>
-      <div class="header">
-        <div class="header-inner">
-          <div class="nav">
-            <h1><a href="/" style="color: white; text-decoration: none;">PartnerPlus</a></h1>
-            <div class="main-nav">
-              <span class="active-main">🤖 Agent Hub</span>
-            </div>
-            <div class="support-nav">
-              <span class="nav-label">Tools:</span>
-              <a href="/ai-agent">AI Chat</a>
-              <a href="/email">Email</a>
-              <a href="/sms">SMS</a>
-              <a href="/purchase-agent">Parts</a>
-              <a href="/executor">Code</a>
-            </div>
-          </div>
-        </div>
-      </div>
+      ${generateNavigation('ai-agent')}
       <div class="content">
-        <h2>Agent Hub</h2>
+        <h2>AI Agent</h2>
         <p>Give me an objective and I'll coordinate our tools (email, SMS, purchase agent) to help you accomplish it!</p>
         <div class="examples">
           <h3>🚀 Multi-Step Workflows I Can Execute:</h3>
@@ -846,9 +909,9 @@ app.get('/', (req, res) => {
   `);
 });
 
-// Redirect old agent-hub URL to main page
+// Redirect old agent-hub URL to AI agent page
 app.get('/agent-hub', (req, res) => {
-  res.redirect('/');
+  res.redirect('/ai-agent');
 });
 
 app.post('/api/chat', async (req, res) => {
@@ -1190,11 +1253,6 @@ app.get('/email', (req, res) => {
         <div class="header-inner">
           <div class="nav">
             <h1>PartnerPlus</h1>
-            <a href="/">AI Agent</a>
-            <a href="/email" class="active">Email Service</a>
-            <a href="/sms">SMS Service</a>
-            <a href="/executor">Code Executor</a>
-            <a href="/purchase-agent">Purchase Agent</a>
           </div>
         </div>
       </div>
@@ -1818,7 +1876,10 @@ app.post('/api/purchase-agent/service-search', async (req, res) => {
       });
     }
 
-    const searchResults = await searchServiceCompanies(zipCode, make, model, serviceType);
+    const searchResults = await purchaseAgent.searchServiceCompanies(make, model, {
+      serviceType: serviceType,
+      location: zipCode
+    });
     
     res.json({
       success: true,

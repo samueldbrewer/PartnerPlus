@@ -173,18 +173,28 @@ def resolve_part():
         elif use_manual_search:
             messages.append("Manual Search: No results found")
         
-        # Check AI web search result
+        # Check AI web search result (now dual search)
         ai_result = result.get("ai_web_search_result") or {}
         if ai_result.get("found"):
             ai_res = result["ai_web_search_result"]
             validation = ai_res.get("serpapi_validation", {})
+            selected_method = ai_res.get("selected_method", "unknown")
+            serpapi_count = ai_res.get("serpapi_count", 0)
+            gpt_success = ai_res.get("gpt_web_success", False)
+            
             messages.append(
-                f"AI Web Search: Found '{ai_res['oem_part_number']}' "
+                f"Dual Search: Found '{ai_res['oem_part_number']}' "
                 f"(confidence: {ai_res['confidence']:.0%}, "
+                f"method: {selected_method}, "
+                f"SerpAPI: {serpapi_count} results, "
+                f"GPT: {'✓' if gpt_success else '✗'}, "
                 f"validated: {'✓' if validation.get('is_valid') else '✗'})"
             )
         elif use_web_search:
-            messages.append("AI Web Search: No results found")
+            ai_res = result.get("ai_web_search_result", {})
+            serpapi_count = ai_res.get("serpapi_count", 0)
+            gpt_success = ai_res.get("gpt_web_success", False)
+            messages.append(f"Dual Search: No results found (SerpAPI: {serpapi_count} results, GPT: {'✓' if gpt_success else '✗'})")
         
         # Add comparison message if both manual and AI found results
         if result.get("comparison"):

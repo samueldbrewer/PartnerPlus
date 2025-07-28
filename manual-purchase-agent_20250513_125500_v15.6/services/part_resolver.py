@@ -297,9 +297,10 @@ def resolve_part_name(description, make=None, model=None, year=None,
                     "confidence": 0
                 }
         
-        # Execute AI web search if requested
+        # Execute AI web search if requested (using new dual search approach)
         if use_web_search:
-            web_result = find_part_with_web_search(description, make, model, year, bypass_cache)
+            from services.dual_search import find_part_with_dual_search
+            web_result = find_part_with_dual_search(description, make, model, year, bypass_cache)
             if web_result and web_result.get("oem_part_number"):
                 # Validate with SerpAPI
                 validation = validate_part_with_serpapi(web_result["oem_part_number"], make, model, description, bypass_cache)
@@ -311,18 +312,29 @@ def resolve_part_name(description, make=None, model=None, year=None,
                     "confidence": web_result.get("confidence", 0),
                     "sources": web_result.get("sources", []),
                     "alternate_part_numbers": web_result.get("alternate_part_numbers", []),
-                    "serpapi_validation": validation
+                    "serpapi_validation": validation,
+                    # NEW: Dual search specific fields
+                    "selected_method": web_result.get("selected_method"),
+                    "arbitrator_reasoning": web_result.get("arbitrator_reasoning"),
+                    "arbitrator_analysis": web_result.get("arbitrator_analysis"),
+                    "serpapi_count": web_result.get("serpapi_count", 0),
+                    "gpt_web_success": web_result.get("gpt_web_success", False),
+                    "source": "dual_search"
                 }
             else:
                 response["ai_web_search_result"] = {
                     "found": False,
                     "error": web_result.get("error") if web_result and isinstance(web_result, dict) else "No results found",
-                    "confidence": 0
+                    "confidence": 0,
+                    "serpapi_count": web_result.get("serpapi_count", 0) if web_result else 0,
+                    "gpt_web_success": web_result.get("gpt_web_success", False) if web_result else False,
+                    "source": "dual_search"
                 }
         
         # Add comparison if both methods found results
-        if (response.get("manual_search_result", {}).get("found") and 
-            response.get("ai_web_search_result", {}).get("found")):
+        manual_result = response.get("manual_search_result") or {} if response else {}
+        ai_result = response.get("ai_web_search_result") or {} if response else {}
+        if (manual_result.get("found") and ai_result.get("found")):
             manual_pn = response["manual_search_result"]["oem_part_number"]
             ai_pn = response["ai_web_search_result"]["oem_part_number"]
             
@@ -498,18 +510,22 @@ def resolve_part_name(description, make=None, model=None, year=None,
             "error": str(e)
         }
 
-def find_part_with_web_search(description, make=None, model=None, year=None, bypass_cache=False):
+def find_part_with_dual_search(description, make=None, model=None, year=None, bypass_cache=False):
     """
-    Find part using web search and GPT analysis
+    New dual search approach:
+    1. Get first 10 SerpAPI search results directly
+    2. Use GPT-4.1-nano with web search preview to find the answer
+    3. Send both results to AI arbitrator without web search to pick the best answer
     
     Args:
         description (str): Generic part description
         make (str, optional): Vehicle/device make
         model (str, optional): Vehicle/device model
         year (str, optional): Vehicle/device year
+        bypass_cache (bool): Whether to bypass cache
         
     Returns:
-        dict: Part information found via web search
+        dict: Best part information selected by AI arbitrator
     """
     logger.info(f"Searching for part via web: {description} for {make} {model} {year}")
     
