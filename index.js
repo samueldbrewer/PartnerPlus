@@ -1894,6 +1894,108 @@ app.post('/api/purchase-agent/service-search', async (req, res) => {
   }
 });
 
+// Equipment Image Search endpoint
+app.post('/api/purchase-agent/equipment-image', async (req, res) => {
+  try {
+    const { make, model } = req.body;
+    
+    if (!make || !model) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Equipment make and model are required' 
+      });
+    }
+
+    const imageResult = await purchaseAgent.searchEquipmentImage(make, model);
+    
+    res.json(imageResult);
+  } catch (error) {
+    console.error('Equipment image search error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Part Image Search endpoint
+app.post('/api/purchase-agent/part-image', async (req, res) => {
+  try {
+    const { make, model, partName, oemNumber } = req.body;
+    
+    if (!make || !model || !partName) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Equipment make, model, and part name are required' 
+      });
+    }
+
+    const imageResult = await purchaseAgent.searchPartImage(make, model, partName, oemNumber);
+    
+    res.json(imageResult);
+  } catch (error) {
+    console.error('Part image search error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Part Enrichment endpoint
+app.post('/api/purchase-agent/parts/enrich', async (req, res) => {
+  try {
+    const { partNumber, make, model } = req.body;
+    
+    if (!partNumber) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Part number is required' 
+      });
+    }
+
+    const enrichResult = await purchaseAgent.enrichPart(partNumber, make, model);
+    
+    res.json(enrichResult);
+  } catch (error) {
+    console.error('Part enrichment error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Generic Parts Search endpoint
+app.post('/api/purchase-agent/parts/find-generic', async (req, res) => {
+  try {
+    const { query, equipment_make, equipment_model } = req.body;
+    
+    if (!query) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Search query is required' 
+      });
+    }
+
+    // Call the Flask API directly since the Node.js purchase agent service doesn't have this method
+    const response = await fetch('http://localhost:7777/api/parts/find-generic', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, equipment_make, equipment_model })
+    });
+
+    const result = await response.json();
+    res.json(result);
+  } catch (error) {
+    console.error('Generic parts search error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
 // Code Executor page
 app.get('/executor', (req, res) => {
   res.send(`
@@ -2225,6 +2327,8 @@ app.get('/purchase-agent', (req, res) => {
           <div class="tab" onclick="switchTab('manuals')">Manual Search</div>
           <div class="tab" onclick="switchTab('suppliers')">Supplier Search</div>
           <div class="tab" onclick="switchTab('service')">Service Repair</div>
+          <div class="tab" onclick="switchTab('equipment-images')">Equipment Images</div>
+          <div class="tab" onclick="switchTab('part-images')">Part Images</div>
         </div>
 
         <!-- Part Resolution Tab -->
@@ -2353,6 +2457,52 @@ app.get('/purchase-agent', (req, res) => {
             </form>
           </div>
           <div id="serviceResults" class="results"></div>
+        </div>
+      </div>
+
+      <!-- Equipment Images Tab -->
+      <div id="equipment-images-tab" class="tab-content">
+        <div class="section">
+          <h3>Find Equipment Images</h3>
+          <form id="equipmentImageForm">
+            <div class="form-group">
+              <label for="equipmentImageMake">Equipment Make *</label>
+              <input type="text" id="equipmentImageMake" name="make" placeholder="e.g., Caterpillar, John Deere" required>
+            </div>
+            <div class="form-group">
+              <label for="equipmentImageModel">Equipment Model *</label>
+              <input type="text" id="equipmentImageModel" name="model" placeholder="e.g., 320D, D6T" required>
+            </div>
+            <button type="submit" class="search-button">Find Best Image</button>
+          </form>
+          <div id="equipmentImageResults" class="results"></div>
+        </div>
+      </div>
+
+      <!-- Part Images Tab -->
+      <div id="part-images-tab" class="tab-content">
+        <div class="section">
+          <h3>Find Part Images</h3>
+          <form id="partImageForm">
+            <div class="form-group">
+              <label for="partImageMake">Equipment Make *</label>
+              <input type="text" id="partImageMake" name="make" placeholder="e.g., Caterpillar, John Deere" required>
+            </div>
+            <div class="form-group">
+              <label for="partImageModel">Equipment Model *</label>
+              <input type="text" id="partImageModel" name="model" placeholder="e.g., 320D, D6T" required>
+            </div>
+            <div class="form-group">
+              <label for="partImageName">Part Name *</label>
+              <input type="text" id="partImageName" name="part_name" placeholder="e.g., hydraulic filter, fuel pump" required>
+            </div>
+            <div class="form-group">
+              <label for="partImageOEM">OEM Number (optional)</label>
+              <input type="text" id="partImageOEM" name="oem_number" placeholder="e.g., 1R-0770, 326-1644">
+            </div>
+            <button type="submit" class="search-button">Find Best Image</button>
+          </form>
+          <div id="partImageResults" class="results"></div>
         </div>
       </div>
 
@@ -2774,6 +2924,147 @@ app.get('/purchase-agent', (req, res) => {
         function clearServiceForm() {
           document.getElementById('serviceSearchForm').reset();
           document.getElementById('serviceResults').innerHTML = '';
+        }
+
+        // Equipment Image Search Form
+        document.getElementById('equipmentImageForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const resultsDiv = document.getElementById('equipmentImageResults');
+          resultsDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Searching for best equipment image...</div>';
+
+          const formData = new FormData(e.target);
+          const make = formData.get('make');
+          const model = formData.get('model');
+
+          try {
+            const response = await fetch('/api/purchase-agent/equipment-image', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ make, model })
+            });
+
+            const data = await response.json();
+            
+            if (data.success && data.image) {
+              displayEquipmentImageResult(data);
+            } else {
+              resultsDiv.innerHTML = '<div class="error">No suitable equipment image found. Please try different search terms.</div>';
+            }
+          } catch (error) {
+            console.error('Equipment image search error:', error);
+            resultsDiv.innerHTML = '<div class="error">Error searching for equipment image: ' + error.message + '</div>';
+          }
+        });
+
+        // Part Image Search Form
+        document.getElementById('partImageForm').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const resultsDiv = document.getElementById('partImageResults');
+          resultsDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Searching for best part image...</div>';
+
+          const formData = new FormData(e.target);
+          const make = formData.get('make');
+          const model = formData.get('model');
+          const partName = formData.get('part_name');
+          const oemNumber = formData.get('oem_number');
+
+          try {
+            const response = await fetch('/api/purchase-agent/part-image', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ make, model, partName, oemNumber })
+            });
+
+            const data = await response.json();
+            
+            if (data.success && data.image) {
+              displayPartImageResult(data);
+            } else {
+              resultsDiv.innerHTML = '<div class="error">No suitable part image found. Please try different search terms.</div>';
+            }
+          } catch (error) {
+            console.error('Part image search error:', error);
+            resultsDiv.innerHTML = '<div class="error">Error searching for part image: ' + error.message + '</div>';
+          }
+        });
+
+        // Display Equipment Image Result
+        function displayEquipmentImageResult(data) {
+          const resultsDiv = document.getElementById('equipmentImageResults');
+          let html = '<div class="result-item">';
+          
+          html += '<h4>Best Equipment Image Found</h4>';
+          html += '<div class="result-detail"><strong>Equipment:</strong> ' + data.equipment_make + ' ' + data.equipment_model + '</div>';
+          
+          if (data.image) {
+            html += '<div class="image-result">';
+            html += '<img src="' + data.image.url + '" alt="' + data.image.title + '" style="max-width: 100%; height: auto; margin: 10px 0;">';
+            html += '<div class="result-detail"><strong>Title:</strong> ' + data.image.title + '</div>';
+            html += '<div class="result-detail"><strong>Source:</strong> ' + data.image.source + '</div>';
+            html += '<div class="result-detail"><strong>Confidence:</strong> ' + (data.image.confidence * 100).toFixed(0) + '%</div>';
+            html += '<div class="result-detail"><strong>AI Reasoning:</strong> ' + data.image.reasoning + '</div>';
+            
+            if (data.image.analysis) {
+              html += '<div class="result-detail"><strong>Analysis:</strong><ul>';
+              html += '<li>Shows Full Equipment: ' + (data.image.analysis.shows_full_equipment ? 'Yes' : 'No') + '</li>';
+              html += '<li>Manufacturer Image: ' + (data.image.analysis.is_manufacturer_image ? 'Yes' : 'No') + '</li>';
+              html += '<li>Source Credibility: ' + data.image.analysis.source_credibility + '</li>';
+              html += '</ul></div>';
+            }
+            
+            html += '<div class="result-detail"><a href="' + data.image.url + '" target="_blank" class="secondary">View Full Image</a></div>';
+            html += '</div>';
+          }
+          
+          html += '<div class="result-detail" style="margin-top: 10px; font-size: 12px; color: #666;">';
+          html += 'Analyzed ' + data.ai_analyzed_count + ' images from ' + data.total_images_found + ' search results';
+          html += '</div>';
+          
+          html += '</div>';
+          resultsDiv.innerHTML = html;
+        }
+
+        // Display Part Image Result
+        function displayPartImageResult(data) {
+          const resultsDiv = document.getElementById('partImageResults');
+          let html = '<div class="result-item">';
+          
+          html += '<h4>Best Part Image Found</h4>';
+          html += '<div class="result-detail"><strong>Part:</strong> ' + data.part_name + '</div>';
+          if (data.oem_number) {
+            html += '<div class="result-detail"><strong>OEM Number:</strong> ' + data.oem_number + '</div>';
+          }
+          html += '<div class="result-detail"><strong>Equipment:</strong> ' + data.equipment_make + ' ' + data.equipment_model + '</div>';
+          
+          if (data.image) {
+            html += '<div class="image-result">';
+            html += '<img src="' + data.image.url + '" alt="' + data.image.title + '" style="max-width: 100%; height: auto; margin: 10px 0;">';
+            html += '<div class="result-detail"><strong>Title:</strong> ' + data.image.title + '</div>';
+            html += '<div class="result-detail"><strong>Source:</strong> ' + data.image.source + '</div>';
+            html += '<div class="result-detail"><strong>Confidence:</strong> ' + (data.image.confidence * 100).toFixed(0) + '%</div>';
+            html += '<div class="result-detail"><strong>AI Reasoning:</strong> ' + data.image.reasoning + '</div>';
+            
+            if (data.image.analysis) {
+              html += '<div class="result-detail"><strong>Analysis:</strong><ul>';
+              html += '<li>Shows Actual Part: ' + (data.image.analysis.shows_actual_part ? 'Yes' : 'No') + '</li>';
+              html += '<li>OEM Number Visible: ' + (data.image.analysis.oem_number_visible ? 'Yes' : 'No') + '</li>';
+              html += '<li>Product Photo: ' + (data.image.analysis.is_product_photo ? 'Yes' : 'No') + '</li>';
+              html += '<li>Source Type: ' + data.image.analysis.source_type + '</li>';
+              html += '</ul></div>';
+            }
+            
+            html += '<div class="result-detail"><a href="' + data.image.url + '" target="_blank" class="secondary">View Full Image</a></div>';
+            html += '</div>';
+          }
+          
+          html += '<div class="result-detail" style="margin-top: 10px; font-size: 12px; color: #666;">';
+          html += 'Analyzed ' + data.ai_analyzed_count + ' images from ' + data.total_images_found + ' search results';
+          html += '</div>';
+          
+          html += '</div>';
+          resultsDiv.innerHTML = html;
         }
       </script>
     </body>

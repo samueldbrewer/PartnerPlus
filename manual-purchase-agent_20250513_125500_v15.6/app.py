@@ -11,6 +11,7 @@ from api.screenshots import screenshots_bp
 from api.recording_studio_api import recording_studio_bp
 from api.generic_parts import generic_parts_bp
 from api.service_providers import service_providers_bp
+from api.images import images_bp
 from web import web_bp
 import os
 import logging
@@ -71,6 +72,7 @@ def create_app():
     app.register_blueprint(recording_studio_bp, url_prefix='/api/recordings')
     app.register_blueprint(generic_parts_bp, url_prefix='/api/parts')
     app.register_blueprint(service_providers_bp, url_prefix='/api/service-providers')
+    app.register_blueprint(images_bp, url_prefix='/api/images')
     
     # Register web UI blueprint
     app.register_blueprint(web_bp, url_prefix='/')
