@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+*.log
+logs/
+
+# Testing
+.pytest_cache/
+coverage/
+.coverage
+htmlcov/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+manual-purchase-agent_*/
+API Scraper V3/
+temp/
+screenshots/
+recordings/
+purchase_screenshots/
+uploads/
+instance/
+*.db
+*.webm
+*.png
+*.jpg
+*.jpeg
+*.pdf
+
+# Development
+.env.local
+.env.*.local
+dump.rdb
