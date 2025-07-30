@@ -1644,185 +1644,135 @@ app.post('/api/orchestrator/clear', (req, res) => {
 });
 
 // Work Order Generation endpoint
-app.get('/api/generate-work-order', (req, res) => {
-  // Comprehensive work order data with realistic foodservice equipment scenarios
-  const workOrderTemplates = [
-    {
-      equipment: 'Henny Penny 500 Pressure Fryer',
-      customer: 'Louisville Fried Chicken',
-      address: '1245 Bardstown Rd, Louisville, KY 40204',
-      contact: 'Mike Johnson (502) 555-0123',
-      issues: [
-        'Fryer not heating properly, temperature fluctuating between 250-300°F',
-        'Pressure valve releasing steam intermittently during cook cycle',
-        'Temperature probe reading inconsistent values',
-        'Oil filtration system making grinding noise'
-      ],
-      priorities: ['High', 'Medium', 'Critical']
-    },
-    {
-      equipment: 'Vulcan VG20 Gas Convection Oven',
-      customer: 'Pizza Palace Downtown',
-      address: '789 Fourth Street, Louisville, KY 40202',
-      contact: 'Sarah Martinez (502) 555-0187',
-      issues: [
-        'Door gasket damaged, heat escaping from oven door',
-        'Ignition system intermittent, requires multiple attempts to light',
-        'Fan motor making loud grinding noise during operation',
-        'Thermostat not maintaining consistent temperature'
-      ],
-      priorities: ['Medium', 'High', 'Critical']
-    },
-    {
-      equipment: 'Hobart AM15 Dishwasher',
-      customer: 'Riverside Bistro',
-      address: '567 River Road, Louisville, KY 40206',
-      contact: 'James Wilson (502) 555-0194',
-      issues: [
-        'Wash cycle not completing, stopping mid-cycle',
-        'Water temperature not reaching required 180°F sanitizing temp',
-        'Detergent dispenser not releasing chemicals properly',
-        'Door seals leaking water onto kitchen floor'
-      ],
-      priorities: ['Critical', 'High', 'Medium']
-    },
-    {
-      equipment: 'True T-49 Reach-In Refrigerator',
-      customer: 'Corner Deli & Market',
-      address: '432 Bardstown Rd, Louisville, KY 40204',
-      contact: 'Lisa Chen (502) 555-0156',
-      issues: [
-        'Temperature rising above 40°F, food safety concern',
-        'Compressor running continuously but not cooling effectively',
-        'Condenser coils heavily frosted, blocking airflow',
-        'Door gaskets torn, allowing cold air to escape'
-      ],
-      priorities: ['Critical', 'High', 'Medium']
-    },
-    {
-      equipment: 'Rational SelfCookingCenter',
-      customer: 'University Dining Hall',
-      address: '2100 S Floyd St, Louisville, KY 40208',
-      contact: 'Robert Davis (502) 555-0171',
-      issues: [
-        'Steam injection system not working, affecting cook quality',
-        'Touch screen display showing error codes intermittently',
-        'Cleaning cycle not completing properly',
-        'Core temperature probe giving false readings'
-      ],
-      priorities: ['Medium', 'High', 'Critical']
-    },
-    {
-      equipment: 'Imperial IFS-40 Deep Fryer',
-      customer: 'Sports Bar & Grill',
-      address: '856 Baxter Avenue, Louisville, KY 40204',
-      contact: 'Tom Anderson (502) 555-0142',
-      issues: [
-        'Oil temperature not reaching set point of 350°F',
-        'Safety shutoff valve triggering unexpectedly',
-        'Basket lift mechanism sticking during operation',
-        'Pilot light going out randomly during service'
-      ],
-      priorities: ['High', 'Medium', 'Critical']
-    },
-    {
-      equipment: 'Manitowoc ID-0502A Ice Machine',
-      customer: 'Downtown Coffee House',
-      address: '125 W Main Street, Louisville, KY 40202',
-      contact: 'Jennifer Adams (502) 555-0198',
-      issues: [
-        'Ice production dropped to less than 50% of rated capacity',
-        'Water filtration system needs replacement',
-        'Bin full sensor malfunctioning, overfilling ice bin',
-        'Evaporator coils building up excessive scale'
-      ],
-      priorities: ['Medium', 'High', 'Critical']
-    },
-    {
-      equipment: 'Alto-Shaam 1200-TH Cook & Hold Oven',
-      customer: 'Catering Company Plus',
-      address: '2890 Watterson Trail, Louisville, KY 40299',
-      contact: 'David Park (502) 555-0163',
-      issues: [
-        'Hold temperature not maintaining food at safe serving temp',
-        'Probe thermometer needs calibration',
-        'Timer display intermittently going blank',
-        'Door latch mechanism loose, door not sealing properly'
-      ],
-      priorities: ['High', 'Medium', 'Critical']
-    }
-  ];
+app.get('/api/generate-work-order', async (req, res) => {
+  console.log('🔧 Work order generation requested');
+  try {
+    // Enhanced system prompt for realistic work order generation
+    const systemPrompt = `You are a work order generation system for a commercial foodservice equipment service company. 
 
-  // Select random template
-  const template = workOrderTemplates[Math.floor(Math.random() * workOrderTemplates.length)];
-  
-  // Additional technician and contact data
-  const technicians = [
-    { name: 'Carlos Rodriguez', phone: '(502) 555-0211', email: 'carlos.r@partnerplus.com' },
-    { name: 'Jessica Thompson', phone: '(502) 555-0224', email: 'jessica.t@partnerplus.com' },
-    { name: 'Michael Chang', phone: '(502) 555-0237', email: 'michael.c@partnerplus.com' },
-    { name: 'Ashley Williams', phone: '(502) 555-0245', email: 'ashley.w@partnerplus.com' },
-    { name: 'Brandon Taylor', phone: '(502) 555-0258', email: 'brandon.t@partnerplus.com' }
-  ];
+Generate a unique and realistic work order with creative variety.
 
-  const locationContacts = [
-    'manager@' + template.customer.toLowerCase().replace(/\s+/g, '') + '.com',
-    'maintenance@' + template.customer.toLowerCase().replace(/\s+/g, '') + '.com',
-    'operations@' + template.customer.toLowerCase().replace(/\s+/g, '') + '.com'
-  ];
+REQUIREMENTS:
+- Focus on foodservice industry (restaurants, cafes, hotels, cafeterias, etc.)
+- Use real commercial equipment makes and models - just make and model
+- Generate varied business names, addresses, and contact information  
+- Create diverse technician names with professional emails (firstname.lastname@partnerplus.com)
+- Write technical service notes in brief, spartan technician style
+- Use proper commercial kitchen part terminology
+- Include realistic error codes or technical observations when relevant
+- Make suspected parts appropriate for the equipment and failure type
 
-  const suspectedParts = {
-    'Henny Penny 500 Pressure Fryer': ['heating element', 'temperature probe', 'pressure valve', 'oil filtration pump'],
-    'Vulcan VG20 Gas Convection Oven': ['door gasket', 'ignition control', 'fan motor', 'thermostat'],
-    'Hobart AM15 Dishwasher': ['wash pump', 'temperature sensor', 'detergent dispenser', 'door seals'],
-    'True T-49 Reach-In Refrigerator': ['compressor', 'evaporator coils', 'door gaskets', 'temperature control'],
-    'Rational SelfCookingCenter': ['steam injection valve', 'touch screen display', 'core probe', 'cleaning pump'],
-    'Imperial IFS-40 Deep Fryer': ['heating elements', 'safety valve', 'basket lift motor', 'pilot assembly'],
-    'Manitowoc ID-0502A Ice Machine': ['water pump', 'filtration system', 'bin sensor', 'evaporator coils'],
-    'Alto-Shaam 1200-TH Cook & Hold Oven': ['temperature probe', 'timer display', 'door latch', 'heating elements']
-  };
+Be creative and vary equipment types, business types, locations, issues, and scenarios.
 
-  const selectedTechnician = technicians[Math.floor(Math.random() * technicians.length)];
-  const selectedIssue = template.issues[Math.floor(Math.random() * template.issues.length)];
-  const equipmentParts = suspectedParts[template.equipment] || ['unknown component'];
-  const suspectedPart = equipmentParts[Math.floor(Math.random() * equipmentParts.length)];
+FORMAT AS JSON with this exact structure:
+{
+  "id": "WO-[4-digit number]",
+  "equipment": "[Make] [Model]",
+  "locationName": "[Foodservice Business Name]",
+  "address": "[Full street address, City, State ZIP]",
+  "locationContactName": "[Manager name]",
+  "locationContactPhone": "[Phone]",
+  "locationContactEmail": "[Email]",
+  "technicianName": "[Tech name]",
+  "technicianPhone": "[Phone]",
+  "technicianEmail": "[Email]",
+  "status": "In Progress",
+  "dispatchNotes": "[Customer complaint and dispatch details]",
+  "serviceNotes": "[Tech's initial diagnosis in spartan technical style]",
+  "suspectedFailure": "[Brief technical description]",
+  "suspectedParts": ["part1", "part2", "part3"]
+}`;
 
-  // Generate work order with random variations
-  const workOrder = {
-    id: 'WO-' + String(Math.floor(Math.random() * 9000) + 1000),
-    equipment: template.equipment,
-    customer: template.customer,
-    address: template.address,
-    contact: template.contact,
-    locationContactPhone: template.contact.match(/\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/)[0],
-    locationContactEmail: locationContacts[Math.floor(Math.random() * locationContacts.length)],
-    description: selectedIssue,
-    priority: template.priorities[Math.floor(Math.random() * template.priorities.length)],
-    status: 'Open',
-    created: new Date().toISOString().split('T')[0],
-    technician: selectedTechnician.name,
-    technicianPhone: selectedTechnician.phone,
-    technicianEmail: selectedTechnician.email,
-    estimatedDuration: Math.floor(Math.random() * 4) + 1 + ' hours',
-    dispatchNotes: {
-      reportedIssue: selectedIssue,
-      customerComments: `Customer reports equipment ${selectedIssue.toLowerCase()}. ${template.customer} requesting priority service.`,
-      dispatchTime: new Date().toLocaleTimeString(),
-      dispatcher: 'Sarah Johnson'
-    },
-    serviceNotes: {
-      suspectedParts: suspectedPart,
-      initialDiagnosis: `Based on reported symptoms, likely ${suspectedPart} failure. Recommend parts lookup and supplier pricing.`,
-      recommendedActions: `1. Verify ${suspectedPart} operation, 2. Check related components, 3. Order replacement if confirmed`,
-      safetyNotes: template.equipment.includes('Gas') ? 'CAUTION: Gas equipment - verify gas shutoff before service' : 
-                   template.equipment.includes('Pressure') ? 'WARNING: Pressure equipment - depressurize before service' :
-                   'Standard electrical safety precautions required'
-    },
-    parts: [],
-    notes: []
-  };
+    // Add randomization to make each request unique
+    const randomPrompts = [
+      'Generate a work order for a busy restaurant service call.',
+      'Create a work order for urgent foodservice equipment repair.',
+      'Generate a work order for a commercial kitchen equipment failure.',
+      'Create a service ticket for a foodservice establishment.',
+      'Generate a work order for equipment emergency repair.',
+      'Create a work order for routine equipment maintenance.',
+      'Generate a service request for commercial cooking equipment.'
+    ];
+    
+    const randomPrompt = randomPrompts[Math.floor(Math.random() * randomPrompts.length)];
+    
+    console.log('🤖 Calling OpenAI with prompt:', randomPrompt);
+    const response = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: randomPrompt }
+      ],
+      temperature: 1.2,
+      top_p: 0.95,
+      frequency_penalty: 0.5,
+      presence_penalty: 0.3,
+      response_format: { type: "json_object" }
+    });
+    
+    console.log('✅ OpenAI response received');
+    const workOrder = JSON.parse(response.choices[0].message.content);
+    console.log('📋 Generated work order address:', workOrder.address);
+    
+    // Ensure all required fields are present
+    const finalWorkOrder = {
+      id: workOrder.id || `WO-${Math.floor(Math.random() * 9000) + 1000}`,
+      equipment: workOrder.equipment,
+      customer: workOrder.locationName,
+      locationName: workOrder.locationName,
+      address: workOrder.address,
+      contact: `${workOrder.locationContactName} ${workOrder.locationContactPhone}`,
+      locationContactName: workOrder.locationContactName,
+      locationContactPhone: workOrder.locationContactPhone,
+      locationContactEmail: workOrder.locationContactEmail,
+      technician: workOrder.technicianName,
+      technicianName: workOrder.technicianName,
+      technicianPhone: workOrder.technicianPhone,
+      technicianEmail: workOrder.technicianEmail,
+      status: workOrder.status || 'In Progress',
+      description: workOrder.dispatchNotes.split('.')[0], // First sentence for summary
+      dispatchNotes: workOrder.dispatchNotes,
+      serviceNotes: workOrder.serviceNotes,
+      suspectedFailure: workOrder.suspectedFailure,
+      suspectedParts: workOrder.suspectedParts || [],
+      estimatedDuration: `${Math.floor(Math.random() * 3) + 1} hours`,
+      parts: [],
+      notes: []
+    };
 
-  res.json(workOrder);
+    res.json(finalWorkOrder);
+  } catch (error) {
+    console.error('❌ Error generating work order:', error);
+    console.log('🔄 Falling back to static work order');
+    
+    // Fallback to a static work order if AI fails
+    const fallbackWorkOrder = {
+      id: `WO-${Math.floor(Math.random() * 9000) + 1000}`,
+      equipment: 'Hobart AM15',
+      customer: 'Downtown Grill House',
+      locationName: 'Downtown Grill House',
+      address: '456 Main Street, Louisville, KY 40202',
+      contact: 'John Smith (502) 555-0123',
+      locationContactName: 'John Smith',
+      locationContactPhone: '(502) 555-0123',
+      locationContactEmail: 'manager@downtowngrillhouse.com',
+      technician: 'Mike Johnson',
+      technicianName: 'Mike Johnson',
+      technicianPhone: '(502) 555-0234',
+      technicianEmail: 'mike.johnson@partnerplus.com',
+      status: 'In Progress',
+      description: 'Dishwasher not completing wash cycle',
+      dispatchNotes: 'Customer reports dishwasher stops mid-cycle, error code E2 displayed. Machine is 5 years old, last serviced 6 months ago. Kitchen manager requests urgent repair.',
+      serviceNotes: 'E2 code indicates wash pump failure. Pump motor drawing high amps, bearings shot. Water not circulating properly. Need to replace wash pump assembly.',
+      suspectedFailure: 'Wash pump motor failure',
+      suspectedParts: ['Wash pump assembly', 'Pump seal kit', 'Motor capacitor'],
+      estimatedDuration: '2 hours',
+      parts: [],
+      notes: []
+    };
+    
+    res.json(fallbackWorkOrder);
+  }
 });
 
 // Code extraction endpoint

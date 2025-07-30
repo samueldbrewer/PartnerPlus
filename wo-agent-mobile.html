@@ -159,12 +159,175 @@
       border-radius: 8px;
       padding: 12px;
       margin-top: 10px;
+      max-height: 400px;
+      overflow-y: auto;
     }
     
     .wo-description-text {
-      font-size: 14px;
+      font-size: 13px;
       color: #e65100;
       line-height: 1.4;
+    }
+    
+    .wo-description strong {
+      display: inline-block;
+      margin-bottom: 3px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .wo-description div {
+      font-size: 13px;
+      line-height: 1.3;
+    }
+    
+    /* Work Order Sections */
+    .wo-section {
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin-top: 15px;
+      overflow: hidden;
+      border-left: 3px solid #1976d2;
+    }
+    
+    .wo-section-header {
+      background: linear-gradient(135deg, #e3f2fd, #f0f8ff);
+      color: #1976d2;
+      padding: 10px 12px;
+      font-weight: 600;
+      font-size: 13px;
+      border-bottom: 1px solid #bbdefb;
+    }
+    
+    .wo-section-content {
+      padding: 12px;
+    }
+    
+    .wo-detail-item {
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    
+    .wo-detail-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .wo-detail-label {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    
+    .wo-detail-item span:not(.wo-detail-label) {
+      font-size: 13px;
+      color: #333;
+      line-height: 1.3;
+    }
+    
+    .wo-parts-list {
+      margin-top: 4px;
+    }
+    
+    .wo-parts-list div {
+      font-size: 12px;
+      color: #333;
+      padding: 2px 0;
+      padding-left: 12px;
+      position: relative;
+    }
+    
+    .wo-parts-list div::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #1976d2;
+      font-weight: bold;
+    }
+    
+    /* Activity Log */
+    .activity-log {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .activity-log-item {
+      background: #f8f9fa;
+      border-left: 3px solid #4caf50;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    
+    .activity-log-item.error {
+      border-left-color: #ff5722;
+      background: #fff3f3;
+    }
+    
+    .activity-timestamp {
+      color: #666;
+      font-size: 10px;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    
+    .activity-content {
+      color: #333;
+    }
+    
+    .activity-content a {
+      color: #1976d2;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .activity-content a:hover {
+      text-decoration: underline;
+    }
+    
+    .activity-content strong {
+      color: #2e7d32;
+    }
+    
+    .activity-raw-toggle {
+      background: #666;
+      color: white;
+      border: none;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 9px;
+      cursor: pointer;
+      margin-left: 8px;
+      margin-top: 4px;
+    }
+    
+    .activity-raw-toggle:hover {
+      background: #555;
+    }
+    
+    .activity-raw-content {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-top: 4px;
+      max-height: 120px;
+      overflow: auto;
+      display: none;
+    }
+    
+    .activity-raw-content pre {
+      margin: 0;
+      padding: 6px;
+      font-size: 9px;
+      line-height: 1.2;
+      white-space: pre-wrap;
+      word-wrap: break-word;
     }
     
     /* Mobile Actions */
@@ -258,97 +421,9 @@
       100% { transform: rotate(360deg); }
     }
     
-    /* Completed Actions */
-    .completed-section {
-      background: white;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      overflow: hidden;
-    }
     
-    .completed-header {
-      background: #4caf50;
-      color: white;
-      padding: 12px 15px;
-      font-weight: 600;
-      font-size: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
     
-    .completed-grid {
-      padding: 15px;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
     
-    .mobile-completed-btn {
-      background: #4caf50;
-      color: white;
-      border: none;
-      padding: 12px 15px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      text-align: left;
-      display: flex;
-      align-items: center;
-      cursor: default;
-    }
-    
-    .mobile-completed-btn.error {
-      background: #ff5722;
-    }
-    
-    .completed-check {
-      margin-right: 10px;
-      font-size: 16px;
-    }
-    
-    /* Results Section */
-    .results-section {
-      background: white;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    
-    .results-header {
-      background: #1976d2;
-      color: white;
-      padding: 12px 15px;
-      font-weight: 600;
-      font-size: 14px;
-    }
-    
-    .results-content {
-      padding: 15px;
-    }
-    
-    .result-item {
-      background: #f8f9fa;
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 10px;
-      border-left: 3px solid #1976d2;
-    }
-    
-    .result-action {
-      font-weight: 600;
-      color: #1976d2;
-      font-size: 12px;
-      text-transform: uppercase;
-      margin-bottom: 5px;
-    }
-    
-    .result-summary {
-      font-size: 13px;
-      color: #555;
-      line-height: 1.4;
-    }
     
     /* Loading States */
     .loading-placeholder {
@@ -356,6 +431,10 @@
       padding: 20px;
       color: #666;
       font-style: italic;
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     
     .loading-dots {
@@ -451,7 +530,6 @@
     <div class="wo-header" onclick="toggleWorkOrder()">
       <div>
         <div class="wo-title" id="woTitle">Work Order</div>
-        <div class="wo-priority" id="woPriority">Medium</div>
       </div>
       <div class="wo-toggle" id="woToggle">▼</div>
     </div>
@@ -462,20 +540,81 @@
           <div class="wo-info-value" id="woEquipment">Loading...</div>
         </div>
         <div class="wo-info-item">
-          <div class="wo-info-label">Location</div>
-          <div class="wo-info-value" id="woLocation">Loading...</div>
+          <div class="wo-info-label">Status</div>
+          <div class="wo-info-value" id="woStatus">In Progress</div>
         </div>
         <div class="wo-info-item">
-          <div class="wo-info-label">Customer</div>
-          <div class="wo-info-value" id="woCustomer">Loading...</div>
+          <div class="wo-info-label">Duration</div>
+          <div class="wo-info-value" id="woDuration">2 hours</div>
         </div>
         <div class="wo-info-item">
-          <div class="wo-info-label">Contact</div>
-          <div class="wo-info-value" id="woContact">Loading...</div>
+          <div class="wo-info-label">Type</div>
+          <div class="wo-info-value" id="woType">Service Call</div>
         </div>
       </div>
-      <div class="wo-description">
-        <div class="wo-description-text" id="woDescription">Loading description...</div>
+      
+      <!-- Location & Contact Section -->
+      <div class="wo-section">
+        <div class="wo-section-header">📍 Location & Contact</div>
+        <div class="wo-section-content">
+          <div class="wo-detail-item">
+            <span class="wo-detail-label">Customer:</span>
+            <span id="woCustomerName">Loading...</span>
+          </div>
+          <div class="wo-detail-item">
+            <span class="wo-detail-label">Address:</span>
+            <span id="woAddress">Loading...</span>
+          </div>
+          <div class="wo-detail-item">
+            <span class="wo-detail-label">Contact:</span>
+            <span id="woLocationContact">Loading...</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Technician Section -->
+      <div class="wo-section">
+        <div class="wo-section-header">🔧 Assigned Technician</div>
+        <div class="wo-section-content">
+          <div class="wo-detail-item">
+            <span class="wo-detail-label">Name:</span>
+            <span id="woTechName">Loading...</span>
+          </div>
+          <div class="wo-detail-item">
+            <span class="wo-detail-label">Phone:</span>
+            <span id="woTechPhone">Loading...</span>
+          </div>
+          <div class="wo-detail-item">
+            <span class="wo-detail-label">Email:</span>
+            <span id="woTechEmail">Loading...</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Service Details Section -->
+      <div class="wo-section">
+        <div class="wo-section-header">📋 Service Details</div>
+        <div class="wo-section-content">
+          <div class="wo-detail-item">
+            <span class="wo-detail-label">Issue:</span>
+            <span id="woIssue">Loading...</span>
+          </div>
+          <div class="wo-detail-item" id="woServiceNotesSection">
+            <span class="wo-detail-label">Tech Notes:</span>
+            <span id="woServiceNotes">Loading...</span>
+          </div>
+          <div class="wo-detail-item" id="woSuspectedPartsSection">
+            <span class="wo-detail-label">Suspected Parts:</span>
+            <div id="woSuspectedParts">Loading...</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="wo-section" id="activityLogSection" style="display: none;">
+        <div class="wo-section-header">📝 Activity Log</div>
+        <div class="wo-section-content">
+          <div id="activityLog" class="activity-log"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -492,23 +631,10 @@
     </div>
   </div>
 
-  <div id="completedSection" class="completed-section hidden">
-    <div class="completed-header">
-      <span>✓ Completed Actions</span>
-      <span class="actions-count" id="completedCount">0</span>
-    </div>
-    <div class="completed-grid" id="completedGrid"></div>
-  </div>
-
-  <div id="resultsSection" class="results-section hidden">
-    <div class="results-header">📊 Action Results</div>
-    <div class="results-content" id="resultsContent"></div>
-  </div>
 
   <script>
     let currentWorkOrder = null;
     let actionResults = [];
-    let completedActions = [];
 
     document.getElementById('generateWO').addEventListener('click', generateRandomWorkOrder);
 
@@ -570,76 +696,126 @@
       document.getElementById('actionsSection').classList.add('hidden');
       document.getElementById('actionsGrid').innerHTML = '<div class="loading-placeholder">Generating recommendations<span class="loading-dots"></span></div>';
       
-      // Reset completed
-      document.getElementById('completedSection').classList.add('hidden');
-      document.getElementById('completedGrid').innerHTML = '';
-      
-      // Reset results
-      document.getElementById('resultsSection').classList.add('hidden');
-      document.getElementById('resultsContent').innerHTML = '';
+      // Reset activity log
+      document.getElementById('activityLogSection').style.display = 'none';
+      document.getElementById('activityLog').innerHTML = '';
       
       // Reset data
       actionResults = [];
-      completedActions = [];
       updateCounts();
     }
 
     function displayWorkOrder(workOrder) {
+      // Header info
       document.getElementById('woTitle').textContent = `WO #${workOrder.id}`;
-      document.getElementById('woPriority').textContent = workOrder.priority;
-      document.getElementById('woEquipment').textContent = workOrder.equipment;
-      document.getElementById('woLocation').textContent = workOrder.address;
-      document.getElementById('woCustomer').textContent = workOrder.customer;
-      document.getElementById('woContact').textContent = workOrder.contact;
-      document.getElementById('woDescription').textContent = workOrder.description;
       
-      // Set priority color
-      const priorityElement = document.getElementById('woPriority');
-      const priority = workOrder.priority.toLowerCase();
-      if (priority === 'high' || priority === 'critical') {
-        priorityElement.style.background = 'rgba(244, 67, 54, 0.8)';
-      } else if (priority === 'medium') {
-        priorityElement.style.background = 'rgba(255, 152, 0, 0.8)';
+      // Quick info section
+      document.getElementById('woEquipment').textContent = workOrder.equipment;
+      document.getElementById('woStatus').textContent = workOrder.status || 'In Progress';
+      document.getElementById('woDuration').textContent = workOrder.estimatedDuration || '2 hours';
+      document.getElementById('woType').textContent = 'Service Call';
+      
+      // Location & Contact section
+      document.getElementById('woCustomerName').textContent = workOrder.customer || workOrder.locationName;
+      document.getElementById('woAddress').textContent = workOrder.address;
+      
+      const locationContactEl = document.getElementById('woLocationContact');
+      if (workOrder.locationContactName && workOrder.locationContactPhone) {
+        locationContactEl.innerHTML = `
+          ${workOrder.locationContactName}<br>
+          ${workOrder.locationContactPhone}<br>
+          <span style="font-size: 11px; color: #666;">${workOrder.locationContactEmail || ''}</span>
+        `;
       } else {
-        priorityElement.style.background = 'rgba(76, 175, 80, 0.8)';
+        locationContactEl.textContent = workOrder.contact || 'N/A';
+      }
+      
+      // Technician section
+      document.getElementById('woTechName').textContent = workOrder.technicianName || workOrder.technician;
+      document.getElementById('woTechPhone').textContent = workOrder.technicianPhone || 'N/A';
+      document.getElementById('woTechEmail').textContent = workOrder.technicianEmail || 'N/A';
+      
+      // Service Details section
+      const issueText = workOrder.dispatchNotes || workOrder.description || 'No issue description available';
+      document.getElementById('woIssue').textContent = issueText;
+      
+      const serviceNotesEl = document.getElementById('woServiceNotes');
+      if (workOrder.serviceNotes) {
+        serviceNotesEl.textContent = workOrder.serviceNotes;
+        document.getElementById('woServiceNotesSection').style.display = 'flex';
+      } else {
+        document.getElementById('woServiceNotesSection').style.display = 'none';
+      }
+      
+      const suspectedPartsEl = document.getElementById('woSuspectedParts');
+      if (workOrder.suspectedParts && workOrder.suspectedParts.length > 0) {
+        suspectedPartsEl.innerHTML = `
+          <div class="wo-parts-list">
+            ${workOrder.suspectedParts.map(part => `<div>${part}</div>`).join('')}
+          </div>
+        `;
+        document.getElementById('woSuspectedPartsSection').style.display = 'flex';
+      } else {
+        document.getElementById('woSuspectedPartsSection').style.display = 'none';
       }
       
       document.getElementById('workOrderCard').classList.remove('hidden');
     }
 
-    async function generateActionRecommendations() {
+    async function generateActionRecommendations(isFollowUp = false) {
       document.getElementById('actionsSection').classList.remove('hidden');
       
       try {
+        // Get activity log context for follow-up actions
+        const activityContext = getActivityLogContext();
+        const activityContextText = activityContext.length > 0 ? `
+
+COMPLETED ACTIONS & RESULTS:
+${activityContext.map((item, index) => `
+${index + 1}. ${item.timestamp} - ${item.summary}
+   Raw API Response: ${item.rawData}
+`).join('')}
+
+Based on the completed actions above, generate intelligent FOLLOW-UP actions that build on what has already been discovered.` : '';
+
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            message: `Generate 8 recommended actions for this work order that leverage available AI tools and APIs:
-            Equipment: ${currentWorkOrder.equipment}
-            Issue: ${currentWorkOrder.description}
-            Priority: ${currentWorkOrder.priority}
-            Location: ${currentWorkOrder.address}
-            Customer: ${currentWorkOrder.customer}
-            Contact: ${currentWorkOrder.contact}
-            
-            IMPORTANT: Generate actions that use these available AI-powered tools:
-            - Search for replacement parts and OEM part numbers (use "part" keyword)
-            - Find suppliers and pricing for specific parts (use "supplier" keyword)  
-            - Look up service manuals and technical documentation (use "manual" keyword)
-            - Send email updates to customers or management (use "email" keyword)
-            - Send SMS/text notifications to technicians or customers (use "sms" or "text" keyword)
-            - Find local service providers for specialized repairs (use "service" keyword)
-            
-            DO NOT suggest manual inspection tasks. Focus on AI-assisted actions like:
-            - "Search heating element parts for ${currentWorkOrder.equipment}"
-            - "Find suppliers for temperature sensor pricing"  
-            - "Email customer repair status update"
-            - "Look up ${currentWorkOrder.equipment} service manual"
-            - "Text technician priority repair assignment"
-            - "Find service providers near ${currentWorkOrder.address.split(',').pop()}"
-            
-            CRITICAL: Keep each action to 10 words or less. Be concise and specific. Format as a simple numbered list.`
+            message: `Generate ${isFollowUp ? getCurrentActionGap() : '8'} intelligent recommended actions for this work order using available API tools:
+
+WORK ORDER CONTEXT:
+Equipment: ${currentWorkOrder.equipment}
+Issue: ${currentWorkOrder.dispatchNotes || currentWorkOrder.description}
+Customer: ${currentWorkOrder.customer || currentWorkOrder.locationName}
+Location: ${currentWorkOrder.address}
+Contact: ${currentWorkOrder.locationContactName} (${currentWorkOrder.locationContactPhone})
+Email: ${currentWorkOrder.locationContactEmail}
+Technician: ${currentWorkOrder.technicianName} (${currentWorkOrder.technicianPhone})
+Tech Email: ${currentWorkOrder.technicianEmail}
+Service Notes: ${currentWorkOrder.serviceNotes || 'No tech notes yet'}
+Suspected Parts: ${(currentWorkOrder.suspectedParts || []).join(', ') || 'None identified'}${activityContextText}
+
+AVAILABLE API TOOLS TO USE:
+- /api/purchase-agent/parts/resolve - Find OEM part number for ONE specific part description
+- /api/purchase-agent/suppliers/search - Find suppliers and pricing for parts
+- /api/purchase-agent/manuals/search - Get technical manuals and documentation
+- /api/purchase-agent/search/web - AI web search for technical info
+- /api/purchase-agent/service/search - Find local service providers
+- /api/email/send - Send status updates, quotes, or notifications
+- /api/sms/send - Send urgent alerts or assignments
+- /api/orchestrator/objective - Create multi-step workflows
+
+Generate actions that intelligently use this work order data:
+- For parts resolution: Generate SEPARATE actions for EACH individual part (e.g., "Resolve thermocouple part number", "Resolve control board part number")
+- ${isFollowUp ? 'Build on completed actions - use found part numbers for supplier searches, use manual links for specific troubleshooting, etc.' : 'Use specific suspected parts when searching suppliers'}
+- Reference actual customer/technician names and contact info
+- Use equipment make/model for targeted searches
+- Consider location for service provider searches
+- Be contextually relevant to the actual issue described
+- ${isFollowUp ? 'Do NOT repeat actions that have already been completed' : ''}
+
+Format: Simple numbered list, 10 words or less per action.`
           })
         });
 
@@ -648,11 +824,20 @@
         
         // Parse actions from AI response
         const actions = parseActionsFromText(actionsText);
-        displayMobileActions(actions);
+        
+        if (isFollowUp) {
+          // Append to existing actions
+          appendMobileActions(actions);
+        } else {
+          // Replace all actions
+          displayMobileActions(actions);
+        }
         
       } catch (error) {
         console.error('Error generating actions:', error);
-        document.getElementById('actionsGrid').innerHTML = '<div class="loading-placeholder">Failed to generate actions</div>';
+        if (!isFollowUp) {
+          document.getElementById('actionsGrid').innerHTML = '<div class="loading-placeholder">Failed to generate actions</div>';
+        }
       }
     }
 
@@ -667,18 +852,22 @@
           let type = 'general';
           const lowerLine = cleanLine.toLowerCase();
           
-          if (lowerLine.includes('part') || lowerLine.includes('component')) {
+          if (lowerLine.includes('resolve') || lowerLine.includes('oem') || lowerLine.includes('part number')) {
             type = 'parts_search';
-          } else if (lowerLine.includes('supplier') || lowerLine.includes('vendor')) {
+          } else if (lowerLine.includes('supplier') || lowerLine.includes('vendor') || lowerLine.includes('pricing')) {
             type = 'supplier_search';
-          } else if (lowerLine.includes('manual') || lowerLine.includes('documentation')) {
+          } else if (lowerLine.includes('manual') || lowerLine.includes('documentation') || lowerLine.includes('retrieve')) {
             type = 'manual_search';
-          } else if (lowerLine.includes('email') || lowerLine.includes('notify')) {
+          } else if (lowerLine.includes('web search') || lowerLine.includes('troubleshooting') || lowerLine.includes('search for')) {
+            type = 'web_search';
+          } else if (lowerLine.includes('email') || lowerLine.includes('notify') || lowerLine.includes('status update')) {
             type = 'email';
-          } else if (lowerLine.includes('sms') || lowerLine.includes('text')) {
+          } else if (lowerLine.includes('sms') || lowerLine.includes('text') || lowerLine.includes('urgent')) {
             type = 'sms';
-          } else if (lowerLine.includes('service') || lowerLine.includes('technician')) {
+          } else if (lowerLine.includes('service provider') || lowerLine.includes('local service') || lowerLine.includes('backup')) {
             type = 'service_search';
+          } else if (lowerLine.includes('workflow') || lowerLine.includes('multi-step') || lowerLine.includes('create')) {
+            type = 'orchestrator';
           }
           
           actions.push({
@@ -694,6 +883,23 @@
     function displayMobileActions(actions) {
       const actionsGrid = document.getElementById('actionsGrid');
       actionsGrid.innerHTML = '';
+      
+      actions.forEach((action, index) => {
+        const button = document.createElement('button');
+        button.className = 'mobile-action-btn';
+        button.innerHTML = `
+          <div class="action-text">${action.name}</div>
+          <div class="action-status">▶</div>
+        `;
+        button.onclick = () => executeAction(action, button, index);
+        actionsGrid.appendChild(button);
+      });
+      
+      updateCounts();
+    }
+    
+    function appendMobileActions(actions) {
+      const actionsGrid = document.getElementById('actionsGrid');
       
       actions.forEach((action, index) => {
         const button = document.createElement('button');
@@ -735,16 +941,14 @@
         });
 
         const result = await response.json();
-        await displayActionResult(action, result, actionIndex);
         
-        // Move to completed
-        moveToCompleted(button, action, result);
+        // Move to completed (this will log the activity)
+        await moveToCompleted(button, action, result);
         
       } catch (error) {
         console.error('Error executing action:', error);
         const errorResult = { error: error.message };
-        await displayActionResult(action, errorResult, actionIndex);
-        moveToCompleted(button, action, errorResult);
+        await moveToCompleted(button, action, errorResult);
       }
     }
 
@@ -768,7 +972,7 @@
           endpoint: '/api/purchase-agent/suppliers/search',
           method: 'POST',
           params: {
-            partNumber: 'GENERIC-PART',
+            partNumber: extractPartNumberFromAction(actionName) || 'GENERIC-PART',
             options: { make: make, limit: 5 }
           }
         },
@@ -788,28 +992,42 @@
             model: currentWorkOrder.equipment.split(' ').slice(1).join(' ') || 'Unknown'
           }
         },
+        web_search: {
+          endpoint: '/api/purchase-agent/search/web',
+          method: 'POST',
+          params: {
+            query: `${currentWorkOrder.equipment} ${extractPartFromAction(actionName)} repair troubleshooting`
+          }
+        },
         email: {
           endpoint: '/api/email/send',
           method: 'POST',
           params: {
-            to: currentWorkOrder.contact.includes('@') ? currentWorkOrder.contact.split(' ')[0] : 'customer@example.com',
-            subject: `Work Order #${currentWorkOrder.id} - ${actionName}`,
-            text: `Regarding your service request for ${currentWorkOrder.equipment}: ${actionName}`
+            to: currentWorkOrder.locationContactEmail || 'customer@example.com',
+            subject: `Work Order #${currentWorkOrder.id} - Service Update`,
+            text: generateEmailContent(actionName, currentWorkOrder)
           }
         },
         sms: {
           endpoint: '/api/sms/send',
           method: 'POST',
           params: {
-            to: extractPhoneFromContact(currentWorkOrder.contact),
+            to: formatPhoneNumber(currentWorkOrder.technicianPhone || currentWorkOrder.locationContactPhone),
             message: `WO #${currentWorkOrder.id}: ${actionName}`
+          }
+        },
+        orchestrator: {
+          endpoint: '/api/orchestrator/objective',
+          method: 'POST',
+          params: {
+            objective: `${actionName} for ${currentWorkOrder.equipment} at ${currentWorkOrder.customer}`
           }
         },
         general: {
           endpoint: '/api/chat',
           method: 'POST',
           params: {
-            message: `Help me with this work order task: ${actionName}. Context: ${currentWorkOrder.equipment} - ${currentWorkOrder.description}`
+            message: `Help me with this work order task: ${actionName}. Context: ${currentWorkOrder.equipment} - ${currentWorkOrder.dispatchNotes || currentWorkOrder.description}`
           }
         }
       };
@@ -834,81 +1052,235 @@
       return actionName.split(' ').slice(0, 3).join(' ');
     }
 
+    function extractPartNumberFromAction(actionName) {
+      // Look for common part number patterns
+      const partNumberPattern = /[A-Z0-9]{3,}-?[A-Z0-9]{2,}/gi;
+      const matches = actionName.match(partNumberPattern);
+      if (matches) {
+        return matches[0];
+      }
+      
+      // Extract from suspected parts if available
+      if (currentWorkOrder.suspectedParts && currentWorkOrder.suspectedParts.length > 0) {
+        return currentWorkOrder.suspectedParts[0];
+      }
+      
+      // Fallback to generic search terms from action
+      const lowerAction = actionName.toLowerCase();
+      if (lowerAction.includes('thermocouple')) return 'THERMOCOUPLE';
+      if (lowerAction.includes('control board')) return 'CONTROL-BOARD';
+      if (lowerAction.includes('temp sensor')) return 'TEMP-SENSOR';
+      if (lowerAction.includes('ignitor')) return 'IGNITOR';
+      if (lowerAction.includes('valve')) return 'GAS-VALVE';
+      
+      return 'GENERIC-PART';
+    }
+
+    function formatPhoneNumber(phone) {
+      if (!phone) return '+15024456053'; // Default fallback
+      
+      // Remove all non-digits
+      const cleaned = phone.replace(/\D/g, '');
+      
+      // Handle different formats
+      if (cleaned.length === 10) {
+        return `+1${cleaned}`;
+      } else if (cleaned.length === 11 && cleaned.startsWith('1')) {
+        return `+${cleaned}`;
+      } else if (cleaned.length === 11) {
+        return `+1${cleaned.slice(1)}`;
+      }
+      
+      return `+1${cleaned.slice(-10)}`; // Take last 10 digits
+    }
+
+    function generateEmailContent(actionName, workOrder) {
+      const customerName = workOrder.locationContactName || 'Valued Customer';
+      const equipment = workOrder.equipment || 'equipment';
+      const issue = workOrder.dispatchNotes || workOrder.description || 'service issue';
+      
+      if (actionName.toLowerCase().includes('status update')) {
+        return `Dear ${customerName},
+
+This is an update regarding your service request for the ${equipment} at ${workOrder.address || 'your location'}.
+
+Issue: ${issue}
+Technician: ${workOrder.technicianName || 'Our service team'}
+Status: Work in progress
+
+We will keep you informed of any developments.
+
+Best regards,
+PartnerPlus Service Team`;
+      } else if (actionName.toLowerCase().includes('parts')) {
+        return `Dear ${customerName},
+
+We have identified the parts needed for your ${equipment} repair:
+
+Issue: ${issue}
+Required parts are being sourced and will be ordered shortly.
+
+We will contact you with delivery timeframes and next steps.
+
+Best regards,
+PartnerPlus Service Team`;
+      } else {
+        return `Dear ${customerName},
+
+Regarding your service request for ${equipment}:
+
+${actionName}
+
+We will keep you updated on progress.
+
+Best regards,
+PartnerPlus Service Team`;
+      }
+    }
+
     function extractPhoneFromContact(contact) {
       const phoneMatch = contact.match(/\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/);
       return phoneMatch ? phoneMatch[0].replace(/\D/g, '').replace(/^(\d{3})(\d{3})(\d{4})$/, '+1$1$2$3') : '+15024456053';
     }
 
-    async function displayActionResult(action, result, actionIndex) {
-      // Show results section
-      document.getElementById('resultsSection').classList.remove('hidden');
-      
-      const resultsContent = document.getElementById('resultsContent');
-      const resultDiv = document.createElement('div');
-      resultDiv.className = 'result-item';
-      
-      const actionDiv = document.createElement('div');
-      actionDiv.className = 'result-action';
-      actionDiv.textContent = action.name;
-      
-      const summaryDiv = document.createElement('div');
-      summaryDiv.className = 'result-summary';
-      
-      if (result.error) {
-        summaryDiv.textContent = `Error: ${result.error}`;
-        resultDiv.style.borderLeftColor = '#ff5722';
-      } else if (result.success === false) {
-        summaryDiv.textContent = 'Action completed with issues';
-        resultDiv.style.borderLeftColor = '#ff9800';
-      } else {
-        summaryDiv.textContent = 'Action completed successfully';
-        resultDiv.style.borderLeftColor = '#4caf50';
+    async function logActivity(action, result) {
+      try {
+        // Generate formatted log entry
+        const logEntry = await generateActivityLogEntry(action, result);
+        
+        // Show activity log section
+        document.getElementById('activityLogSection').style.display = 'block';
+        
+        // Create log item
+        const logItem = document.createElement('div');
+        logItem.className = `activity-log-item ${result.error ? 'error' : ''}`;
+        
+        const timestamp = new Date().toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        });
+        
+        const rawToggleId = `raw-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        
+        logItem.innerHTML = `
+          <div class="activity-timestamp">${timestamp}</div>
+          <div class="activity-content">
+            ${logEntry}
+            <button class="activity-raw-toggle" onclick="toggleActivityRaw('${rawToggleId}')">📄 Raw</button>
+          </div>
+          <div id="${rawToggleId}" class="activity-raw-content">
+            <pre>${JSON.stringify(result, null, 2)}</pre>
+          </div>
+        `;
+        
+        // Add to log (newest at bottom)
+        const activityLog = document.getElementById('activityLog');
+        activityLog.appendChild(logItem);
+        
+        // Store result
+        actionResults.push({ action, result, timestamp: Date.now() });
+      } catch (error) {
+        console.error('Failed to log activity:', error);
       }
-      
-      resultDiv.appendChild(actionDiv);
-      resultDiv.appendChild(summaryDiv);
-      resultsContent.appendChild(resultDiv);
-      
-      // Store result
-      actionResults.push({ action, result, timestamp: Date.now() });
     }
 
-    function moveToCompleted(button, action, result) {
+    async function moveToCompleted(button, action, result) {
       // Remove from active actions
       button.remove();
       
-      // Show completed section
-      document.getElementById('completedSection').classList.remove('hidden');
-      
-      // Add to completed grid
-      const completedGrid = document.getElementById('completedGrid');
-      const completedButton = document.createElement('button');
-      completedButton.className = 'mobile-completed-btn';
-      
-      if (result.error) {
-        completedButton.classList.add('error');
-        completedButton.title = `Error: ${result.error}`;
-      } else {
-        completedButton.title = 'Completed successfully';
-      }
-      
-      completedButton.innerHTML = `
-        <div class="completed-check">${result.error ? '⚠️' : '✓'}</div>
-        <div>${action.name}</div>
-      `;
-      
-      completedGrid.appendChild(completedButton);
-      completedActions.push({ action, result, timestamp: Date.now() });
+      // Log the activity in work order
+      await logActivity(action, result);
       
       updateCounts();
+      
+      // Auto-generate follow-up actions if we're running low
+      const currentActionCount = document.querySelectorAll('.mobile-action-btn').length;
+      if (currentActionCount <= 3) { // Trigger when 3 or fewer actions remain
+        setTimeout(() => {
+          generateActionRecommendations(true); // Generate follow-up actions
+        }, 1500); // Small delay to let the UI update
+      }
+    }
+
+    async function generateActivityLogEntry(action, result) {
+      try {
+        const prompt = `Create a concise work order log entry for this completed action. Format it for direct insertion into a work order activity log with clickable links where valuable.
+
+Action: ${action.name}
+Result: ${JSON.stringify(result, null, 2)}
+
+Guidelines:
+- Start with action type indicator like "📋 Manual Found:", "🔧 Parts Located:", "📞 Contacted:", etc.
+- Include clickable HTML links for any URLs using <a href="url" target="_blank">link text</a>
+- For manuals: "[Make Model] Manual - <a href="url">View Manual</a>"
+- For parts: Bold part numbers, include prices if available
+- For suppliers: Include company name and contact info
+- For service providers: Include name, address, phone
+- Keep under 100 characters if possible
+- Use <strong> for emphasis on key info
+- Return clean HTML that can be inserted directly
+
+Example formats:
+📋 <strong>Hobart H60</strong> Manual - <a href="https://example.com/manual.pdf" target="_blank">Download PDF</a>
+🔧 Found part <strong>274662</strong> at <a href="https://partstown.com" target="_blank">PartsLand</a> for <strong>$89.99</strong>
+📞 Local service: <strong>ABC Repair</strong> - (555) 123-4567, 123 Main St
+
+If no useful links or specific data, just summarize the key finding briefly.`;
+
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: prompt })
+        });
+
+        const data = await response.json();
+        return data.response || 'Action completed';
+      } catch (error) {
+        console.error('Activity log generation failed:', error);
+        return `${action.type === 'error' ? '❌' : '✅'} ${action.name}`;
+      }
+    }
+
+
+    function toggleActivityRaw(toggleId) {
+      const rawContent = document.getElementById(toggleId);
+      const isHidden = rawContent.style.display === 'none' || !rawContent.style.display;
+      rawContent.style.display = isHidden ? 'block' : 'none';
+      
+      // Update button text
+      const button = rawContent.previousElementSibling.querySelector('.activity-raw-toggle');
+      button.textContent = isHidden ? '📄 Hide' : '📄 Raw';
     }
 
     function updateCounts() {
       const activeActions = document.querySelectorAll('.mobile-action-btn').length;
-      const completedCount = document.querySelectorAll('.mobile-completed-btn').length;
-      
       document.getElementById('actionsCount').textContent = activeActions;
-      document.getElementById('completedCount').textContent = completedCount;
+    }
+    
+    function getCurrentActionGap() {
+      const currentCount = document.querySelectorAll('.mobile-action-btn').length;
+      const targetCount = 8;
+      return Math.max(2, targetCount - currentCount); // Always generate at least 2, up to fill the gap
+    }
+    
+    function getActivityLogContext() {
+      const activityItems = document.querySelectorAll('.activity-log-item');
+      const context = [];
+      
+      activityItems.forEach(item => {
+        const timestamp = item.querySelector('.activity-timestamp').textContent;
+        const content = item.querySelector('.activity-content').textContent.replace('📄 Raw', '').replace('📄 Hide', '').trim();
+        const rawContent = item.querySelector('.activity-raw-content pre').textContent;
+        
+        context.push({
+          timestamp,
+          summary: content,
+          rawData: rawContent
+        });
+      });
+      
+      return context;
     }
   </script>
 </body>
