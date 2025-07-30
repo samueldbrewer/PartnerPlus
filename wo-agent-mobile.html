@@ -322,23 +322,23 @@
     
     /* Activity Log */
     .activity-log {
-      max-height: 300px;
-      overflow-y: auto;
+      /* Remove max-height and overflow to allow full expansion */
     }
     
     .activity-log-item {
       background: #f8f9fa;
-      border-left: 3px solid #28a745;
-      padding: 8px 12px;
+      /* Remove green border */
+      padding: 12px;
       margin-bottom: 8px;
-      border-radius: 4px;
+      border-radius: 6px;
       font-size: 12px;
       line-height: 1.4;
+      border: 1px solid #e9ecef;
     }
     
     .activity-log-item.error {
-      border-left-color: #c8102e;
       background: #fff3f3;
+      border-color: #f5c6cb;
     }
     
     .activity-timestamp {
@@ -366,30 +366,52 @@
       color: #28a745;
     }
     
+    .activity-log-item {
+      position: relative;
+    }
+    
+    .activity-main-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .activity-content-left {
+      flex: 1;
+    }
+    
+    .activity-raw-dropdown {
+      position: relative;
+      flex-shrink: 0;
+    }
+    
     .activity-raw-toggle {
-      background: #2d2926;
+      background: #6c757d;
       color: white;
       border: none;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-size: 9px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
       cursor: pointer;
-      margin-left: 8px;
-      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
     
     .activity-raw-toggle:hover {
-      background: #2d2926;
+      background: #495057;
     }
     
     .activity-raw-content {
-      background: #fff;
+      background: #f8f9fa;
       border: 1px solid #dee2e6;
       border-radius: 4px;
-      margin-top: 4px;
-      max-height: 120px;
+      margin-top: 8px;
+      max-height: 200px;
       overflow: auto;
       display: none;
+      padding: 0;
     }
     
     .activity-raw-content pre {
@@ -848,11 +870,23 @@
         const activityContext = getActivityLogContext();
         const activityContextText = activityContext.length > 0 ? `
 
-COMPLETED ACTIONS & DETAILED RESULTS:
-${activityContext.map((item, index) => `
-${index + 1}. ${item.timestamp} - ${item.summary}
-   Complete API Response Data: ${item.rawData}
+=== COMPLETED ACTIONS & CUMULATIVE INTELLIGENCE ===
+${activityContext.map((item) => `
+ACTION ${item.actionNumber}: [${item.timestamp}]
+SUMMARY: ${item.summary}
+COMPLETE RAW API RESPONSE:
+${item.rawData}
+---
 `).join('')}
+
+=== CUMULATIVE CONTEXT ANALYSIS ===
+Total Actions Completed: ${activityContext.length}
+Knowledge Base: All raw API responses above contain the complete discovered information including:
+- Exact part numbers, prices, availability
+- Supplier contact details, addresses, phone numbers
+- Manual links, technical specifications, troubleshooting steps
+- Service provider locations, ratings, contact information
+- Previous communication records and customer interactions
 
 CRITICAL: Analyze the completed actions above and their detailed API responses to generate INTELLIGENT NEXT STEPS that:
 - Use specific part numbers, supplier info, prices, and contact details found in the raw data
@@ -866,17 +900,34 @@ CRITICAL: Analyze the completed actions above and their detailed API responses t
           body: JSON.stringify({
             message: `Generate exactly ${isFollowUp ? getCurrentActionGap() : '4'} intelligent recommended actions for this work order using available API tools:
 
-WORK ORDER CONTEXT:
+=== COMPLETE WORK ORDER DETAILS ===
+WO Number: ${currentWorkOrder.workOrderNumber || 'WO-1023'}
 Equipment: ${currentWorkOrder.equipment}
-Issue: ${currentWorkOrder.dispatchNotes || currentWorkOrder.description}
+Model: ${currentWorkOrder.model || 'Unknown model'}
+Serial: ${currentWorkOrder.serial || 'Unknown serial'}
+Status: ${currentWorkOrder.status || 'In Progress'}
+Duration: ${currentWorkOrder.duration || 'Unknown'}
+Type: ${currentWorkOrder.type || 'Service Call'}
+
+ISSUE DESCRIPTION:
+${currentWorkOrder.dispatchNotes || currentWorkOrder.description}
+
+CUSTOMER & LOCATION:
 Customer: ${currentWorkOrder.customer || currentWorkOrder.locationName}
-Location: ${currentWorkOrder.address}
-Contact: ${currentWorkOrder.locationContactName} (${currentWorkOrder.locationContactPhone})
+Address: ${currentWorkOrder.address}
+Contact: ${currentWorkOrder.locationContactName}
+Phone: ${currentWorkOrder.locationContactPhone}
 Email: ${currentWorkOrder.locationContactEmail}
-Technician: ${currentWorkOrder.technicianName} (${currentWorkOrder.technicianPhone})
-Tech Email: ${currentWorkOrder.technicianEmail}
-Service Notes: ${currentWorkOrder.serviceNotes || 'No tech notes yet'}
-Suspected Parts: ${(currentWorkOrder.suspectedParts || []).join(', ') || 'None identified'}${activityContextText}
+
+TECHNICIAN ASSIGNMENT:
+Technician: ${currentWorkOrder.technicianName}
+Phone: ${currentWorkOrder.technicianPhone}
+Email: ${currentWorkOrder.technicianEmail}
+
+SERVICE DETAILS:
+Technician Notes: ${currentWorkOrder.serviceNotes || 'No tech notes yet'}
+Suspected Parts: ${(currentWorkOrder.suspectedParts || []).join(', ') || 'None identified yet'}
+Priority: ${currentWorkOrder.priority || 'Standard'}${activityContextText}
 
 AVAILABLE API TOOLS TO USE:
 - /api/purchase-agent/parts/resolve - Find OEM part number for ONE specific part description
@@ -1281,9 +1332,16 @@ PartnerPlus Service Team`;
         
         logItem.innerHTML = `
           <div class="activity-timestamp">${timestamp}</div>
-          <div class="activity-content">
-            ${logEntry}
-            <button class="activity-raw-toggle" onclick="toggleActivityRaw('${rawToggleId}')">📄 Raw</button>
+          <div class="activity-main-content">
+            <div class="activity-content-left">
+              <div class="activity-content">${logEntry}</div>
+            </div>
+            <div class="activity-raw-dropdown">
+              <button class="activity-raw-toggle" onclick="toggleActivityRaw('${rawToggleId}')">
+                <span>Raw Data</span>
+                <span>▼</span>
+              </button>
+            </div>
           </div>
           <div id="${rawToggleId}" class="activity-raw-content">
             <pre>${JSON.stringify(result, null, 2)}</pre>
@@ -1327,28 +1385,25 @@ PartnerPlus Service Team`;
 
     async function generateActivityLogEntry(action, result) {
       try {
-        const prompt = `Create a concise work order log entry for this completed action. Format it for direct insertion into a work order activity log with clickable links where valuable.
+        const prompt = `Create a clean work order activity entry for this action:
 
 Action: ${action.name}
 Result: ${JSON.stringify(result, null, 2)}
 
-Guidelines:
-- Start with action type indicator like "📋 Manual Found:", "🔧 Parts Located:", "📞 Contacted:", etc.
-- Include clickable HTML links for any URLs using <a href="url" target="_blank">link text</a>
-- For manuals: "[Make Model] Manual - <a href="url">View Manual</a>"
-- For parts: Bold part numbers, include prices if available
-- For suppliers: Include company name and contact info
-- For service providers: Include name, address, phone
-- Keep under 100 characters if possible
-- Use <strong> for emphasis on key info
-- Return clean HTML that can be inserted directly
+Instructions:
+- Write a brief, professional summary of what was accomplished
+- Include key details like part numbers, prices, contact info when available
+- Make URLs clickable using standard HTML link format
+- Use simple formatting - bold for emphasis, no markdown
+- Keep it concise and work-order appropriate
+- Do NOT include code blocks, markdown syntax, or HTML formatting in the visible text
 
-Example formats:
-📋 <strong>Hobart H60</strong> Manual - <a href="https://example.com/manual.pdf" target="_blank">Download PDF</a>
-🔧 Found part <strong>274662</strong> at <a href="https://partstown.com" target="_blank">PartsLand</a> for <strong>$89.99</strong>
-📞 Local service: <strong>ABC Repair</strong> - (555) 123-4567, 123 Main St
+Examples:
+• Found service manual for Hobart AM15 - <a href="manual-url" target="_blank">View Manual</a>
+• Located water filter part #00-067500-00072, 441 available in stock
+• Contacted Linda Carter at (206) 555-4321 regarding maintenance status
 
-If no useful links or specific data, just summarize the key finding briefly.`;
+Return only the clean, readable log entry text.`;
 
         const response = await fetch('/api/chat', {
           method: 'POST',
@@ -1370,9 +1425,10 @@ If no useful links or specific data, just summarize the key finding briefly.`;
       const isHidden = rawContent.style.display === 'none' || !rawContent.style.display;
       rawContent.style.display = isHidden ? 'block' : 'none';
       
-      // Update button text
-      const button = rawContent.previousElementSibling.querySelector('.activity-raw-toggle');
-      button.textContent = isHidden ? '📄 Hide' : '📄 Raw';
+      // Update button arrow
+      const button = rawContent.previousElementSibling;
+      const arrow = button.querySelector('span:last-child');
+      arrow.textContent = isHidden ? '▲' : '▼';
     }
 
     function updateCounts() {
@@ -1391,12 +1447,13 @@ If no useful links or specific data, just summarize the key finding briefly.`;
       const activityItems = document.querySelectorAll('.activity-log-item');
       const context = [];
       
-      activityItems.forEach(item => {
+      activityItems.forEach((item, index) => {
         const timestamp = item.querySelector('.activity-timestamp').textContent;
-        const content = item.querySelector('.activity-content').textContent.replace('📄 Raw', '').replace('📄 Hide', '').trim();
+        const content = item.querySelector('.activity-content').textContent.replace('Raw Data', '').replace('▼', '').replace('▲', '').trim();
         const rawContent = item.querySelector('.activity-raw-content pre').textContent;
         
         context.push({
+          actionNumber: index + 1,
           timestamp,
           summary: content,
           rawData: rawContent
