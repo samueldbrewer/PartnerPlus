@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PartnerPlus - AI Assistant</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary-color: #1976d2;
+      --secondary-color: #f8f9fa;
+      --success-color: #28a745;
+      --danger-color: #dc3545;
+      --dark-color: #333;
+      --light-color: #fff;
+      --border-color: #dee2e6;
+      --shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      background-color: var(--secondary-color);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .header { 
+      background-color: var(--primary-color); 
+      color: white; 
+      padding: 15px 0; 
+      box-shadow: var(--shadow); 
+      flex-shrink: 0;
+    }
+    
+    .header-inner { 
+      max-width: 1000px; 
+      margin: 0 auto; 
+      padding: 0 20px; 
+    }
+    
+    .nav { 
+      display: flex; 
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .nav h1 { 
+      margin: 0; 
+      font-size: 24px; 
+      color: white;
+    }
+
+    .nav .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .nav a { 
+      color: white; 
+      text-decoration: none; 
+      padding: 8px 16px; 
+      border-radius: 4px; 
+      transition: background-color 0.3s;
+    }
+    
+    .nav a:hover { 
+      background-color: rgba(255,255,255,0.1);
+    }
+
+    .chat-container {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 20px;
+    }
+
+    .chat-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background: var(--secondary-color);
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .info-button {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s;
+    }
+
+    .info-button:hover {
+      background: #1565c0;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success-color);
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      min-height: 0;
+    }
+
+    .message {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message.user {
+      align-items: flex-end;
+    }
+
+    .message.assistant {
+      align-items: flex-start;
+    }
+
+    .message-content {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      position: relative;
+      line-height: 1.4;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    .message.user .message-content {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .message.assistant .message-content {
+      background: var(--secondary-color);
+      color: var(--dark-color);
+      border: 1px solid var(--border-color);
+    }
+
+    .message.system .message-content {
+      background: #e8f5e9;
+      color: var(--dark-color);
+      border: 1px solid #4caf50;
+      border-left-width: 4px;
+    }
+
+    .message-meta {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .query-box {
+      background: #e3f2fd;
+      border: 1px solid #bbdefb;
+      border-radius: 6px;
+      margin-top: 10px;
+      border-left: 4px solid var(--primary-color);
+      overflow: hidden;
+    }
+
+    .query-header {
+      font-weight: bold;
+      color: var(--primary-color);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      background: linear-gradient(135deg, #e3f2fd, #f0f8ff);
+      transition: background-color 0.3s;
+      margin-bottom: 0;
+    }
+
+    .query-header:hover {
+      background: linear-gradient(135deg, #bbdefb, #e3f2fd);
+    }
+
+    .query-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .query-method {
+      background: var(--primary-color);
+      color: white;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .query-endpoint {
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .query-toggle {
+      font-size: 14px;
+      transition: transform 0.3s;
+      user-select: none;
+    }
+
+    .query-toggle.expanded {
+      transform: rotate(180deg);
+    }
+    
+    .query-execute-section {
+      padding: 8px 12px;
+      background: rgba(25, 118, 210, 0.05);
+      border-top: 1px solid rgba(25, 118, 210, 0.1);
+    }
+
+    .query-execute-button {
+      width: 100%;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+      height: 44px; /* 30% taller than standard */
+    }
+
+    .query-execute-button:hover:not(:disabled) {
+      background: #1565c0;
+    }
+
+    .query-execute-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .query-content {
+      padding: 0 12px 12px 12px;
+      display: none;
+    }
+
+    .query-content.expanded {
+      display: block;
+    }
+
+    .query-code {
+      background: var(--light-color);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 10px;
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      word-break: break-all;
+      margin-bottom: 10px;
+    }
+
+    .copy-button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 11px;
+      transition: background-color 0.2s;
+    }
+
+    .copy-button:hover {
+      background: #1565c0;
+    }
+
+    .copy-button.copied {
+      background: var(--success-color);
+    }
+
+    .chat-input-container {
+      padding: 20px;
+      border-top: 1px solid var(--border-color);
+      background: white;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      resize: vertical;
+      min-height: 44px;
+      max-height: 120px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .chat-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+    }
+
+    .brain-button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.2s;
+      height: 44px;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brain-button:hover:not(:disabled) {
+      background: #1565c0;
+    }
+
+    .brain-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .send-button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.2s;
+      height: 44px;
+    }
+
+    .send-button:hover:not(:disabled) {
+      background: #1565c0;
+    }
+
+    .send-button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 16px;
+      background: var(--secondary-color);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      max-width: 80px;
+      margin-bottom: 20px;
+      align-self: flex-start;
+    }
+
+    .typing-indicator.show {
+      display: flex;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #666;
+      animation: typing 1.4s infinite;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% {
+        opacity: 0.3;
+      }
+      30% {
+        opacity: 1;
+      }
+    }
+
+    .cursor {
+      animation: blink 1s infinite;
+      color: var(--primary-color);
+    }
+
+    @keyframes blink {
+      0%, 50% {
+        opacity: 1;
+      }
+      51%, 100% {
+        opacity: 0;
+      }
+    }
+
+    pre {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 12px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 13px;
+      margin: 10px 0;
+    }
+
+    pre code {
+      background: transparent;
+      color: #f8f8f2;
+      padding: 0;
+    }
+
+    code {
+      background: #f1f1f1;
+      padding: 2px 4px;
+      border-radius: 2px;
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 13px;
+    }
+
+    .message-content strong {
+      font-weight: 600;
+      color: inherit;
+    }
+
+    .message.system .message-content strong {
+      color: #2e7d32;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      background: #666;
+      border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+
+    .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes typing {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--secondary-color);
+      border-radius: 12px 12px 0 0;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      color: var(--primary-color);
+      font-size: 18px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background-color 0.2s;
+    }
+
+    .modal-close:hover {
+      background: #f0f0f0;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .tool-category {
+      margin-bottom: 24px;
+    }
+
+    .tool-category:last-child {
+      margin-bottom: 0;
+    }
+
+    .tool-category h4 {
+      margin: 0 0 12px 0;
+      color: var(--primary-color);
+      font-size: 16px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 4px;
+    }
+
+    .tool-item {
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      background: var(--secondary-color);
+      border-radius: 6px;
+      border-left: 3px solid var(--primary-color);
+    }
+
+    .tool-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .tool-item strong {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 10px 0;
+      }
+
+      .header-inner {
+        padding: 0 15px;
+      }
+
+      .nav h1 {
+        font-size: 20px;
+      }
+
+      .chat-container {
+        padding: 10px;
+        height: calc(100vh - 60px);
+      }
+
+      .chat-messages {
+        padding: 15px;
+      }
+
+      .message-content {
+        max-width: 95%;
+        padding: 10px 14px;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      .chat-input-container {
+        padding: 15px;
+      }
+
+      .chat-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 14px;
+      }
+
+      .send-button {
+        padding: 14px 18px;
+        font-size: 15px;
+      }
+
+      .query-box {
+        margin-top: 8px;
+        padding: 10px;
+      }
+
+      .query-code {
+        font-size: 12px;
+        padding: 8px;
+      }
+
+      .copy-button {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      .modal-overlay {
+        padding: 10px;
+      }
+
+      .modal-content {
+        max-height: 90vh;
+      }
+
+      .modal-header {
+        padding: 16px 20px;
+      }
+
+      .modal-header h3 {
+        font-size: 16px;
+      }
+
+      .modal-body {
+        padding: 20px;
+      }
+
+      .tool-category {
+        margin-bottom: 20px;
+      }
+
+      .tool-category h4 {
+        font-size: 15px;
+      }
+
+      .tool-item {
+        font-size: 14px;
+      }
+      .query-header {
+        padding: 10px;
+      }
+      .query-content {
+        padding: 0 10px 10px 10px;
+      }
+      .query-method {
+        font-size: 10px;
+        padding: 1px 4px;
+      }
+      .query-endpoint {
+        font-size: 11px;
+      }
+      .query-execute-section {
+        padding: 6px 10px;
+      }
+      .query-execute-button {
+        font-size: 13px;
+        height: 40px;
+        padding: 8px 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav h1 {
+        font-size: 18px;
+      }
+
+      .chat-container {
+        padding: 5px;
+        height: calc(100vh - 50px);
+      }
+
+      .chat-messages {
+        padding: 10px;
+      }
+
+      .message-content {
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+
+      .chat-input-container {
+        padding: 10px;
+      }
+
+      .input-group {
+        gap: 8px;
+      }
+
+      .chat-input {
+        padding: 12px;
+        font-size: 16px;
+      }
+
+      .send-button {
+        padding: 12px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner">
+      <div class="nav">
+        <h1>PartnerPlus</h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-container">
+    <div class="chat-main">
+      <div class="chat-header">
+        <div class="status-indicator"></div>
+        <span></span>
+        <button class="info-button" id="infoButton">i</button>
+      </div>
+
+      <div class="chat-messages" id="chatMessages">
+        <div class="message assistant">
+          <div class="message-content">
+            Welcome to PartnerPlus! I'm your AI assistant with access to all tools and APIs. I can help with parts research, supplier searches, equipment manuals, image search, email/SMS, web searches, and more. Just ask me anything!
+          </div>
+          <div class="message-meta">PartnerPlus AI</div>
+        </div>
+      </div>
+
+
+      <div class="chat-input-container">
+        <div class="input-group">
+          <textarea 
+            class="chat-input" 
+            id="chatInput" 
+            placeholder="Ask me anything..."
+            rows="1"
+          ></textarea>
+          <button class="brain-button" id="brainButton" title="Generate random foodservice query">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C8.5 2 6 4.5 6 7.5c0 1.5.5 2.5 1 3.5-.5 1-1 2-1 3.5 0 2.5 2 4.5 4.5 4.5.5 0 1-.1 1.5-.3.5.2 1 .3 1.5.3 2.5 0 4.5-2 4.5-4.5 0-1.5-.5-2.5-1-3.5.5-1 1-2 1-3.5C18 4.5 15.5 2 12 2zm-2 16c-1.5 0-2.5-1-2.5-2.5 0-1 .5-1.5 1-2.5-.5-.5-1-1.5-1-2.5C7.5 8.5 9 7 11 7h2c2 0 3.5 1.5 3.5 3.5 0 1-.5 2-1 2.5.5 1 1 1.5 1 2.5 0 1.5-1 2.5-2.5 2.5-.3 0-.7-.1-1-.2-.3.1-.7.2-1 .2z" fill="currentColor"/>
+              <circle cx="10" cy="10" r="1" fill="currentColor"/>
+              <circle cx="14" cy="10" r="1" fill="currentColor"/>
+              <path d="M9 13c0 .5.5 1 1.5 1s1.5-.5 1.5-1" stroke="currentColor" stroke-width="1" fill="none"/>
+            </svg>
+          </button>
+          <button class="send-button" id="sendButton">Send</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Info Modal -->
+  <div class="modal-overlay" id="infoModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Available Tools</h3>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="tool-category">
+          <h4>AI Orchestrator</h4>
+          <div class="tool-item">
+            <strong>Objective Planning:</strong> Generate workflow plans from natural language objectives
+          </div>
+          <div class="tool-item">
+            <strong>Step Execution:</strong> Execute individual workflow steps automatically
+          </div>
+        </div>
+
+        <div class="tool-category">
+          <h4>Communication</h4>
+          <div class="tool-item">
+            <strong>Email Service:</strong> Send emails and retrieve inbox messages
+          </div>
+          <div class="tool-item">
+            <strong>SMS Service:</strong> Send and receive text messages
+          </div>
+        </div>
+
+        <div class="tool-category">
+          <h4>Parts & Equipment</h4>
+          <div class="tool-item">
+            <strong>Parts Resolution:</strong> Convert part descriptions to specific OEM numbers
+          </div>
+          <div class="tool-item">
+            <strong>Supplier Search:</strong> Find suppliers and pricing for specific parts
+          </div>
+          <div class="tool-item">
+            <strong>Equipment Images:</strong> Find photos of equipment and parts
+          </div>
+          <div class="tool-item">
+            <strong>Service Providers:</strong> Locate equipment service and repair companies
+          </div>
+          <div class="tool-item">
+            <strong>Equipment Manuals:</strong> Search for equipment documentation and manuals
+          </div>
+        </div>
+
+        <div class="tool-category">
+          <h4>Search & Research</h4>
+          <div class="tool-item">
+            <strong>AI Web Search:</strong> Get intelligent answers from web searches
+          </div>
+          <div class="tool-item">
+            <strong>Raw Search Results:</strong> Access direct Google search results
+          </div>
+        </div>
+
+        <div class="tool-category">
+          <h4>Development</h4>
+          <div class="tool-item">
+            <strong>Code Executor:</strong> Run code safely in multiple programming languages
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    class AIChat {
+      constructor() {
+        this.chatMessages = document.getElementById('chatMessages');
+        this.chatInput = document.getElementById('chatInput');
+        this.sendButton = document.getElementById('sendButton');
+        this.brainButton = document.getElementById('brainButton');
+        this.infoButton = document.getElementById('infoButton');
+        this.infoModal = document.getElementById('infoModal');
+        this.modalClose = document.getElementById('modalClose');
+        this.typingMessage = null;
+        
+        this.conversationHistory = [];
+        this.setupEventListeners();
+      }
+
+      setupEventListeners() {
+        this.sendButton.addEventListener('click', () => this.sendMessage());
+        this.brainButton.addEventListener('click', () => this.generateRandomQuery());
+        this.chatInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            this.sendMessage();
+          }
+        });
+        
+        // Auto-resize textarea
+        this.chatInput.addEventListener('input', (e) => {
+          e.target.style.height = 'auto';
+          e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+        });
+
+        // Modal event listeners
+        this.infoButton.addEventListener('click', () => this.showModal());
+        this.modalClose.addEventListener('click', () => this.hideModal());
+        this.infoModal.addEventListener('click', (e) => {
+          if (e.target === this.infoModal) {
+            this.hideModal();
+          }
+        });
+      }
+
+      generateRandomQuery() {
+        const foodserviceQueries = [
+          "Find the part number for a Henny Penny 500 lid seal and email the pricing to samueldbrewer@gmail.com",
+          "Search for suppliers of Vulcan oven door gaskets and text the best 3 options to 5024456053",
+          "Look up service providers near Louisville, KY for Hobart dishwasher repair and email the contact list",
+          "Find manuals for a TurboChef oven model NGC and send them via email with installation instructions",
+          "Search for pricing on Frymaster oil filtration parts and compare 5 suppliers via SMS",
+          "Locate repair services for Imperial fryer equipment in Kentucky and email the top recommendations",
+          "Find replacement parts for a Manitowoc ice machine and send supplier comparison via email",
+          "Search for Alto-Shaam oven service manuals and email technical documentation to the team",
+          "Look up pricing for Rational combi oven cleaning supplies from multiple vendors",
+          "Find emergency service providers for commercial refrigeration equipment in Louisville area",
+          "Search for Pitco fryer basket part numbers and email availability to operations team",
+          "Locate suppliers for Beverage-Air cooler door seals and compare pricing via text message",
+          "Find installation manuals for Garland range equipment and email to maintenance department",
+          "Search for True refrigerator compressor parts and send pricing comparison to purchasing",
+          "Look up service contacts for Waring blender repair and text emergency numbers to kitchen staff",
+          "Find replacement filters for Scotsman ice machines and email supplier options with lead times",
+          "Search for Jackson dishwasher pump parts and compare vendor pricing via email",
+          "Locate repair manuals for Southbend oven equipment and send technical docs to engineers",
+          "Find pricing for Lincoln impinger conveyor belts from authorized dealers",
+          "Search for emergency repair services for walk-in cooler equipment near our location"
+        ];
+
+        const randomQuery = foodserviceQueries[Math.floor(Math.random() * foodserviceQueries.length)];
+        this.chatInput.value = randomQuery;
+        this.chatInput.style.height = 'auto';
+        this.chatInput.style.height = Math.min(this.chatInput.scrollHeight, 120) + 'px';
+        this.chatInput.focus();
+      }
+
+      showModal() {
+        this.infoModal.classList.add('show');
+      }
+
+      hideModal() {
+        this.infoModal.classList.remove('show');
+      }
+
+      async sendMessage() {
+        const message = this.chatInput.value.trim();
+        if (!message) return;
+
+        // Add user message
+        this.addMessage('user', message);
+        this.chatInput.value = '';
+        this.chatInput.style.height = 'auto';
+        
+        // Show typing
+        this.showTyping();
+        this.sendButton.disabled = true;
+
+        try {
+          // Build the full message including conversation history
+          let fullMessage = this.buildSystemPrompt();
+          
+          // Add conversation history
+          if (this.conversationHistory.length > 0) {
+            fullMessage += "\n\nConversation History:\n";
+            this.conversationHistory.forEach(msg => {
+              if (msg.role === 'user') {
+                fullMessage += `User: ${msg.content}\n`;
+              } else if (msg.role === 'assistant') {
+                fullMessage += `Assistant: ${msg.content}\n`;
+              } else if (msg.role === 'system') {
+                fullMessage += `System Response: ${msg.content}\n`;
+              }
+            });
+          }
+          
+          fullMessage += `\n\nUser: ${message}`;
+          
+          const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              message: fullMessage,
+              stream: true,
+              model: 'o4-mini-2025-04-16'
+            })
+          });
+
+          if (response.body) {
+            // Handle streaming response
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let fullText = '';
+            let messageElement = null;
+
+            // Create initial message element
+            messageElement = this.addStreamingMessage('assistant', '');
+            this.hideTyping();
+
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+
+              const chunk = decoder.decode(value);
+              const lines = chunk.split('\n');
+              
+              for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                  try {
+                    const data = JSON.parse(line.slice(6));
+                    
+                    switch (data.type) {
+                      case 'text_delta':
+                        fullText = data.fullText || fullText;
+                        this.updateStreamingMessage(messageElement, fullText);
+                        break;
+                        
+                      case 'web_search_started':
+                      case 'web_search_progress':
+                      case 'web_search_completed':
+                        // Show search status
+                        const statusText = fullText + '\n\n' + data.content;
+                        this.updateStreamingMessage(messageElement, statusText);
+                        break;
+                        
+                      case 'response_complete':
+                      case 'done':
+                        fullText = data.content || fullText;
+                        break;
+                        
+                      case 'error':
+                        fullText = 'Error: ' + data.content;
+                        break;
+                    }
+                  } catch (e) {
+                    // Ignore JSON parse errors for incomplete chunks
+                  }
+                }
+              }
+            }
+
+            if (fullText && messageElement) {
+              // Finalize message with tools
+              this.finalizeStreamingMessage(messageElement, fullText);
+              
+              // Only add to history if not duplicate
+              const lastAssistantMsg = this.conversationHistory
+                .filter(msg => msg.role === 'assistant')
+                .pop();
+              
+              if (!lastAssistantMsg || lastAssistantMsg.content !== fullText) {
+                this.conversationHistory.push(
+                  { role: 'user', content: message },
+                  { role: 'assistant', content: fullText }
+                );
+              }
+            }
+          } else {
+            // Fallback to non-streaming
+            const data = await response.json();
+            if (data.response) {
+              this.addMessage('assistant', data.response, true);
+              this.conversationHistory.push(
+                { role: 'user', content: message },
+                { role: 'assistant', content: data.response }
+              );
+            } else {
+              throw new Error('No response received');
+            }
+          }
+        } catch (error) {
+          console.error('Chat error:', error);
+          this.addMessage('assistant', 'Sorry, I encountered an error. Please try again.');
+        } finally {
+          this.hideTyping();
+          this.sendButton.disabled = false;
+        }
+      }
+
+      buildSystemPrompt() {
+        return `You are a step-by-step tool-aware AI assistant for PartnerPlus. You excel at breaking complex requests into individual actionable steps.
+
+WORKFLOW APPROACH: Always work step-by-step for multi-step requests:
+- Step 1: Execute first action, wait for results
+- Step 2: Use those results for next action
+- Continue until complete
+
+Available API endpoints:
+
+AI ORCHESTRATOR:
+- POST /api/orchestrator/objective - Generate workflow plans from natural language objectives
+- POST /api/orchestrator/execute-step - Execute workflow steps
+
+AI CHAT:
+- POST /api/chat - Direct conversation with AI assistant
+
+EMAIL SERVICE:
+- POST /api/email/send - Send emails (to, subject, text, html)
+- GET /api/email/inbox - Retrieve inbox emails (limit param)
+- POST /api/email/refresh - Refresh email connection
+
+SMS SERVICE:
+- POST /api/sms/send - Send SMS messages (to, message)
+- GET /api/sms/messages - Retrieve SMS messages (limit param)
+- POST /api/sms/refresh - Refresh SMS connection
+
+PURCHASE AGENT - PARTS:
+- POST /api/purchase-agent/parts/resolve - Resolve part descriptions (description, make, model)
+- POST /api/purchase-agent/parts/enrich - Enrich part data with additional details
+- POST /api/purchase-agent/parts/find-generic - Find generic equivalent parts
+
+PURCHASE AGENT - SUPPLIERS:
+- POST /api/purchase-agent/suppliers/search - Find suppliers (partNumber, options)
+
+PURCHASE AGENT - SERVICES:
+- POST /api/purchase-agent/service-search - Find service providers (zipCode, make, model optional, serviceType optional)
+
+MANUALS & DOCUMENTATION:
+- GET /api/purchase-agent/manuals/search - Search equipment manuals (make, model, query)
+
+SEARCH TOOLS:
+- POST /api/purchase-agent/search/web - AI-powered web search (query)
+- POST /api/purchase-agent/search/serp - Raw Google search results (query)
+
+IMAGE SEARCH TOOLS:
+- POST /api/purchase-agent/equipment-image - Find equipment photos (make, model)
+- POST /api/purchase-agent/part-image - Find part photos (make, model, partName, oemNumber optional)
+
+CODE EXECUTOR:
+- POST /api/execute-code - Execute code safely (code, language)
+
+SYSTEM:
+- GET /health - System health check
+- GET /api/purchase-agent/health - Purchase agent health
+
+CRITICAL STEP-BY-STEP RULES:
+1. NEVER chain multiple API calls in one JavaScript block - this violates the step-by-step approach
+2. ONLY provide ONE single API call per response, then WAIT for results
+3. NO .then() chaining between different API endpoints - each call must be separate
+4. For multi-step requests like "resolve part then search suppliers then send SMS":
+   - Response 1: ONLY resolve the part (single API call)
+   - Response 2: ONLY search suppliers using the resolved part number
+   - Response 3: ONLY send SMS using the supplier results
+5. CRITICAL: When you see "System Response: API Query Result:" in conversation history, use that data for the next step
+6. WORKFLOW CONTINUATION: After each API result, ONLY continue if the user explicitly requested multiple steps:
+   - SINGLE REQUESTS (like "find part number") = STOP after providing the answer
+   - MULTI-STEP REQUESTS (like "find part then email suppliers") = Continue to next step
+   - When in doubt, ASK the user if they want additional actions rather than assuming
+   - If TASK COMPLETE: Summarize what was accomplished
+   - For multi-step requests like "search and text", continue until ALL steps are done
+7. Always tell the user "I'll do this step by step" and show ONLY the first step initially
+8. Each API call must be completely independent - no chaining with .then()
+9. Format single API calls like this:
+
+\`\`\`javascript
+fetch('/api/purchase-agent/parts/resolve', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    description: 'lid seal',
+    make: 'Henny Penny',
+    model: '500'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+\`\`\`
+
+Always be helpful, accurate, and suggest the most appropriate tools for the user's needs.`;
+      }
+
+      async executeQuery(query) {
+        if (!query) return;
+
+        try {
+          // Show executing status
+          this.addMessage('system', 'Executing API query...');
+          
+          // Execute the query directly using eval to handle the complete fetch chain
+          const result = await eval(query.replace(/\.then\(data => console\.log\(data\)\)/, '.then(data => data)'));
+          
+          // Remove the executing message
+          const messages = this.chatMessages.querySelectorAll('.message');
+          const lastMessage = messages[messages.length - 1];
+          if (lastMessage && lastMessage.textContent.includes('Executing API query')) {
+            lastMessage.remove();
+          }
+          
+          // Format the result message based on the response
+          let resultMessage = 'Query executed successfully!\n\n**API Response:**\n';
+          
+          if (result && typeof result === 'object') {
+            resultMessage += `\`\`\`json\n${JSON.stringify(result, null, 2)}\n\`\`\``;
+            
+            // Add specific interpretation based on the endpoint
+            if (result.success && result.parts) {
+              resultMessage += `\n\n**Found ${result.parts.length} part(s):**\n`;
+              result.parts.forEach(part => {
+                resultMessage += `- **${part.partNumber}** - ${part.description}\n`;
+                if (part.manufacturer) resultMessage += `  Manufacturer: ${part.manufacturer}\n`;
+                if (part.price) resultMessage += `  Price: $${part.price}\n`;
+              });
+            } else if (result.success && result.suppliers) {
+              resultMessage += `\n\n**Found ${result.suppliers.length} supplier(s):**\n`;
+              result.suppliers.forEach(supplier => {
+                resultMessage += `- **${supplier.name}**\n`;
+                if (supplier.price) resultMessage += `  Price: $${supplier.price}\n`;
+                if (supplier.availability) resultMessage += `  Availability: ${supplier.availability}\n`;
+              });
+            } else if (result.message) {
+              resultMessage += `\n\n**Message:** ${result.message}`;
+            }
+          } else {
+            resultMessage += `\`\`\`\n${result}\n\`\`\``;
+          }
+          
+          // Add result to chat as a system message
+          this.addMessage('system', resultMessage);
+          
+          // Add the result to conversation history for AI context
+          this.conversationHistory.push({
+            role: 'system',
+            content: `API Query Result: ${JSON.stringify(result, null, 2)}`
+          });
+
+          // Auto-digest results with AI
+          await this.digestApiResults(result);
+          
+        } catch (error) {
+          console.error('Query execution error:', error);
+          
+          // Remove the executing message if it exists
+          const messages = this.chatMessages.querySelectorAll('.message');
+          const lastMessage = messages[messages.length - 1];
+          if (lastMessage && lastMessage.textContent.includes('Executing API query')) {
+            lastMessage.remove();
+          }
+          
+          const errorMessage = `Query execution failed:\n\n\`\`\`\n${error.message}\n\`\`\``;
+          this.addMessage('system', errorMessage);
+          
+          // Add error to conversation history
+          this.conversationHistory.push({
+            role: 'system',
+            content: `API Query Error: ${error.message}`
+          });
+        }
+      }
+
+      async digestApiResults(result) {
+        try {
+          // Show AI is analyzing results
+          this.showTyping();
+          
+          // Build context message for AI to digest the results AND determine next steps
+          const digestPrompt = `First, provide a brief one-sentence summary of these API results.
+
+Then, analyze if the original user request requires more steps. If so, automatically continue with the next logical step using these results.
+
+API Results: ${JSON.stringify(result, null, 2)}`;
+
+          // Build the full message including conversation history
+          let fullMessage = this.buildSystemPrompt();
+          
+          // Add conversation history
+          if (this.conversationHistory.length > 0) {
+            fullMessage += "\n\nConversation History:\n";
+            this.conversationHistory.forEach(msg => {
+              if (msg.role === 'user') {
+                fullMessage += `User: ${msg.content}\n`;
+              } else if (msg.role === 'assistant') {
+                fullMessage += `Assistant: ${msg.content}\n`;
+              } else if (msg.role === 'system') {
+                fullMessage += `System Response: ${msg.content}\n`;
+              }
+            });
+          }
+          
+          fullMessage += `\n\nUser: ${digestPrompt}`;
+          
+          const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              message: fullMessage,
+              stream: true,
+              model: 'o4-mini-2025-04-16'
+            })
+          });
+
+          if (response.body) {
+            // Handle streaming response
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let fullText = '';
+            let messageElement = null;
+
+            // Create initial message element
+            messageElement = this.addStreamingMessage('assistant', '');
+            this.hideTyping();
+
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+
+              const chunk = decoder.decode(value);
+              const lines = chunk.split('\n');
+              
+              for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                  try {
+                    const data = JSON.parse(line.slice(6));
+                    
+                    switch (data.type) {
+                      case 'text_delta':
+                        fullText = data.fullText || fullText;
+                        this.updateStreamingMessage(messageElement, fullText);
+                        break;
+                        
+                      case 'response_complete':
+                      case 'done':
+                        fullText = data.content || fullText;
+                        break;
+                        
+                      case 'error':
+                        fullText = 'Error: ' + data.content;
+                        break;
+                    }
+                  } catch (e) {
+                    // Ignore JSON parse errors for incomplete chunks
+                  }
+                }
+              }
+            }
+
+            if (fullText && messageElement) {
+              // Finalize message with tools
+              this.finalizeStreamingMessage(messageElement, fullText);
+              
+              // Add to conversation history
+              this.conversationHistory.push({
+                role: 'assistant',
+                content: fullText
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Error digesting API results:', error);
+          this.addMessage('assistant', 'I received the API results but encountered an error while analyzing them.');
+        } finally {
+          this.hideTyping();
+        }
+      }
+
+      addMessage(type, content, includeTools = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        
+        // Process content for markdown-like formatting
+        let processedContent = content
+          .replace(/```json\n([\s\S]*?)\n```/g, '<pre><code>$1</code></pre>')
+          .replace(/```\n([\s\S]*?)\n```/g, '<pre><code>$1</code></pre>')
+          .replace(/`([^`]+)`/g, '<code>$1</code>')
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/\n/g, '<br>');
+        
+        contentDiv.innerHTML = processedContent;
+
+        // Add tool suggestions for assistant messages
+        if (type === 'assistant' && includeTools) {
+          this.addToolSuggestions(contentDiv, content);
+        }
+
+        const metaDiv = document.createElement('div');
+        metaDiv.className = 'message-meta';
+        if (type === 'user') {
+          metaDiv.textContent = 'You';
+        } else if (type === 'system') {
+          metaDiv.textContent = 'System Response';
+        } else {
+          metaDiv.textContent = 'PartnerPlus AI';
+        }
+        
+        messageDiv.appendChild(contentDiv);
+        messageDiv.appendChild(metaDiv);
+        
+        this.chatMessages.appendChild(messageDiv);
+        this.scrollToBottom();
+        
+        return messageDiv;
+      }
+
+      addStreamingMessage(type, content) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        
+        // Process content for markdown-like formatting
+        let processedContent = content
+          .replace(/```json\n([\s\S]*?)\n```/g, '<pre><code>$1</code></pre>')
+          .replace(/```\n([\s\S]*?)\n```/g, '<pre><code>$1</code></pre>')
+          .replace(/`([^`]+)`/g, '<code>$1</code>')
+          .replace(/\n/g, '<br>');
+        
+        contentDiv.innerHTML = processedContent + '<span class="cursor">▋</span>';
+
+        const metaDiv = document.createElement('div');
+        metaDiv.className = 'message-meta';
+        metaDiv.textContent = type === 'user' ? 'You' : 'PartnerPlus AI (typing...)';
+        
+        messageDiv.appendChild(contentDiv);
+        messageDiv.appendChild(metaDiv);
+        
+        this.chatMessages.appendChild(messageDiv);
+        this.scrollToBottom();
+        
+        return messageDiv;
+      }
+
+      updateStreamingMessage(messageElement, content) {
+        const contentDiv = messageElement.querySelector('.message-content');
+        
+        // Process content for markdown-like formatting
+        let processedContent = content
+          .replace(/```json\n([\s\S]*?)\n```/g, '<pre><code>$1</code></pre>')
+          .replace(/```\n([\s\S]*?)\n```/g, '<pre><code>$1</code></pre>')
+          .replace(/`([^`]+)`/g, '<code>$1</code>')
+          .replace(/\n/g, '<br>');
+        
+        contentDiv.innerHTML = processedContent + '<span class="cursor">▋</span>';
+        this.scrollToBottom();
+      }
+
+      finalizeStreamingMessage(messageElement, content) {
+        const contentDiv = messageElement.querySelector('.message-content');
+        const metaDiv = messageElement.querySelector('.message-meta');
+        
+        // Process content for markdown-like formatting
+        let processedContent = content
+          .replace(/```json\n([\s\S]*?)\n```/g, '<pre><code>$1</code></pre>')
+          .replace(/```\n([\s\S]*?)\n```/g, '<pre><code>$1</code></pre>')
+          .replace(/`([^`]+)`/g, '<code>$1</code>')
+          .replace(/\n/g, '<br>');
+        
+        contentDiv.innerHTML = processedContent;
+        metaDiv.textContent = 'PartnerPlus AI';
+        
+        // Add tool suggestions
+        this.addToolSuggestions(contentDiv, content);
+        this.scrollToBottom();
+      }
+
+      addToolSuggestions(contentDiv, originalContent) {
+        // Look for code blocks with fetch
+        const codeBlockRegex = /```(?:javascript|js)?\s*\n([\s\S]*?)\n\s*```/g;
+        let match;
+        const queries = [];
+        
+        // Try to find queries in code blocks first
+        while ((match = codeBlockRegex.exec(originalContent)) !== null) {
+          const codeContent = match[1].trim();
+          if (codeContent.includes('fetch(')) {
+            queries.push(codeContent);
+          }
+        }
+        
+        // If no code blocks, try to find inline fetch statements
+        if (queries.length === 0) {
+          const inlineRegex = /fetch\s*\([^)]+\)[\s\S]*?\.catch\s*\([^)]+\)\s*;?/g;
+          const matches = originalContent.match(inlineRegex);
+          if (matches) {
+            queries.push(...matches);
+          }
+        }
+        
+        // Deduplicate and process queries
+        const uniqueQueries = [...new Set(queries)].map(query => {
+          let cleanQuery = query.trim();
+          
+          // Fix template literal syntax if needed
+          cleanQuery = cleanQuery.replace(/text:\s*The\s+part/, "text: `The part");
+          cleanQuery = cleanQuery.replace(/\${partNumber}([^`])/, "${partNumber}`$1");
+          
+          // Ensure query ends with semicolon
+          if (!cleanQuery.endsWith(';')) {
+            cleanQuery += ';';
+          }
+          return cleanQuery;
+        });
+        
+        // Only show first unique query to avoid clutter
+        if (uniqueQueries.length > 0) {
+          const queryDiv = document.createElement('div');
+          queryDiv.className = 'query-box';
+          
+          const displayQuery = uniqueQueries[0];
+          
+          // Extract method and endpoint from query
+          const methodMatch = displayQuery.match(/method:\s*['"](\w+)['"]/);
+          const urlMatch = displayQuery.match(/fetch\(['"]([^'"]+)['"]/);
+          const method = methodMatch ? methodMatch[1].toUpperCase() : 'GET';
+          const endpoint = urlMatch ? urlMatch[1] : 'API Query';
+          
+          // Create collapsible header
+          const headerDiv = document.createElement('div');
+          headerDiv.className = 'query-header';
+          
+          const titleDiv = document.createElement('div');
+          titleDiv.className = 'query-title';
+          
+          const endpointSpan = document.createElement('span');
+          endpointSpan.className = 'query-endpoint';
+          endpointSpan.textContent = endpoint;
+          
+          const toggleSpan = document.createElement('span');
+          toggleSpan.className = 'query-toggle';
+          toggleSpan.textContent = '▼';
+          
+          titleDiv.appendChild(endpointSpan);
+          headerDiv.appendChild(titleDiv);
+          headerDiv.appendChild(toggleSpan);
+          
+          // Create execute button section (always visible)
+          const executeSection = document.createElement('div');
+          executeSection.className = 'query-execute-section';
+          
+          const executeButton = document.createElement('button');
+          executeButton.className = 'query-execute-button';
+          executeButton.textContent = 'Execute';
+          executeButton.onclick = () => {
+            executeButton.disabled = true;
+            executeButton.textContent = 'Executing...';
+            this.executeQuery(displayQuery).then(() => {
+              executeButton.disabled = false;
+              executeButton.textContent = 'Execute';
+            });
+          };
+          
+          executeSection.appendChild(executeButton);
+          
+          // Create collapsible content
+          const queryContentDiv = document.createElement('div');
+          queryContentDiv.className = 'query-content';
+          
+          const codeDiv = document.createElement('div');
+          codeDiv.className = 'query-code';
+          codeDiv.textContent = displayQuery;
+          
+          queryContentDiv.appendChild(codeDiv);
+          
+          // Add click handler for toggle (only on the title area)
+          titleDiv.onclick = () => {
+            const isExpanded = queryContentDiv.classList.contains('expanded');
+            if (isExpanded) {
+              queryContentDiv.classList.remove('expanded');
+              toggleSpan.classList.remove('expanded');
+            } else {
+              queryContentDiv.classList.add('expanded');
+              toggleSpan.classList.add('expanded');
+            }
+          };
+          
+          // Also allow clicking the toggle arrow
+          toggleSpan.onclick = (e) => {
+            e.stopPropagation();
+            const isExpanded = queryContentDiv.classList.contains('expanded');
+            if (isExpanded) {
+              queryContentDiv.classList.remove('expanded');
+              toggleSpan.classList.remove('expanded');
+            } else {
+              queryContentDiv.classList.add('expanded');
+              toggleSpan.classList.add('expanded');
+            }
+          };
+          
+          queryDiv.appendChild(headerDiv);
+          queryDiv.appendChild(executeSection);
+          queryDiv.appendChild(queryContentDiv);
+          
+          contentDiv.appendChild(queryDiv);
+        }
+      }
+      
+      escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      showTyping() {
+        // Create a typing message element
+        this.typingMessage = this.addMessage('assistant', '');
+        const contentDiv = this.typingMessage.querySelector('.message-content');
+        contentDiv.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+        this.scrollToBottom();
+      }
+
+      hideTyping() {
+        // Remove the typing message if it exists
+        if (this.typingMessage && this.typingMessage.parentNode) {
+          this.typingMessage.parentNode.removeChild(this.typingMessage);
+          this.typingMessage = null;
+        }
+      }
+
+      scrollToBottom() {
+        setTimeout(() => {
+          this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+        }, 100);
+      }
+    }
+
+    // Initialize the chat
+    document.addEventListener('DOMContentLoaded', () => {
+      new AIChat();
+    });
+  </script>
+</body>
+</html>

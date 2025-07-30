@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WO Agent Mobile - PartnerPlus</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      background-color: #f8f9fa;
+      padding: 10px;
+      line-height: 1.4;
+    }
+    
+    .mobile-header {
+      background: #1976d2;
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .mobile-header h1 {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+    
+    .mobile-header .subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    .generate-section {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    
+    .generate-btn {
+      background: #1976d2;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      font-size: 16px;
+      border-radius: 25px;
+      cursor: pointer;
+      width: 100%;
+      max-width: 280px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .generate-btn:hover:not(:disabled) {
+      background: #1565c0;
+      transform: translateY(-1px);
+    }
+    
+    .generate-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    /* Mobile Work Order Card */
+    .wo-card {
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .wo-header {
+      background: linear-gradient(135deg, #1976d2, #1565c0);
+      color: white;
+      padding: 15px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .wo-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    .wo-priority {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .wo-toggle {
+      font-size: 18px;
+      transition: transform 0.3s;
+    }
+    
+    .wo-toggle.expanded {
+      transform: rotate(180deg);
+    }
+    
+    .wo-content {
+      padding: 15px;
+      display: none;
+    }
+    
+    .wo-content.expanded {
+      display: block;
+    }
+    
+    .wo-quick-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .wo-info-item {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 8px;
+      border-left: 3px solid #1976d2;
+    }
+    
+    .wo-info-label {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+    
+    .wo-info-value {
+      font-size: 13px;
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .wo-description {
+      background: #fff3e0;
+      border: 1px solid #ffcc02;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+    
+    .wo-description-text {
+      font-size: 14px;
+      color: #e65100;
+      line-height: 1.4;
+    }
+    
+    /* Mobile Actions */
+    .actions-section {
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .actions-header {
+      background: #ff9800;
+      color: white;
+      padding: 12px 15px;
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .actions-count {
+      background: rgba(255,255,255,0.2);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+    
+    .actions-grid {
+      padding: 15px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    
+    .mobile-action-btn {
+      background: #ff9800;
+      color: white;
+      border: none;
+      padding: 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .mobile-action-btn:hover:not(:disabled) {
+      background: #f57c00;
+      transform: translateY(-1px);
+    }
+    
+    .mobile-action-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .mobile-action-btn.loading {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .action-text {
+      flex: 1;
+      margin-right: 10px;
+    }
+    
+    .action-status {
+      font-size: 18px;
+    }
+    
+    .mobile-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid transparent;
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Completed Actions */
+    .completed-section {
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .completed-header {
+      background: #4caf50;
+      color: white;
+      padding: 12px 15px;
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .completed-grid {
+      padding: 15px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    
+    .mobile-completed-btn {
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 12px 15px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      cursor: default;
+    }
+    
+    .mobile-completed-btn.error {
+      background: #ff5722;
+    }
+    
+    .completed-check {
+      margin-right: 10px;
+      font-size: 16px;
+    }
+    
+    /* Results Section */
+    .results-section {
+      background: white;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .results-header {
+      background: #1976d2;
+      color: white;
+      padding: 12px 15px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .results-content {
+      padding: 15px;
+    }
+    
+    .result-item {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-left: 3px solid #1976d2;
+    }
+    
+    .result-action {
+      font-weight: 600;
+      color: #1976d2;
+      font-size: 12px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    
+    .result-summary {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.4;
+    }
+    
+    /* Loading States */
+    .loading-placeholder {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      font-style: italic;
+    }
+    
+    .loading-dots {
+      display: inline-block;
+      margin-left: 5px;
+    }
+    
+    .loading-dots::after {
+      content: '';
+      animation: loading-dots 1.5s infinite;
+    }
+    
+    @keyframes loading-dots {
+      0%, 20% { content: ''; }
+      40% { content: '.'; }
+      60% { content: '..'; }
+      80%, 100% { content: '...'; }
+    }
+    
+    /* Responsive adjustments */
+    @media (min-width: 480px) {
+      .wo-quick-info {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      
+      .actions-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .completed-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      body {
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      
+      .actions-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      
+      .completed-grid {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      
+      .wo-quick-info {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    /* Large phone landscape */
+    @media (max-width: 812px) and (orientation: landscape) {
+      .mobile-header {
+        padding: 10px;
+      }
+      
+      .mobile-header h1 {
+        font-size: 18px;
+        margin-bottom: 2px;
+      }
+      
+      .mobile-header .subtitle {
+        font-size: 12px;
+      }
+      
+      .wo-card, .actions-section, .completed-section, .results-section {
+        margin-bottom: 10px;
+      }
+    }
+    
+    /* Hidden sections */
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-header">
+    <h1>🔧 WO Agent</h1>
+    <div class="subtitle">Work Order Assistant</div>
+    <a href="/?desktop=true" style="position: absolute; top: 15px; right: 15px; color: rgba(255,255,255,0.8); text-decoration: none; font-size: 12px;">Desktop</a>
+  </div>
+
+  <div class="generate-section">
+    <button id="generateWO" class="generate-btn">Generate Work Order</button>
+  </div>
+
+  <div id="workOrderCard" class="wo-card hidden">
+    <div class="wo-header" onclick="toggleWorkOrder()">
+      <div>
+        <div class="wo-title" id="woTitle">Work Order</div>
+        <div class="wo-priority" id="woPriority">Medium</div>
+      </div>
+      <div class="wo-toggle" id="woToggle">▼</div>
+    </div>
+    <div class="wo-content" id="woContent">
+      <div class="wo-quick-info">
+        <div class="wo-info-item">
+          <div class="wo-info-label">Equipment</div>
+          <div class="wo-info-value" id="woEquipment">Loading...</div>
+        </div>
+        <div class="wo-info-item">
+          <div class="wo-info-label">Location</div>
+          <div class="wo-info-value" id="woLocation">Loading...</div>
+        </div>
+        <div class="wo-info-item">
+          <div class="wo-info-label">Customer</div>
+          <div class="wo-info-value" id="woCustomer">Loading...</div>
+        </div>
+        <div class="wo-info-item">
+          <div class="wo-info-label">Contact</div>
+          <div class="wo-info-value" id="woContact">Loading...</div>
+        </div>
+      </div>
+      <div class="wo-description">
+        <div class="wo-description-text" id="woDescription">Loading description...</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="actionsSection" class="actions-section hidden">
+    <div class="actions-header">
+      <span>Recommended Actions</span>
+      <span class="actions-count" id="actionsCount">0</span>
+    </div>
+    <div class="actions-grid" id="actionsGrid">
+      <div class="loading-placeholder">
+        Generating recommendations<span class="loading-dots"></span>
+      </div>
+    </div>
+  </div>
+
+  <div id="completedSection" class="completed-section hidden">
+    <div class="completed-header">
+      <span>✓ Completed Actions</span>
+      <span class="actions-count" id="completedCount">0</span>
+    </div>
+    <div class="completed-grid" id="completedGrid"></div>
+  </div>
+
+  <div id="resultsSection" class="results-section hidden">
+    <div class="results-header">📊 Action Results</div>
+    <div class="results-content" id="resultsContent"></div>
+  </div>
+
+  <script>
+    let currentWorkOrder = null;
+    let actionResults = [];
+    let completedActions = [];
+
+    document.getElementById('generateWO').addEventListener('click', generateRandomWorkOrder);
+
+    function toggleWorkOrder() {
+      const content = document.getElementById('woContent');
+      const toggle = document.getElementById('woToggle');
+      
+      if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        toggle.classList.remove('expanded');
+      } else {
+        content.classList.add('expanded');
+        toggle.classList.add('expanded');
+      }
+    }
+
+    async function generateRandomWorkOrder() {
+      const generateBtn = document.getElementById('generateWO');
+      generateBtn.disabled = true;
+      generateBtn.textContent = 'Generating...';
+
+      // Reset all sections
+      resetSections();
+
+      try {
+        const response = await fetch('/api/generate-work-order');
+        const workOrder = await response.json();
+        
+        currentWorkOrder = workOrder;
+        displayWorkOrder(workOrder);
+        
+        // Auto-expand work order initially
+        setTimeout(() => {
+          const content = document.getElementById('woContent');
+          const toggle = document.getElementById('woToggle');
+          content.classList.add('expanded');
+          toggle.classList.add('expanded');
+        }, 500);
+
+        // Generate action recommendations
+        setTimeout(() => generateActionRecommendations(), 1000);
+        
+      } catch (error) {
+        console.error('Error generating work order:', error);
+        alert('Failed to generate work order. Please try again.');
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.textContent = 'Generate New Work Order';
+      }
+    }
+
+    function resetSections() {
+      // Reset work order
+      document.getElementById('workOrderCard').classList.add('hidden');
+      document.getElementById('woContent').classList.remove('expanded');
+      document.getElementById('woToggle').classList.remove('expanded');
+      
+      // Reset actions
+      document.getElementById('actionsSection').classList.add('hidden');
+      document.getElementById('actionsGrid').innerHTML = '<div class="loading-placeholder">Generating recommendations<span class="loading-dots"></span></div>';
+      
+      // Reset completed
+      document.getElementById('completedSection').classList.add('hidden');
+      document.getElementById('completedGrid').innerHTML = '';
+      
+      // Reset results
+      document.getElementById('resultsSection').classList.add('hidden');
+      document.getElementById('resultsContent').innerHTML = '';
+      
+      // Reset data
+      actionResults = [];
+      completedActions = [];
+      updateCounts();
+    }
+
+    function displayWorkOrder(workOrder) {
+      document.getElementById('woTitle').textContent = `WO #${workOrder.id}`;
+      document.getElementById('woPriority').textContent = workOrder.priority;
+      document.getElementById('woEquipment').textContent = workOrder.equipment;
+      document.getElementById('woLocation').textContent = workOrder.address;
+      document.getElementById('woCustomer').textContent = workOrder.customer;
+      document.getElementById('woContact').textContent = workOrder.contact;
+      document.getElementById('woDescription').textContent = workOrder.description;
+      
+      // Set priority color
+      const priorityElement = document.getElementById('woPriority');
+      const priority = workOrder.priority.toLowerCase();
+      if (priority === 'high' || priority === 'critical') {
+        priorityElement.style.background = 'rgba(244, 67, 54, 0.8)';
+      } else if (priority === 'medium') {
+        priorityElement.style.background = 'rgba(255, 152, 0, 0.8)';
+      } else {
+        priorityElement.style.background = 'rgba(76, 175, 80, 0.8)';
+      }
+      
+      document.getElementById('workOrderCard').classList.remove('hidden');
+    }
+
+    async function generateActionRecommendations() {
+      document.getElementById('actionsSection').classList.remove('hidden');
+      
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: `Generate 8 recommended actions for this work order that leverage available AI tools and APIs:
+            Equipment: ${currentWorkOrder.equipment}
+            Issue: ${currentWorkOrder.description}
+            Priority: ${currentWorkOrder.priority}
+            Location: ${currentWorkOrder.address}
+            Customer: ${currentWorkOrder.customer}
+            Contact: ${currentWorkOrder.contact}
+            
+            IMPORTANT: Generate actions that use these available AI-powered tools:
+            - Search for replacement parts and OEM part numbers (use "part" keyword)
+            - Find suppliers and pricing for specific parts (use "supplier" keyword)  
+            - Look up service manuals and technical documentation (use "manual" keyword)
+            - Send email updates to customers or management (use "email" keyword)
+            - Send SMS/text notifications to technicians or customers (use "sms" or "text" keyword)
+            - Find local service providers for specialized repairs (use "service" keyword)
+            
+            DO NOT suggest manual inspection tasks. Focus on AI-assisted actions like:
+            - "Search heating element parts for ${currentWorkOrder.equipment}"
+            - "Find suppliers for temperature sensor pricing"  
+            - "Email customer repair status update"
+            - "Look up ${currentWorkOrder.equipment} service manual"
+            - "Text technician priority repair assignment"
+            - "Find service providers near ${currentWorkOrder.address.split(',').pop()}"
+            
+            CRITICAL: Keep each action to 10 words or less. Be concise and specific. Format as a simple numbered list.`
+          })
+        });
+
+        const data = await response.json();
+        const actionsText = data.response;
+        
+        // Parse actions from AI response
+        const actions = parseActionsFromText(actionsText);
+        displayMobileActions(actions);
+        
+      } catch (error) {
+        console.error('Error generating actions:', error);
+        document.getElementById('actionsGrid').innerHTML = '<div class="loading-placeholder">Failed to generate actions</div>';
+      }
+    }
+
+    function parseActionsFromText(text) {
+      const lines = text.split('\n').filter(line => line.trim());
+      const actions = [];
+      
+      lines.forEach(line => {
+        const cleanLine = line.replace(/^\d+\.?\s*|\*\s*|-\s*/g, '').trim();
+        if (cleanLine && cleanLine.length > 10) {
+          // Determine action type based on keywords
+          let type = 'general';
+          const lowerLine = cleanLine.toLowerCase();
+          
+          if (lowerLine.includes('part') || lowerLine.includes('component')) {
+            type = 'parts_search';
+          } else if (lowerLine.includes('supplier') || lowerLine.includes('vendor')) {
+            type = 'supplier_search';
+          } else if (lowerLine.includes('manual') || lowerLine.includes('documentation')) {
+            type = 'manual_search';
+          } else if (lowerLine.includes('email') || lowerLine.includes('notify')) {
+            type = 'email';
+          } else if (lowerLine.includes('sms') || lowerLine.includes('text')) {
+            type = 'sms';
+          } else if (lowerLine.includes('service') || lowerLine.includes('technician')) {
+            type = 'service_search';
+          }
+          
+          actions.push({
+            name: cleanLine,
+            type: type
+          });
+        }
+      });
+      
+      return actions.slice(0, 8); // Limit to 8 actions
+    }
+
+    function displayMobileActions(actions) {
+      const actionsGrid = document.getElementById('actionsGrid');
+      actionsGrid.innerHTML = '';
+      
+      actions.forEach((action, index) => {
+        const button = document.createElement('button');
+        button.className = 'mobile-action-btn';
+        button.innerHTML = `
+          <div class="action-text">${action.name}</div>
+          <div class="action-status">▶</div>
+        `;
+        button.onclick = () => executeAction(action, button, index);
+        actionsGrid.appendChild(button);
+      });
+      
+      updateCounts();
+    }
+
+    async function executeAction(action, button, actionIndex) {
+      button.classList.add('loading');
+      button.disabled = true;
+      button.querySelector('.action-status').innerHTML = '<div class="mobile-spinner"></div>';
+
+      try {
+        // Generate action parameters (simplified for mobile)
+        const actionConfig = generateActionConfig(action.type, action.name);
+        
+        let url = actionConfig.endpoint;
+        let requestBody = null;
+        
+        if (actionConfig.method === 'GET') {
+          const params = new URLSearchParams(actionConfig.params);
+          url += '?' + params.toString();
+        } else {
+          requestBody = JSON.stringify(actionConfig.params);
+        }
+
+        const response = await fetch(url, {
+          method: actionConfig.method,
+          headers: actionConfig.method === 'POST' ? { 'Content-Type': 'application/json' } : {},
+          body: requestBody
+        });
+
+        const result = await response.json();
+        await displayActionResult(action, result, actionIndex);
+        
+        // Move to completed
+        moveToCompleted(button, action, result);
+        
+      } catch (error) {
+        console.error('Error executing action:', error);
+        const errorResult = { error: error.message };
+        await displayActionResult(action, errorResult, actionIndex);
+        moveToCompleted(button, action, errorResult);
+      }
+    }
+
+    function generateActionConfig(actionType, actionName) {
+      const zipMatch = currentWorkOrder.address?.match(/\b\d{5}\b/);
+      const zipCode = zipMatch ? zipMatch[0] : "12345";
+      const equipmentParts = currentWorkOrder.equipment.split(' ');
+      const make = equipmentParts[0] || "Unknown";
+
+      const configs = {
+        parts_search: {
+          endpoint: '/api/purchase-agent/parts/resolve',
+          method: 'POST',
+          params: {
+            description: extractPartFromAction(actionName),
+            make: make,
+            model: currentWorkOrder.equipment
+          }
+        },
+        supplier_search: {
+          endpoint: '/api/purchase-agent/suppliers/search',
+          method: 'POST',
+          params: {
+            partNumber: 'GENERIC-PART',
+            options: { make: make, limit: 5 }
+          }
+        },
+        service_search: {
+          endpoint: '/api/purchase-agent/service/search',
+          method: 'GET',
+          params: {
+            zipCode: zipCode,
+            make: make
+          }
+        },
+        manual_search: {
+          endpoint: '/api/purchase-agent/manuals/search',
+          method: 'GET',
+          params: {
+            make: make,
+            model: currentWorkOrder.equipment.split(' ').slice(1).join(' ') || 'Unknown'
+          }
+        },
+        email: {
+          endpoint: '/api/email/send',
+          method: 'POST',
+          params: {
+            to: currentWorkOrder.contact.includes('@') ? currentWorkOrder.contact.split(' ')[0] : 'customer@example.com',
+            subject: `Work Order #${currentWorkOrder.id} - ${actionName}`,
+            text: `Regarding your service request for ${currentWorkOrder.equipment}: ${actionName}`
+          }
+        },
+        sms: {
+          endpoint: '/api/sms/send',
+          method: 'POST',
+          params: {
+            to: extractPhoneFromContact(currentWorkOrder.contact),
+            message: `WO #${currentWorkOrder.id}: ${actionName}`
+          }
+        },
+        general: {
+          endpoint: '/api/chat',
+          method: 'POST',
+          params: {
+            message: `Help me with this work order task: ${actionName}. Context: ${currentWorkOrder.equipment} - ${currentWorkOrder.description}`
+          }
+        }
+      };
+
+      return configs[actionType] || configs.general;
+    }
+
+    function extractPartFromAction(actionName) {
+      const lowerAction = actionName.toLowerCase();
+      const partKeywords = ['part', 'component', 'seal', 'gasket', 'motor', 'pump', 'valve', 'belt', 'filter', 'element'];
+      
+      for (const keyword of partKeywords) {
+        if (lowerAction.includes(keyword)) {
+          const words = actionName.split(' ');
+          const keywordIndex = words.findIndex(word => word.toLowerCase().includes(keyword));
+          if (keywordIndex >= 0) {
+            return words.slice(Math.max(0, keywordIndex - 1), keywordIndex + 2).join(' ');
+          }
+        }
+      }
+      
+      return actionName.split(' ').slice(0, 3).join(' ');
+    }
+
+    function extractPhoneFromContact(contact) {
+      const phoneMatch = contact.match(/\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/);
+      return phoneMatch ? phoneMatch[0].replace(/\D/g, '').replace(/^(\d{3})(\d{3})(\d{4})$/, '+1$1$2$3') : '+15024456053';
+    }
+
+    async function displayActionResult(action, result, actionIndex) {
+      // Show results section
+      document.getElementById('resultsSection').classList.remove('hidden');
+      
+      const resultsContent = document.getElementById('resultsContent');
+      const resultDiv = document.createElement('div');
+      resultDiv.className = 'result-item';
+      
+      const actionDiv = document.createElement('div');
+      actionDiv.className = 'result-action';
+      actionDiv.textContent = action.name;
+      
+      const summaryDiv = document.createElement('div');
+      summaryDiv.className = 'result-summary';
+      
+      if (result.error) {
+        summaryDiv.textContent = `Error: ${result.error}`;
+        resultDiv.style.borderLeftColor = '#ff5722';
+      } else if (result.success === false) {
+        summaryDiv.textContent = 'Action completed with issues';
+        resultDiv.style.borderLeftColor = '#ff9800';
+      } else {
+        summaryDiv.textContent = 'Action completed successfully';
+        resultDiv.style.borderLeftColor = '#4caf50';
+      }
+      
+      resultDiv.appendChild(actionDiv);
+      resultDiv.appendChild(summaryDiv);
+      resultsContent.appendChild(resultDiv);
+      
+      // Store result
+      actionResults.push({ action, result, timestamp: Date.now() });
+    }
+
+    function moveToCompleted(button, action, result) {
+      // Remove from active actions
+      button.remove();
+      
+      // Show completed section
+      document.getElementById('completedSection').classList.remove('hidden');
+      
+      // Add to completed grid
+      const completedGrid = document.getElementById('completedGrid');
+      const completedButton = document.createElement('button');
+      completedButton.className = 'mobile-completed-btn';
+      
+      if (result.error) {
+        completedButton.classList.add('error');
+        completedButton.title = `Error: ${result.error}`;
+      } else {
+        completedButton.title = 'Completed successfully';
+      }
+      
+      completedButton.innerHTML = `
+        <div class="completed-check">${result.error ? '⚠️' : '✓'}</div>
+        <div>${action.name}</div>
+      `;
+      
+      completedGrid.appendChild(completedButton);
+      completedActions.push({ action, result, timestamp: Date.now() });
+      
+      updateCounts();
+    }
+
+    function updateCounts() {
+      const activeActions = document.querySelectorAll('.mobile-action-btn').length;
+      const completedCount = document.querySelectorAll('.mobile-completed-btn').length;
+      
+      document.getElementById('actionsCount').textContent = activeActions;
+      document.getElementById('completedCount').textContent = completedCount;
+    }
+  </script>
+</body>
+</html>

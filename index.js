@@ -166,16 +166,18 @@ function generateNavigation(currentPage) {
             <a href="#" class="dropdown-toggle ${['wo-agent', 'ai-agent', 'ai-agent-v1', 'ai-agent-raw'].includes(currentPage) ? 'active' : ''}">Agents ▼</a>
             <div class="dropdown-menu">
               <a href="/">WO Agent</a>
+              <a href="/wo-agent-mobile">📱 WO Mobile</a>
               <a href="/ai-agent">AI Agent v2</a>
-              <a href="/ai-agent-mobile">📱 Mobile</a>
+              <a href="/ai-agent-mobile">📱 AI Mobile</a>
               <a href="/ai-agent-raw">Raw Output</a>
               <a href="/ai-agent-v1">v1 Backup</a>
             </div>
           </div>
           <div class="dropdown">
-            <a href="#" class="dropdown-toggle ${['ai-chat', 'email', 'sms', 'executor', 'purchase-agent', 'search-tools', 'api-docs'].includes(currentPage) ? 'active' : ''}">Tools ▼</a>
+            <a href="#" class="dropdown-toggle ${['ai-chat', 'PartnerPlus', 'email', 'sms', 'executor', 'purchase-agent', 'search-tools', 'api-docs'].includes(currentPage) ? 'active' : ''}">Tools ▼</a>
             <div class="dropdown-menu">
               <a href="/ai-chat">AI Chat</a>
+              <a href="/PartnerPlus">PartnerPlus AI</a>
               <a href="/email">Email Service</a>
               <a href="/sms">SMS Service</a>
               <a href="/executor">Code Executor</a>
@@ -351,454 +353,27 @@ app.get('/ai-chat', (req, res) => {
   `);
 });
 
+// WO Agent Mobile - Mobile-optimized version
+app.get('/wo-agent-mobile', (req, res) => {
+  res.sendFile(path.join(__dirname, 'wo-agent-mobile.html'));
+});
+
 // WO Agent - New main landing page
 app.get('/', (req, res) => {
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>WO Agent - PartnerPlus</title>
-      <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-      <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; }
-        .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .nav { display: flex; align-items: center; }
-        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; color: white; }
-        .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
-        .nav a:hover { background-color: rgba(255,255,255,0.1); }
-        .nav a.active { background-color: rgba(255,255,255,0.2); }
-        ${dropdownStyles}
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .brand-title { color: #1976d2; text-align: center; margin-bottom: 10px; font-size: 36px; font-weight: bold; }
-        h1 { color: #1976d2; text-align: center; margin-bottom: 20px; }
-        p { text-align: center; color: #666; font-size: 18px; }
-        
-        .demo-section { text-align: center; margin: 30px 0; }
-        .primary-btn { background: #1976d2; color: white; border: none; padding: 15px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
-        .primary-btn:hover { background: #1565c0; transform: translateY(-2px); }
-        .primary-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
-        .demo-note { margin-top: 15px; padding: 10px; background: #e3f2fd; border-radius: 6px; font-size: 14px; color: #1976d2; }
-        
-        .work-order-section { margin-top: 30px; border: 2px solid #1976d2; border-radius: 10px; overflow: hidden; }
-        .wo-header { background: #1976d2; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .wo-header h2 { margin: 0; font-size: 24px; }
-        .status-badge { background: #4caf50; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .status-badge.high { background: #f44336; }
-        .status-badge.medium { background: #ff9800; }
-        .status-badge.low { background: #4caf50; }
-        
-        .wo-content { padding: 25px; }
-        .wo-basic-info { margin-bottom: 25px; }
-        .info-row { display: flex; margin-bottom: 15px; align-items: flex-start; }
-        .info-row label { font-weight: bold; color: #1976d2; min-width: 140px; margin-right: 15px; }
-        .info-row span { flex: 1; line-height: 1.4; }
-        .priority-badge { padding: 3px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; }
-        .priority-badge.high { background: #ffebee; color: #c62828; }
-        .priority-badge.medium { background: #fff3e0; color: #ef6c00; }
-        .priority-badge.low { background: #e8f5e8; color: #2e7d32; }
-        
-        .technician-info-section { margin-top: 25px; padding: 20px; background: #fff8e1; border-radius: 8px; border: 1px solid #ffcc02; }
-        .technician-info-section h4 { margin: 0 0 15px 0; color: #ff9800; font-size: 16px; border-bottom: 1px solid #ffcc02; padding-bottom: 8px; }
-        .technician-info-content { background: white; padding: 15px; border-radius: 6px; }
-        
-        .service-notes-section { margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef; }
-        .service-notes-section h4 { margin: 0 0 15px 0; color: #1976d2; font-size: 16px; border-bottom: 1px solid #dee2e6; padding-bottom: 8px; }
-        .service-notes-content { background: white; padding: 15px; border-radius: 6px; }
-        
-        .wo-actions { border-top: 1px solid #eee; padding-top: 20px; text-align: center; }
-        .wo-actions h4 { margin: 0 0 20px 0; color: #1976d2; font-size: 18px; }
-        /* Tool button styles removed - functionality to be redesigned */
-        .action-btn { background: #ff9800; color: white; border: none; padding: 12px 25px; font-size: 14px; border-radius: 6px; cursor: pointer; margin: 5px; transition: all 0.3s; }
-        .action-btn:hover { background: #f57c00; transform: translateY(-1px); }
-        .action-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
-        .enhancement-note { margin-top: 10px; font-size: 13px; color: #666; font-style: italic; }
-        
-        .enhancement-section, .evaluation-section { margin-top: 25px; padding: 25px; background: #f8f9fa; border-radius: 8px; }
-        .enhancement-section h3, .evaluation-section h3 { margin: 0 0 20px 0; color: #1976d2; border-bottom: 2px solid #1976d2; padding-bottom: 8px; }
-        .enhancement-content, .evaluation-content { background: white; padding: 20px; border-radius: 6px; border-left: 4px solid #1976d2; margin-bottom: 20px; }
-        
-        .user-response-section { margin-top: 25px; }
-        .user-response-section h4 { margin: 0 0 15px 0; color: #1976d2; }
-        .user-response-section textarea { width: 100%; min-height: 100px; padding: 15px; border: 2px solid #ddd; border-radius: 6px; font-family: Arial, sans-serif; font-size: 14px; resize: vertical; box-sizing: border-box; }
-        .user-response-section textarea:focus { outline: none; border-color: #1976d2; }
-        
-        .loading { display: inline-block; color: #1976d2; font-style: italic; }
-        .loading:after { content: '...'; animation: dots 1.5s steps(5, end) infinite; }
-        @keyframes dots { 0%, 20% { color: rgba(0,0,0,0); text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); } 40% { color: #1976d2; text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); } 60% { text-shadow: .25em 0 0 #1976d2, .5em 0 0 rgba(0,0,0,0); } 80%, 100% { text-shadow: .25em 0 0 #1976d2, .5em 0 0 #1976d2; } }
-      </style>
-    </head>
-    <body>
-      ${generateNavigation('wo-agent')}
-      <div class="container">
-        <div class="brand-title">PartnerPlus</div>
-        <h1>Work Order Agent Demo</h1>
-        <p>Demonstration of AI-powered work order processing and enhancement capabilities</p>
-        
-        <div class="demo-section">
-          <button id="generateWO" class="primary-btn">Generate Random Work Order</button>
-          <div class="demo-note">
-            <strong>Demo Mode:</strong> This generates realistic work orders for demonstration purposes
-          </div>
-        </div>
-        
-        <div id="workOrderDisplay" class="work-order-section" style="display: none;">
-          <div class="wo-header">
-            <h2>Work Order <span id="woNumber">#WO-001</span></h2>
-            <div class="wo-status">
-              <span class="status-badge" id="woStatus">Open</span>
-            </div>
-          </div>
-          
-          <div class="wo-content">
-            <div class="wo-basic-info">
-              <div class="info-row">
-                <label>Location:</label>
-                <span id="woLocation">Loading...</span>
-              </div>
-              <div class="info-row">
-                <label>Address:</label>
-                <span id="woAddress">Loading...</span>
-              </div>
-              <div class="info-row">
-                <label>Equipment:</label>
-                <span id="woEquipment">Loading...</span>
-              </div>
-              <div class="info-row">
-                <label>Issue Description:</label>
-                <span id="woDescription">Loading...</span>
-              </div>
-              <div class="info-row">
-                <label>Priority:</label>
-                <span id="woPriority" class="priority-badge">Medium</span>
-              </div>
-              <div class="info-row">
-                <label>Contact Phone:</label>
-                <span id="woPhone">Loading...</span>
-              </div>
-              <div class="info-row">
-                <label>Contact Email:</label>
-                <span id="woEmail">Loading...</span>
-              </div>
-            </div>
-            
-            <div class="technician-info-section">
-              <h4>Assigned Technician</h4>
-              <div class="technician-info-content">
-                <div class="info-row">
-                  <label>Technician:</label>
-                  <span id="woTechnicianName">Loading...</span>
-                </div>
-                <div class="info-row">
-                  <label>Tech Phone:</label>
-                  <span id="woTechnicianPhone">Loading...</span>
-                </div>
-                <div class="info-row">
-                  <label>Tech Email:</label>
-                  <span id="woTechnicianEmail">Loading...</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="service-notes-section">
-              <h4>Service Notes</h4>
-              <div class="service-notes-content">
-                <div class="info-row">
-                  <label>Suspected Parts:</label>
-                  <span id="woSuspectedParts">Loading...</span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="wo-actions">
-              <p><em>Enhancement functionality to be redesigned...</em></p>
-            </div>
-          </div>
-          
-          <div id="enhancementResults" class="enhancement-section" style="display: none;">
-            <h3>Enhanced Information</h3>
-            <div id="enhancementContent" class="enhancement-content"></div>
-            
-            <div class="user-response-section">
-              <h4>Technician Response</h4>
-              <textarea id="userResponse" placeholder="Enter your findings, observations, or additional information about this work order..."></textarea>
-              <button id="evaluateWO" class="action-btn" disabled>Evaluate & Recommend Action</button>
-            </div>
-          </div>
-          
-          <div id="evaluationResults" class="evaluation-section" style="display: none;">
-            <h3>AI Recommendation</h3>
-            <div id="evaluationContent" class="evaluation-content"></div>
-          </div>
-        </div>
-      </div>
-      
-      <script>
-        let currentWorkOrder = null;
-        
-        document.getElementById('generateWO').addEventListener('click', generateRandomWorkOrder);
-        document.getElementById('evaluateWO').addEventListener('click', evaluateWorkOrder);
-        document.getElementById('userResponse').addEventListener('input', function() {
-          document.getElementById('evaluateWO').disabled = !this.value.trim();
-        });
-        
-        async function generateRandomWorkOrder() {
-          const generateBtn = document.getElementById('generateWO');
-          generateBtn.disabled = true;
-          generateBtn.textContent = 'Generating Work Order...';
-          
-          // Reset displays
-          document.getElementById('enhancementResults').style.display = 'none';
-          document.getElementById('evaluationResults').style.display = 'none';
-          document.getElementById('userResponse').value = '';
-          document.getElementById('evaluateWO').disabled = true;
-          
-          try {
-            // Show work order section immediately
-            document.getElementById('workOrderDisplay').style.display = 'block';
-            
-            // Set loading states
-            setLoadingState();
-            
-            // Generate work order using AI
-            const response = await fetch('/api/chat', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                message: \`Create a realistic foodservice equipment work order with the following details:
-
-WORK ORDER GENERATION PROMPT:
-Generate a completely realistic work order for a foodservice establishment. Be creative and varied each time. Include:
-
-1. LOCATION: Create a realistic restaurant/hotel/cafeteria name and full address (street, city, state, zip)
-2. EQUIPMENT: Specify a real foodservice equipment brand and model (like Hobart, Vulcan, True, Hoshizaki, etc.)
-3. ISSUE: Describe a realistic equipment problem that would require service
-4. PRIORITY: Assign appropriate priority (High/Medium/Low) based on the issue severity
-5. CONTACT INFO: Generate realistic phone number and email for the establishment contact
-6. SERVICE NOTES: Include what parts/components are suspected to have failed based on the described issue
-7. TECHNICIAN INFO: Generate realistic technician name, email, and phone number for the assigned service tech
-
-Make this feel like a real work order a technician would receive. Vary the types of establishments (restaurants, hotels, schools, hospitals, etc.) and equipment types (fryers, ovens, refrigeration, dishwashers, etc.).
-
-Be creative with realistic contact details and thoughtful about what parts might fail based on the equipment issue described.
-
-Respond in this exact JSON format:
-{
-  "workOrderNumber": "WO-[random 3-digit number]",
-  "location": "[establishment name]",
-  "address": "[full street address, city, state zip]",
-  "equipment": "[Make Model - Equipment Type]",
-  "description": "[detailed problem description]",
-  "priority": "[High/Medium/Low]",
-  "phone": "[realistic phone number with area code]",
-  "email": "[establishment email address]",
-  "suspectedParts": "[parts/components likely to have failed]",
-  "technicianName": "[realistic technician name]",
-  "technicianEmail": "[technician email address]",
-  "technicianPhone": "[technician phone number]",
-  "status": "Open"
-}\`
-              })
-            });
-            
-            const data = await response.json();
-            
-            // Parse the JSON response from AI
-            let workOrderData;
-            try {
-              // Extract JSON from the AI response
-              const jsonMatch = data.response.match(/\\{[\\s\\S]*\\}/);
-              if (jsonMatch) {
-                workOrderData = JSON.parse(jsonMatch[0]);
-              } else {
-                throw new Error('No JSON found in response');
-              }
-            } catch (parseError) {
-              console.error('Failed to parse AI response:', parseError);
-              // Fallback to a default work order
-              workOrderData = createFallbackWorkOrder();
-            }
-            
-            currentWorkOrder = workOrderData;
-            displayWorkOrder(workOrderData);
-            
-            // Enable tool buttons
-            enableToolButtons();
-            
-          } catch (error) {
-            console.error('Error generating work order:', error);
-            // Show fallback work order
-            currentWorkOrder = createFallbackWorkOrder();
-            displayWorkOrder(currentWorkOrder);
-            enableToolButtons();
-          } finally {
-            generateBtn.disabled = false;
-            generateBtn.textContent = 'Generate Random Work Order';
-          }
-        }
-        
-        function createFallbackWorkOrder() {
-          const woNumber = 'WO-' + Math.floor(Math.random() * 900 + 100);
-          return {
-            workOrderNumber: woNumber,
-            location: "Murphy's Diner",
-            address: "1245 Main Street, Springfield, IL 62701",
-            equipment: "Vulcan 1TR45A - Gas Range",
-            description: "Pilot light keeps going out on burner #2, causing uneven heating and safety concerns",
-            priority: "Medium",
-            phone: "(217) 555-0142",
-            email: "manager@murphysdiner.com",
-            suspectedParts: "Pilot light assembly, gas valve, thermocouple",
-            technicianName: "Mike Rodriguez",
-            technicianEmail: "m.rodriguez@serviceteam.com",
-            technicianPhone: "(217) 555-0987",
-            status: "Open"
-          };
-        }
-        
-        function setLoadingState() {
-          document.getElementById('woNumber').textContent = '#Loading...';
-          document.getElementById('woLocation').innerHTML = '<span class="loading">Loading</span>';
-          document.getElementById('woAddress').innerHTML = '<span class="loading">Loading</span>';
-          document.getElementById('woEquipment').innerHTML = '<span class="loading">Loading</span>';
-          document.getElementById('woDescription').innerHTML = '<span class="loading">Loading</span>';
-          document.getElementById('woPriority').innerHTML = '<span class="loading">Loading</span>';
-          document.getElementById('woPhone').innerHTML = '<span class="loading">Loading</span>';
-          document.getElementById('woEmail').innerHTML = '<span class="loading">Loading</span>';
-          document.getElementById('woTechnicianName').innerHTML = '<span class="loading">Loading</span>';
-          document.getElementById('woTechnicianPhone').innerHTML = '<span class="loading">Loading</span>';
-          document.getElementById('woTechnicianEmail').innerHTML = '<span class="loading">Loading</span>';
-          document.getElementById('woSuspectedParts').innerHTML = '<span class="loading">Loading</span>';
-          document.getElementById('woStatus').textContent = 'Generating';
-        }
-        
-        function displayWorkOrder(workOrder) {
-          document.getElementById('woNumber').textContent = '#' + workOrder.workOrderNumber;
-          document.getElementById('woLocation').textContent = workOrder.location;
-          document.getElementById('woAddress').textContent = workOrder.address;
-          document.getElementById('woEquipment').textContent = workOrder.equipment;
-          document.getElementById('woDescription').textContent = workOrder.description;
-          document.getElementById('woPhone').textContent = workOrder.phone || 'Not provided';
-          document.getElementById('woEmail').textContent = workOrder.email || 'Not provided';
-          document.getElementById('woTechnicianName').textContent = workOrder.technicianName || 'Not assigned';
-          document.getElementById('woTechnicianPhone').textContent = workOrder.technicianPhone || 'Not provided';
-          document.getElementById('woTechnicianEmail').textContent = workOrder.technicianEmail || 'Not provided';
-          document.getElementById('woSuspectedParts').textContent = workOrder.suspectedParts || 'To be determined';
-          
-          const priorityElement = document.getElementById('woPriority');
-          priorityElement.textContent = workOrder.priority;
-          priorityElement.className = 'priority-badge ' + workOrder.priority.toLowerCase();
-          
-          const statusElement = document.getElementById('woStatus');
-          statusElement.textContent = workOrder.status;
-          statusElement.className = 'status-badge';
-        }
-        
-        function enableToolButtons() {
-          // Tool buttons removed - functionality to be redesigned
-        }
-        
-        // runTool function removed - functionality to be redesigned
-        
-        async function evaluateWorkOrder() {
-          const userResponse = document.getElementById('userResponse').value.trim();
-          if (!userResponse || !currentWorkOrder) return;
-          
-          const evaluateBtn = document.getElementById('evaluateWO');
-          evaluateBtn.disabled = true;
-          evaluateBtn.textContent = 'Evaluating...';
-          
-          // Show evaluation section
-          document.getElementById('evaluationResults').style.display = 'block';
-          document.getElementById('evaluationContent').innerHTML = '<div class="loading">Analyzing technician response and determining recommended actions</div>';
-          
-          try {
-            const response = await fetch('/api/chat', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                message: \`WORK ORDER EVALUATION & RECOMMENDATION
-
-ORIGINAL WORK ORDER:
-- Equipment: \${currentWorkOrder.equipment}
-- Location: \${currentWorkOrder.location}
-- Issue: \${currentWorkOrder.description}
-- Priority: \${currentWorkOrder.priority}
-
-TECHNICIAN RESPONSE:
-\${userResponse}
-
-EVALUATION REQUEST:
-Based on the original work order and the technician's response, provide:
-
-1. SITUATION ANALYSIS
-   - Assessment of the technician's findings
-   - Validation of the diagnosis
-   - Any additional concerns identified
-
-2. RECOMMENDED ACTIONS
-   - Immediate actions required
-   - Parts ordering recommendations
-   - Follow-up procedures needed
-
-3. WORK ORDER STATUS
-   - Should this WO be: Completed, Pending Parts, Escalated, or Requires Additional Service?
-   - Reasoning for status recommendation
-
-4. BUSINESS IMPACT
-   - Criticality assessment for the business
-   - Downtime implications
-   - Customer communication needs
-
-5. NEXT STEPS
-   - Specific action items with priorities
-   - Timeline recommendations
-   - Resource requirements
-
-Provide actionable recommendations as if you're a service manager making decisions based on field technician feedback.\`
-              })
-            });
-            
-            const data = await response.json();
-            document.getElementById('evaluationContent').innerHTML = formatEvaluationContent(data.response);
-            
-          } catch (error) {
-            console.error('Error evaluating work order:', error);
-            document.getElementById('evaluationContent').innerHTML = 
-              '<p>Error processing evaluation. Please try again.</p>';
-          } finally {
-            evaluateBtn.disabled = false;
-            evaluateBtn.textContent = 'Evaluate & Recommend Action';
-          }
-        }
-        
-        function formatEnhancementContent(content) {
-          // Add some basic formatting to make the content more readable
-          return content
-            .replace(/\\n\\n/g, '</p><p>')
-            .replace(/\\n/g, '<br>')
-            .replace(/^/, '<p>')
-            .replace(/$/, '</p>')
-            .replace(/([A-Z][A-Z\\s]+:)/g, '<strong>$1</strong>')
-            .replace(/-\\s+/g, '<br>• ');
-        }
-        
-        function formatEvaluationContent(content) {
-          // Format evaluation content with emphasis on key sections
-          return content
-            .replace(/\\n\\n/g, '</p><p>')
-            .replace(/\\n/g, '<br>')
-            .replace(/^/, '<p>')
-            .replace(/$/, '</p>')
-            .replace(/([A-Z][A-Z\\s]+:)/g, '<strong style="color: #1976d2;">$1</strong>')
-            .replace(/-\\s+/g, '<br>• ')
-            .replace(/(RECOMMENDED|CRITICAL|URGENT|IMMEDIATE)/gi, '<span style="background: #ffeb3b; padding: 2px 6px; border-radius: 3px; font-weight: bold;">$1</span>');
-        }
-      </script>
-    </body>
-    </html>
-  `);
+  // Check if mobile user agent
+  const userAgent = req.headers['user-agent'] || '';
+  const isMobile = /Mobile|Android|iPhone|iPad|BlackBerry|IEMobile/i.test(userAgent);
+  
+  // Redirect mobile users to mobile version unless they explicitly request desktop
+  if (isMobile && !req.query.desktop) {
+    return res.redirect('/wo-agent-mobile?auto=true');
+  }
+  
+  // For now, redirect to mobile version for all users until we fix the desktop template
+  res.redirect('/wo-agent-mobile');
 });
+
+// Agent Hub route - NEW V2 Visual Workflow AI Agent (Full Version)
 // Agent Hub route - NEW V2 Visual Workflow AI Agent (Full Version)
 app.get('/ai-agent', (req, res) => {
   const fs = require('fs');
@@ -1638,6 +1213,36 @@ app.get('/api-docs', (req, res) => {
   }
 });
 
+// Add route for PartnerPlus AI Assistant
+app.get('/PartnerPlus', (req, res) => {
+  try {
+    const fs = require('fs');
+    const htmlContent = fs.readFileSync(path.join(__dirname, 'ai-chat-v2.html'), 'utf8');
+    res.send(htmlContent);
+  } catch (error) {
+    console.error('Error loading ai-chat-v2.html:', error);
+    res.status(500).send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>PartnerPlus - AI Assistant</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg">  
+        <style>
+          ${dropdownStyles}
+        </style>
+      </head>
+      <body>
+        ${generateNavigation('PartnerPlus')}
+        <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+          <h1>PartnerPlus - Loading Error</h1>
+          <p>Could not load the PartnerPlus interface. Please check that ai-chat-v2.html exists.</p>
+        </div>
+      </body>
+      </html>
+    `);
+  }
+});
+
 // Redirect old agent-hub URL to AI agent page
 app.get('/agent-hub', (req, res) => {
   res.redirect('/ai-agent');
@@ -2036,6 +1641,188 @@ PartnerPlus Purchase Agent`
 app.post('/api/orchestrator/clear', (req, res) => {
   orchestratorAgent.clearHistory();
   res.json({ success: true });
+});
+
+// Work Order Generation endpoint
+app.get('/api/generate-work-order', (req, res) => {
+  // Comprehensive work order data with realistic foodservice equipment scenarios
+  const workOrderTemplates = [
+    {
+      equipment: 'Henny Penny 500 Pressure Fryer',
+      customer: 'Louisville Fried Chicken',
+      address: '1245 Bardstown Rd, Louisville, KY 40204',
+      contact: 'Mike Johnson (502) 555-0123',
+      issues: [
+        'Fryer not heating properly, temperature fluctuating between 250-300°F',
+        'Pressure valve releasing steam intermittently during cook cycle',
+        'Temperature probe reading inconsistent values',
+        'Oil filtration system making grinding noise'
+      ],
+      priorities: ['High', 'Medium', 'Critical']
+    },
+    {
+      equipment: 'Vulcan VG20 Gas Convection Oven',
+      customer: 'Pizza Palace Downtown',
+      address: '789 Fourth Street, Louisville, KY 40202',
+      contact: 'Sarah Martinez (502) 555-0187',
+      issues: [
+        'Door gasket damaged, heat escaping from oven door',
+        'Ignition system intermittent, requires multiple attempts to light',
+        'Fan motor making loud grinding noise during operation',
+        'Thermostat not maintaining consistent temperature'
+      ],
+      priorities: ['Medium', 'High', 'Critical']
+    },
+    {
+      equipment: 'Hobart AM15 Dishwasher',
+      customer: 'Riverside Bistro',
+      address: '567 River Road, Louisville, KY 40206',
+      contact: 'James Wilson (502) 555-0194',
+      issues: [
+        'Wash cycle not completing, stopping mid-cycle',
+        'Water temperature not reaching required 180°F sanitizing temp',
+        'Detergent dispenser not releasing chemicals properly',
+        'Door seals leaking water onto kitchen floor'
+      ],
+      priorities: ['Critical', 'High', 'Medium']
+    },
+    {
+      equipment: 'True T-49 Reach-In Refrigerator',
+      customer: 'Corner Deli & Market',
+      address: '432 Bardstown Rd, Louisville, KY 40204',
+      contact: 'Lisa Chen (502) 555-0156',
+      issues: [
+        'Temperature rising above 40°F, food safety concern',
+        'Compressor running continuously but not cooling effectively',
+        'Condenser coils heavily frosted, blocking airflow',
+        'Door gaskets torn, allowing cold air to escape'
+      ],
+      priorities: ['Critical', 'High', 'Medium']
+    },
+    {
+      equipment: 'Rational SelfCookingCenter',
+      customer: 'University Dining Hall',
+      address: '2100 S Floyd St, Louisville, KY 40208',
+      contact: 'Robert Davis (502) 555-0171',
+      issues: [
+        'Steam injection system not working, affecting cook quality',
+        'Touch screen display showing error codes intermittently',
+        'Cleaning cycle not completing properly',
+        'Core temperature probe giving false readings'
+      ],
+      priorities: ['Medium', 'High', 'Critical']
+    },
+    {
+      equipment: 'Imperial IFS-40 Deep Fryer',
+      customer: 'Sports Bar & Grill',
+      address: '856 Baxter Avenue, Louisville, KY 40204',
+      contact: 'Tom Anderson (502) 555-0142',
+      issues: [
+        'Oil temperature not reaching set point of 350°F',
+        'Safety shutoff valve triggering unexpectedly',
+        'Basket lift mechanism sticking during operation',
+        'Pilot light going out randomly during service'
+      ],
+      priorities: ['High', 'Medium', 'Critical']
+    },
+    {
+      equipment: 'Manitowoc ID-0502A Ice Machine',
+      customer: 'Downtown Coffee House',
+      address: '125 W Main Street, Louisville, KY 40202',
+      contact: 'Jennifer Adams (502) 555-0198',
+      issues: [
+        'Ice production dropped to less than 50% of rated capacity',
+        'Water filtration system needs replacement',
+        'Bin full sensor malfunctioning, overfilling ice bin',
+        'Evaporator coils building up excessive scale'
+      ],
+      priorities: ['Medium', 'High', 'Critical']
+    },
+    {
+      equipment: 'Alto-Shaam 1200-TH Cook & Hold Oven',
+      customer: 'Catering Company Plus',
+      address: '2890 Watterson Trail, Louisville, KY 40299',
+      contact: 'David Park (502) 555-0163',
+      issues: [
+        'Hold temperature not maintaining food at safe serving temp',
+        'Probe thermometer needs calibration',
+        'Timer display intermittently going blank',
+        'Door latch mechanism loose, door not sealing properly'
+      ],
+      priorities: ['High', 'Medium', 'Critical']
+    }
+  ];
+
+  // Select random template
+  const template = workOrderTemplates[Math.floor(Math.random() * workOrderTemplates.length)];
+  
+  // Additional technician and contact data
+  const technicians = [
+    { name: 'Carlos Rodriguez', phone: '(502) 555-0211', email: 'carlos.r@partnerplus.com' },
+    { name: 'Jessica Thompson', phone: '(502) 555-0224', email: 'jessica.t@partnerplus.com' },
+    { name: 'Michael Chang', phone: '(502) 555-0237', email: 'michael.c@partnerplus.com' },
+    { name: 'Ashley Williams', phone: '(502) 555-0245', email: 'ashley.w@partnerplus.com' },
+    { name: 'Brandon Taylor', phone: '(502) 555-0258', email: 'brandon.t@partnerplus.com' }
+  ];
+
+  const locationContacts = [
+    'manager@' + template.customer.toLowerCase().replace(/\s+/g, '') + '.com',
+    'maintenance@' + template.customer.toLowerCase().replace(/\s+/g, '') + '.com',
+    'operations@' + template.customer.toLowerCase().replace(/\s+/g, '') + '.com'
+  ];
+
+  const suspectedParts = {
+    'Henny Penny 500 Pressure Fryer': ['heating element', 'temperature probe', 'pressure valve', 'oil filtration pump'],
+    'Vulcan VG20 Gas Convection Oven': ['door gasket', 'ignition control', 'fan motor', 'thermostat'],
+    'Hobart AM15 Dishwasher': ['wash pump', 'temperature sensor', 'detergent dispenser', 'door seals'],
+    'True T-49 Reach-In Refrigerator': ['compressor', 'evaporator coils', 'door gaskets', 'temperature control'],
+    'Rational SelfCookingCenter': ['steam injection valve', 'touch screen display', 'core probe', 'cleaning pump'],
+    'Imperial IFS-40 Deep Fryer': ['heating elements', 'safety valve', 'basket lift motor', 'pilot assembly'],
+    'Manitowoc ID-0502A Ice Machine': ['water pump', 'filtration system', 'bin sensor', 'evaporator coils'],
+    'Alto-Shaam 1200-TH Cook & Hold Oven': ['temperature probe', 'timer display', 'door latch', 'heating elements']
+  };
+
+  const selectedTechnician = technicians[Math.floor(Math.random() * technicians.length)];
+  const selectedIssue = template.issues[Math.floor(Math.random() * template.issues.length)];
+  const equipmentParts = suspectedParts[template.equipment] || ['unknown component'];
+  const suspectedPart = equipmentParts[Math.floor(Math.random() * equipmentParts.length)];
+
+  // Generate work order with random variations
+  const workOrder = {
+    id: 'WO-' + String(Math.floor(Math.random() * 9000) + 1000),
+    equipment: template.equipment,
+    customer: template.customer,
+    address: template.address,
+    contact: template.contact,
+    locationContactPhone: template.contact.match(/\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/)[0],
+    locationContactEmail: locationContacts[Math.floor(Math.random() * locationContacts.length)],
+    description: selectedIssue,
+    priority: template.priorities[Math.floor(Math.random() * template.priorities.length)],
+    status: 'Open',
+    created: new Date().toISOString().split('T')[0],
+    technician: selectedTechnician.name,
+    technicianPhone: selectedTechnician.phone,
+    technicianEmail: selectedTechnician.email,
+    estimatedDuration: Math.floor(Math.random() * 4) + 1 + ' hours',
+    dispatchNotes: {
+      reportedIssue: selectedIssue,
+      customerComments: `Customer reports equipment ${selectedIssue.toLowerCase()}. ${template.customer} requesting priority service.`,
+      dispatchTime: new Date().toLocaleTimeString(),
+      dispatcher: 'Sarah Johnson'
+    },
+    serviceNotes: {
+      suspectedParts: suspectedPart,
+      initialDiagnosis: `Based on reported symptoms, likely ${suspectedPart} failure. Recommend parts lookup and supplier pricing.`,
+      recommendedActions: `1. Verify ${suspectedPart} operation, 2. Check related components, 3. Order replacement if confirmed`,
+      safetyNotes: template.equipment.includes('Gas') ? 'CAUTION: Gas equipment - verify gas shutoff before service' : 
+                   template.equipment.includes('Pressure') ? 'WARNING: Pressure equipment - depressurize before service' :
+                   'Standard electrical safety precautions required'
+    },
+    parts: [],
+    notes: []
+  };
+
+  res.json(workOrder);
 });
 
 // Code extraction endpoint
