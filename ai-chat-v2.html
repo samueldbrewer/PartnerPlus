@@ -9,11 +9,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
-      --primary-color: #1976d2;
+      --primary-color: #c8102e;
       --secondary-color: #f8f9fa;
       --success-color: #28a745;
       --danger-color: #dc3545;
-      --dark-color: #333;
+      --dark-color: #2d2926;
       --light-color: #fff;
       --border-color: #dee2e6;
       --shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -214,7 +214,7 @@
 
     .message-meta {
       font-size: 12px;
-      color: #666;
+      color: #2d2926;
       margin-top: 4px;
     }
 
@@ -262,7 +262,7 @@
     .query-endpoint {
       font-family: 'Monaco', 'Consolas', monospace;
       font-size: 12px;
-      color: #666;
+      color: #2d2926;
     }
 
     .query-toggle {
@@ -373,11 +373,11 @@
     .chat-input:focus {
       outline: none;
       border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+      box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.1);
     }
 
     .brain-button {
-      background: var(--primary-color);
+      background: var(--dark-color);
       color: white;
       border: none;
       padding: 12px 16px;
@@ -393,7 +393,7 @@
     }
 
     .brain-button:hover:not(:disabled) {
-      background: #1565c0;
+      background: #1a1916;
     }
 
     .brain-button:disabled {
@@ -402,7 +402,7 @@
     }
 
     .send-button {
-      background: var(--primary-color);
+      background: var(--dark-color);
       color: white;
       border: none;
       padding: 12px 20px;
@@ -414,7 +414,7 @@
     }
 
     .send-button:hover:not(:disabled) {
-      background: #1565c0;
+      background: #1a1916;
     }
 
     .send-button:disabled {
@@ -514,7 +514,7 @@
     }
 
     .message.system .message-content strong {
-      color: #2e7d32;
+      color: #28a745;
     }
 
     .typing-dots {
@@ -590,7 +590,7 @@
       border: none;
       font-size: 24px;
       cursor: pointer;
-      color: #666;
+      color: #2d2926;
       padding: 0;
       width: 30px;
       height: 30px;
@@ -796,6 +796,17 @@
         padding: 12px 16px;
         font-size: 14px;
       }
+    }
+
+    /* Link Styling */
+    .message-content a {
+      color: var(--primary-color);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200, 16, 46, 0.3);
+    }
+
+    .message-content a:hover {
+      border-bottom-color: var(--primary-color);
     }
   </style>
 </head>
