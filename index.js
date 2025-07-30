@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const Agent = require('./lib/agent');
 const OrchestratorAgent = require('./lib/orchestrator-agent');
+const OpenAI = require('openai');
 const EmailService = require('./lib/email-service');
 const SMSService = require('./lib/sms-service');
 const CodeExecutor = require('./lib/code-executor');
@@ -50,6 +51,11 @@ app.use(express.static('public'));
 
 // Create agent instance
 const agent = new Agent();
+
+// Create OpenAI client for AI agent chat
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 // Create orchestrator agent instance
 const orchestratorAgent = new OrchestratorAgent();
@@ -991,81 +997,7 @@ app.get('/ai-agent-mobile', (req, res) => {
           border-bottom-left-radius: 6px;
         }
         
-        /* Workflow Steps in Chat */
-        .workflow-message {
-          background: #e3f2fd;
-          border: 1px solid #1976d2;
-          border-radius: 12px;
-          padding: 15px;
-          margin: 10px 0;
-        }
-        
-        .workflow-title {
-          font-weight: 600;
-          color: #1976d2;
-          margin-bottom: 10px;
-          font-size: 16px;
-        }
-        
-        .workflow-step {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 8px 0;
-          border-bottom: 1px solid rgba(25, 118, 210, 0.1);
-        }
-        
-        .workflow-step:last-child {
-          border-bottom: none;
-        }
-        
-        .step-icon {
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          background: #1976d2;
-          color: white;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 12px;
-          font-weight: bold;
-        }
-        
-        .step-icon.active {
-          background: #4caf50;
-          animation: pulse 1.5s infinite;
-        }
-        
-        .step-icon.completed {
-          background: #4caf50;
-        }
-        
-        .step-icon.failed {
-          background: #f44336;
-        }
-        
-        @keyframes pulse {
-          0% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.1); opacity: 0.8; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        
-        .step-text {
-          flex: 1;
-          font-size: 14px;
-        }
-        
-        .step-action {
-          font-weight: 500;
-          color: #1976d2;
-        }
-        
-        .step-description {
-          color: #666;
-          font-size: 13px;
-          margin-top: 2px;
-        }
+        /* Simplified workflow - no complex step visualization needed */
         
         /* Input Area */
         .input-area {
@@ -1239,27 +1171,7 @@ app.get('/ai-agent-mobile', (req, res) => {
         /* Utility Classes */
         .hidden { display: none !important; }
         
-        /* Continue Button */
-        .continue-btn {
-          background: #4caf50;
-          color: white;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 6px;
-          font-size: 14px;
-          cursor: pointer;
-          margin-top: 10px;
-          transition: background 0.3s;
-        }
-        
-        .continue-btn:hover {
-          background: #388e3c;
-        }
-        
-        .continue-btn:disabled {
-          background: #ccc;
-          cursor: not-allowed;
-        }
+        /* Continue button removed - using text confirmation now */
       </style>
     </head>
     <body>
@@ -1346,6 +1258,8 @@ app.get('/ai-agent-mobile', (req, res) => {
         let currentWorkflow = null;
         let currentStep = 0;
         let isProcessing = false;
+        let pendingStep = null;
+        let stepResults = [];
         
         // Auto-resize textarea
         const messageInput = document.getElementById('messageInput');
@@ -1400,6 +1314,19 @@ app.get('/ai-agent-mobile', (req, res) => {
           // Add user message
           addMessage('user', message);
           
+          // Check if user is confirming a step
+          if (pendingStep && (message.toLowerCase().includes('yes') || message.toLowerCase().includes('ok') || message.toLowerCase().includes('proceed') || message.toLowerCase() === 'y')) {
+            executeConfirmedStep();
+            return;
+          }
+          
+          // Check if user is declining a step
+          if (pendingStep && (message.toLowerCase().includes('no') || message.toLowerCase().includes('skip') || message.toLowerCase() === 'n')) {
+            addMessage('assistant', 'Step skipped. What would you like me to help with next?');
+            resetWorkflow();
+            return;
+          }
+          
           // Show typing indicator
           const typingId = addTypingIndicator();
           
@@ -1414,6 +1341,7 @@ app.get('/ai-agent-mobile', (req, res) => {
             const data = await response.json();
             currentWorkflow = data.actionPlan;
             currentStep = 0;
+            pendingStep = null;
             
             // Remove typing indicator
             removeMessage(typingId);
@@ -1421,11 +1349,8 @@ app.get('/ai-agent-mobile', (req, res) => {
             if (currentWorkflow.action === 'error' || currentWorkflow.action === 'clarification_needed') {
               addMessage('assistant', currentWorkflow.reasoning || 'I need more information to help you with that request.');
             } else {
-              // Add workflow plan message
-              addWorkflowMessage(currentWorkflow);
-              
-              // Auto-start execution
-              setTimeout(() => executeNextStep(), 1000);
+              // Show plan and ask for confirmation
+              showPlanAndConfirm(currentWorkflow);
             }
             
           } catch (error) {
@@ -1450,7 +1375,7 @@ app.get('/ai-agent-mobile', (req, res) => {
           
           messageDiv.innerHTML = 
             '<div class="message-avatar">' + avatar + '</div>' +
-            '<div class="message-content">' + content + '</div>';
+            '<div class="message-content">' + content.replace(/\n/g, '<br>') + '</div>';
           
           messagesArea.appendChild(messageDiv);
           messagesArea.scrollTop = messagesArea.scrollHeight;
@@ -1489,128 +1414,104 @@ app.get('/ai-agent-mobile', (req, res) => {
           }
         }
         
-        function addWorkflowMessage(workflow) {
-          const messagesArea = document.getElementById('messagesArea');
+        function showPlanAndConfirm(workflow) {
           const steps = workflow.complete_plan || [{ action: workflow.action, description: workflow.preview }];
           
-          let stepsHtml = '';
+          let planText = "I've created a plan to help you:\n\n";
           steps.forEach((step, index) => {
-            const actionIcon = getActionIcon(step.action);
             const actionName = formatActionName(step.action);
-            
-            stepsHtml += 
-              '<div class="workflow-step" id="step-' + index + '">' +
-                '<div class="step-icon" id="step-icon-' + index + '">' + (index + 1) + '</div>' +
-                '<div class="step-text">' +
-                  '<div class="step-action">' + actionIcon + ' ' + actionName + '</div>' +
-                  '<div class="step-description">' + (step.description || 'Processing...') + '</div>' +
-                '</div>' +
-              '</div>';
+            planText += \`\${index + 1}. \${actionName}\`;
+            if (step.description && step.description !== workflow.preview) {
+              planText += \` - \${step.description}\`;
+            }
+            planText += '\n';
           });
           
-          const workflowHtml = 
-            '<div class="workflow-message" id="workflow-' + Date.now() + '">' +
-              '<div class="workflow-title">📋 Workflow Plan (' + steps.length + ' steps)</div>' +
-              stepsHtml +
-              '<button class="continue-btn" onclick="executeNextStep()">▶️ Start Execution</button>' +
-            '</div>';
+          planText += '\nShould I proceed with step 1? (yes/no)';
+          addMessage('assistant', planText);
           
-          const messageDiv = document.createElement('div');
-          messageDiv.className = 'message assistant';
-          messageDiv.innerHTML = 
-            '<div class="message-avatar">🤖</div>' +
-            '<div class="message-content">' + workflowHtml + '</div>';
-          
-          messagesArea.appendChild(messageDiv);
-          messagesArea.scrollTop = messagesArea.scrollHeight;
+          // Set up for step confirmation
+          pendingStep = {
+            workflow: workflow,
+            stepIndex: 0,
+            steps: steps
+          };
         }
         
-        async function executeNextStep() {
-          if (!currentWorkflow || isProcessing) return;
-          
-          const steps = currentWorkflow.complete_plan || [{ action: currentWorkflow.action, parameters: currentWorkflow.parameters }];
-          
-          if (currentStep >= steps.length) {
-            addMessage('assistant', '✅ All steps completed successfully!');
-            return;
-          }
+        async function executeConfirmedStep() {
+          if (!pendingStep || isProcessing) return;
           
           isProcessing = true;
-          const step = steps[currentStep];
+          const step = pendingStep.steps[pendingStep.stepIndex];
+          const stepActionPlan = {
+            action: step.action,
+            parameters: pendingStep.stepIndex === 0 ? pendingStep.workflow.parameters || {} : step.parameters || {},
+            complete_plan: pendingStep.workflow.complete_plan,
+            confidence: pendingStep.workflow.confidence || 0.9
+          };
           
-          // Update step icon to active
-          const stepIcon = document.getElementById('step-icon-' + currentStep);
-          if (stepIcon) {
-            stepIcon.classList.add('active');
-          }
+          // Show typing indicator
+          const typingId = addTypingIndicator();
           
           try {
-            // Create action plan for current step
-            let stepParameters = {};
-            if (currentStep === 0) {
-              stepParameters = currentWorkflow.parameters || {};
-            } else {
-              stepParameters = step.parameters || {};
-            }
-            
-            const stepActionPlan = {
-              action: step.action,
-              parameters: stepParameters,
-              complete_plan: currentWorkflow.complete_plan,
-              confidence: currentWorkflow.confidence || 0.9
-            };
-            
             const response = await fetch('/api/orchestrator/execute-step', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ 
                 actionPlan: stepActionPlan,
-                stepIndex: currentStep,
-                previousResults: []
+                stepIndex: pendingStep.stepIndex,
+                previousResults: stepResults
               })
             });
             
             const data = await response.json();
             const result = data.result;
             
-            // Update step icon
-            if (stepIcon) {
-              stepIcon.classList.remove('active');
-              if (result.success) {
-                stepIcon.classList.add('completed');
-                stepIcon.innerHTML = '✓';
-              } else {
-                stepIcon.classList.add('failed');
-                stepIcon.innerHTML = '✗';
-              }
-            }
+            // Remove typing indicator
+            removeMessage(typingId);
             
-            // Add result message
-            const resultMessage = formatStepResult(step.action, result);
-            addMessage('assistant', resultMessage);
+            // Store result
+            stepResults[pendingStep.stepIndex] = result;
             
             if (result.success) {
-              currentStep++;
-              // Continue to next step after a short delay
-              if (currentStep < steps.length) {
-                setTimeout(() => executeNextStep(), 1500);
+              const resultMessage = formatStepResult(step.action, result);
+              addMessage('assistant', resultMessage);
+              
+              // Check if there are more steps
+              if (pendingStep.stepIndex + 1 < pendingStep.steps.length) {
+                const nextStepIndex = pendingStep.stepIndex + 1;
+                const nextStep = pendingStep.steps[nextStepIndex];
+                const nextActionName = formatActionName(nextStep.action);
+                
+                setTimeout(() => {
+                  addMessage('assistant', \`Ready for step \${nextStepIndex + 1}: \${nextActionName}. Should I proceed? (yes/no)\`);
+                  pendingStep.stepIndex = nextStepIndex;
+                }, 1000);
               } else {
-                addMessage('assistant', '🎉 Workflow completed successfully!');
+                addMessage('assistant', '🎉 All steps completed successfully! What else can I help you with?');
+                resetWorkflow();
               }
             } else {
-              addMessage('assistant', '❌ Step failed: ' + (result.message || 'Unknown error'));
+              addMessage('assistant', '❌ Step failed: ' + (result.message || 'Unknown error') + '\nWhat would you like me to help you with next?');
+              resetWorkflow();
             }
             
           } catch (error) {
-            if (stepIcon) {
-              stepIcon.classList.remove('active');
-              stepIcon.classList.add('failed');
-              stepIcon.innerHTML = '✗';
-            }
-            addMessage('assistant', '❌ Error executing step: ' + error.message);
+            removeMessage(typingId);
+            addMessage('assistant', '❌ Error executing step: ' + error.message + '\nWhat would you like me to help you with next?');
+            resetWorkflow();
           } finally {
             isProcessing = false;
+            document.getElementById('sendBtn').disabled = false;
+            document.getElementById('messageInput').focus();
           }
+        }
+        
+        function resetWorkflow() {
+          currentWorkflow = null;
+          currentStep = 0;
+          pendingStep = null;
+          stepResults = [];
         }
         
         function getActionIcon(action) {
@@ -1702,6 +1603,11 @@ app.get('/ai-agent-raw', (req, res) => {
   }
 });
 
+// Add route for simple AI agent
+app.get('/ai-agent-simple', (req, res) => {
+  res.sendFile(path.join(__dirname, 'ai-agent-simple.html'));
+});
+
 // Add route for API documentation
 app.get('/api-docs', (req, res) => {
   try {
@@ -1782,6 +1688,195 @@ app.post('/api/chat', async (req, res) => {
 app.post('/api/chat/clear', (req, res) => {
   agent.clearHistory();
   res.json({ success: true });
+});
+
+// AI Agent Chat with tool decision making
+app.post('/api/ai-agent-chat', async (req, res) => {
+  try {
+    const { message, history = [] } = req.body;
+    
+    // System prompt that explains available tools
+    const systemPrompt = `You are an AI assistant for PartnerPlus, a restaurant equipment service platform. You can chat normally or use tools when needed.
+
+AVAILABLE TOOLS:
+1. PARTS SEARCH: POST /api/purchase-agent/parts/resolve - Find OEM part numbers from descriptions
+   - Use when: User mentions equipment parts, part numbers, or needs to identify parts
+   - Parameters: {description: "part description", make: "manufacturer", model: "model"}
+
+2. SUPPLIER SEARCH: POST /api/purchase-agent/suppliers/search - Find suppliers for specific parts
+   - Use when: User wants to find suppliers or pricing for a part number
+   - Parameters: {partNumber: "12345", options: {limit: 5}}
+
+3. SEND EMAIL: POST /api/email/send - Send emails
+   - Use when: User wants to email information or results
+   - Parameters: {to: "email@example.com", subject: "subject", text: "message body"}
+
+4. CHECK EMAIL: GET /api/email/inbox - Read recent emails
+   - Use when: User wants to check their inbox or read messages
+   - Parameters: {limit: 10} (query parameter)
+
+5. SEND SMS: POST /api/sms/send - Send text messages
+   - Use when: User wants to send SMS alerts or notifications
+   - Parameters: {to: "+1234567890", message: "text message"}
+
+6. WEB SEARCH: POST /api/purchase-agent/search/web - Search the web with AI
+   - Use when: User needs current information, pricing, or general web research
+   - Parameters: {query: "search question"}
+
+7. CODE EXECUTION: POST /api/execute-code - Execute code safely
+   - Use when: User needs to run calculations, scripts, or code
+   - Parameters: {code: "code to run", language: "python|javascript|bash"}
+
+INSTRUCTIONS:
+- Chat normally for general questions and conversation
+- When a user request requires a tool, decide which tool to use and tell them what you're doing
+- Use tools in sequence if needed (e.g., search parts first, then find suppliers, then email results)
+- Always explain what tool you're using and why
+- If you're not sure what the user wants, ask for clarification rather than guessing
+
+Respond naturally and be helpful. Only use tools when the user's request clearly needs them.`;
+
+    // Prepare messages for OpenAI
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...history.slice(-10), // Keep last 10 messages for context
+      { role: 'user', content: message }
+    ];
+
+    // First, let the AI decide what to do
+    const decisionResponse = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: messages,
+      temperature: 0.7,
+      max_tokens: 1500
+    });
+
+    const aiResponse = decisionResponse.choices[0].message.content;
+    
+    // Check if the AI mentions using a specific tool
+    let toolUsed = false;
+    let toolMessage = '';
+    let finalResponse = aiResponse;
+
+    // Simple pattern matching to detect tool usage intent
+    const toolPatterns = {
+      'parts': /(?:search|find|look.*up|identify).*(?:part|component)/i,
+      'suppliers': /(?:find|search|look.*up).*(?:supplier|vendor|source)/i,
+      'email': /(?:send|email|mail).*(?:to|@)/i,
+      'inbox': /(?:check|read|show).*(?:email|inbox|messages)/i,
+      'sms': /(?:send|text|sms).*(?:to|\+\d)/i,
+      'search': /(?:search|google|find.*online|web.*search)/i
+    };
+
+    // If AI response suggests using a tool, try to execute it
+    if (aiResponse.toLowerCase().includes('let me') || aiResponse.toLowerCase().includes("i'll")) {
+      
+      // Extract relevant information from the user message for tool parameters
+      const userLower = message.toLowerCase();
+      
+      // Try to execute the most appropriate tool
+      if (toolPatterns.parts.test(userLower) || aiResponse.toLowerCase().includes('part')) {
+        try {
+          // Extract part description and manufacturer
+          const partMatch = message.match(/(?:part|component)[\s\w]*?(\d+)|([a-zA-Z\s]+(?:part|component|seal|door|handle|motor))/i);
+          const makeMatch = message.match(/(henny penny|hobart|vulcan|true|taylor|manitowoc|ice-o-matic)/i);
+          
+          if (partMatch) {
+            const partDescription = partMatch[1] || partMatch[2] || 'equipment part';
+            const make = makeMatch ? makeMatch[1] : '';
+            
+            toolMessage = `🔧 Searching for parts: "${partDescription}"${make ? ` from ${make}` : ''}`;
+            
+            const toolResponse = await fetch('http://localhost:3000/api/purchase-agent/parts/resolve', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                description: partDescription,
+                make: make
+              })
+            });
+            
+            const toolData = await toolResponse.json();
+            toolUsed = true;
+            
+            if (toolData.success && toolData.data?.recommended_result) {
+              const part = toolData.data.recommended_result;
+              finalResponse = `I found the part you're looking for:
+
+**${part.oem_part_number}** - ${part.description || 'Equipment part'}
+Manufacturer: ${toolData.data.query?.make || 'Unknown'}
+Confidence: ${Math.round((part.confidence || 0) * 100)}%
+
+${aiResponse.includes('email') || aiResponse.includes('supplier') ? 'Would you like me to find suppliers for this part or email these details to someone?' : 'Is this the part you were looking for?'}`;
+            } else {
+              finalResponse = `I couldn't find specific part information for "${partDescription}". Could you provide more details like the equipment model or a more specific part description?`;
+            }
+          }
+        } catch (error) {
+          console.error('Parts search error:', error);
+        }
+      }
+      
+      else if (toolPatterns.search.test(userLower) || aiResponse.toLowerCase().includes('search')) {
+        try {
+          toolMessage = `🔍 Searching the web for: "${message}"`;
+          
+          const toolResponse = await fetch('http://localhost:3000/api/purchase-agent/search/web', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: message })
+          });
+          
+          const toolData = await toolResponse.json();
+          toolUsed = true;
+          
+          if (toolData.success) {
+            finalResponse = toolData.response?.output_text || 'I found some information, but the results were unclear. Could you be more specific about what you\'re looking for?';
+          } else {
+            finalResponse = 'I had trouble searching for that information. Could you rephrase your question?';
+          }
+        } catch (error) {
+          console.error('Web search error:', error);
+        }
+      }
+      
+      else if (toolPatterns.inbox.test(userLower)) {
+        try {
+          toolMessage = '📧 Checking your email inbox...';
+          
+          const toolResponse = await fetch('http://localhost:3000/api/email/inbox?limit=5');
+          const toolData = await toolResponse.json();
+          toolUsed = true;
+          
+          if (toolData.success && toolData.emails?.length > 0) {
+            let emailSummary = `Here are your recent emails:\n\n`;
+            toolData.emails.slice(0, 3).forEach((email, i) => {
+              emailSummary += `${i + 1}. **From:** ${email.from}\n   **Subject:** ${email.subject}\n   **Date:** ${new Date(email.date).toLocaleDateString()}\n\n`;
+            });
+            finalResponse = emailSummary;
+          } else {
+            finalResponse = 'Your inbox appears to be empty or I couldn\'t access it right now.';
+          }
+        } catch (error) {
+          console.error('Email check error:', error);
+          finalResponse = 'I had trouble checking your email. Please make sure email access is configured.';
+        }
+      }
+    }
+
+    res.json({
+      response: finalResponse,
+      toolUsed: toolUsed,
+      toolMessage: toolMessage
+    });
+
+  } catch (error) {
+    console.error('AI Agent Chat error:', error);
+    res.status(500).json({ 
+      error: 'I encountered an error processing your request. Please try again.',
+      response: 'Sorry, I had a technical issue. Please try your request again.'
+    });
+  }
 });
 
 // Orchestrator Agent endpoints

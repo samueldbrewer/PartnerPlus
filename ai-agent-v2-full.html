@@ -156,17 +156,53 @@
       box-shadow: none;
     }
     
-    .workflow-container {
+    .plan-section, .step-section {
       background: white;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       padding: 30px;
       margin-bottom: 30px;
+    }
+    
+    .plan-text, .step-text {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #1976d2;
+      margin: 20px 0;
+      white-space: pre-line;
+      font-family: monospace;
+      line-height: 1.6;
+    }
+    
+    .step-result {
+      background: #e8f5e8;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #4caf50;
+      margin: 20px 0;
+      white-space: pre-line;
       display: none;
     }
     
-    .workflow-container.visible {
-      display: block;
+    .step-result.error {
+      background: #ffebee;
+      border-left-color: #f44336;
+    }
+    
+    .plan-actions, .step-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    .action-button.secondary {
+      background: #6c757d;
+    }
+    
+    .action-button.secondary:hover {
+      background: #545b62;
     }
     
     .workflow-header {
@@ -431,8 +467,29 @@
     <div class="input-section">
       <h2>🎯 What would you like me to accomplish?</h2>
       <div class="input-container">
-        <textarea id="objectiveInput" placeholder="Describe your objective... (e.g., 'Find suppliers for Henny Penny part 77575, then email the comparison to purchasing@company.com')"></textarea>
-        <button id="planButton" class="plan-button" onclick="generatePlan()">🧠 Plan Workflow</button>
+        <textarea id="objectiveInput" placeholder="Describe your objective... (e.g., 'Find suppliers for Henny Penny part 77575, then email the comparison to samueldbrewer@gmail.com')"></textarea>
+        <button id="planButton" class="plan-button" onclick="generatePlan()">🧠 Create Plan</button>
+      </div>
+    </div>
+    
+    <!-- Simple Text-Based Plan Display -->
+    <div class="plan-section" id="planSection" style="display: none;">
+      <h3>📋 Workflow Plan</h3>
+      <div class="plan-text" id="planText"></div>
+      <div class="plan-actions">
+        <button class="action-button" onclick="confirmStep(true)">✅ Proceed with Step 1</button>
+        <button class="action-button secondary" onclick="confirmStep(false)">❌ Cancel</button>
+      </div>
+    </div>
+    
+    <!-- Step Confirmation -->
+    <div class="step-section" id="stepSection" style="display: none;">
+      <h3>⚡ Step Execution</h3>
+      <div class="step-text" id="stepText"></div>
+      <div class="step-result" id="stepResult"></div>
+      <div class="step-actions" id="stepActions" style="display: none;">
+        <button class="action-button" onclick="continueToNextStep()">➡️ Continue to Next Step</button>
+        <button class="action-button secondary" onclick="resetWorkflow()">🔄 Start Over</button>
       </div>
     </div>
     
@@ -452,21 +509,8 @@
       </div>
     </div>
     
-    <div id="workflowContainer" class="workflow-container">
-      <div class="workflow-header">
-        <h3>🔄 Generated Workflow Plan</h3>
-        <div id="workflowObjective" class="workflow-objective"></div>
-      </div>
-      
-      <div id="workflowSteps" class="workflow-steps">
-        <!-- Steps will be dynamically generated here -->
-      </div>
-      
-      <div class="workflow-controls">
-        <button id="startButton" class="action-button" onclick="startWorkflow()" style="display: none;">🚀 Start Workflow</button>
-        <button id="continueButton" class="action-button" onclick="continueWorkflow()" style="display: none;">⏭️ Continue</button>
-        <button id="resetButton" class="action-button" onclick="resetWorkflow()" style="background: #6c757d;">🔄 Reset</button>
-      </div>
+    <div id="workflowContainer" class="workflow-container" style="display: none;">
+      <!-- Legacy workflow visualization - kept for compatibility but hidden -->
     </div>
     
     <div id="alertContainer"></div>
@@ -474,12 +518,9 @@
   
   <script>
     let currentActionPlan = null;
-    let currentWorkflowState = {
-      plan: null,
-      currentStep: 0,
-      stepResults: [],
-      isRunning: false
-    };
+    let currentStepIndex = 0;
+    let stepResults = [];
+    let isProcessing = false;
     
     function fillExample(text) {
       document.getElementById('objectiveInput').value = text;
@@ -510,7 +551,7 @@
       
       const planButton = document.getElementById('planButton');
       planButton.disabled = true;
-      planButton.textContent = '🧠 Analyzing...';
+      planButton.textContent = '🧠 Creating Plan...';
       
       try {
         const response = await fetch('/api/orchestrator/objective', {
@@ -525,74 +566,136 @@
         
         const data = await response.json();
         currentActionPlan = data.actionPlan;
+        currentStepIndex = 0;
+        stepResults = [];
         
         if (currentActionPlan.action === 'error' || currentActionPlan.action === 'clarification_needed') {
           showAlert(currentActionPlan.reasoning || 'Could not generate a valid plan', 'error');
           return;
         }
         
-        displayWorkflowPlan(currentActionPlan);
-        showAlert('Workflow plan generated successfully!', 'success');
+        displaySimplePlan(currentActionPlan);
         
       } catch (error) {
         showAlert('Error generating plan: ' + error.message, 'error');
       } finally {
         planButton.disabled = false;
-        planButton.textContent = '🧠 Plan Workflow';
+        planButton.textContent = '🧠 Create Plan';
       }
     }
     
-    function displayWorkflowPlan(actionPlan) {
-      const workflowContainer = document.getElementById('workflowContainer');
-      const workflowObjective = document.getElementById('workflowObjective');
-      const workflowSteps = document.getElementById('workflowSteps');
-      const startButton = document.getElementById('startButton');
-      
-      // Reset workflow state
-      currentWorkflowState = {
-        plan: actionPlan,
-        currentStep: 0,
-        stepResults: [],
-        isRunning: false
-      };
-      
-      // Display objective
-      workflowObjective.textContent = document.getElementById('objectiveInput').value;
-      
-      // Generate step visualization
+    function displaySimplePlan(actionPlan) {
       const steps = actionPlan.complete_plan || [{ action: actionPlan.action, description: actionPlan.preview }];
       
-      workflowSteps.innerHTML = '';
-      
-      steps.forEach(function(step, index) {
-        const stepDiv = document.createElement('div');
-        stepDiv.className = 'workflow-step';
-        stepDiv.id = 'step-' + index;
-        
-        stepDiv.innerHTML = 
-          '<div class="step-header">' +
-            '<div class="step-title">' +
-              '<div class="step-number" id="step-number-' + index + '">' + (index + 1) + '</div>' +
-              '<div>' +
-                '<div class="step-action">' + getActionIcon(step.action) + ' ' + formatActionName(step.action) + '</div>' +
-                '<div class="step-description">' + (step.description || (step.parameters ? JSON.stringify(step.parameters) : 'No description available')) + '</div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="step-status" id="step-status-' + index + '">' +
-              '<span class="status-icon">⏳</span>' +
-            '</div>' +
-          '</div>' +
-          '<div class="step-result" id="step-result-' + index + '">' +
-            '<div class="result-header">Step Result:</div>' +
-            '<div id="step-result-content-' + index + '"></div>' +
-          '</div>';
-        
-        workflowSteps.appendChild(stepDiv);
+      let planText = "Here's what I'll do to help you:\n\n";
+      steps.forEach((step, index) => {
+        const actionName = formatActionName(step.action);
+        planText += `${index + 1}. ${actionName}`;
+        if (step.description && step.description !== actionPlan.preview) {
+          planText += ` - ${step.description}`;
+        }
+        planText += '\n';
       });
       
-      // Show the workflow container and start button
-      workflowContainer.classList.add('visible');
-      startButton.style.display = 'inline-block';
+      document.getElementById('planText').textContent = planText;
+      document.getElementById('planSection').style.display = 'block';
+      document.getElementById('stepSection').style.display = 'none';
+      document.getElementById('workflowContainer').style.display = 'none';
+    }
+    
+    async function confirmStep(proceed) {
+      if (!proceed) {
+        resetWorkflow();
+        return;
+      }
+      
+      if (isProcessing) return;
+      isProcessing = true;
+      
+      // Show step section
+      document.getElementById('stepSection').style.display = 'block';
+      
+      const steps = currentActionPlan.complete_plan || [{ action: currentActionPlan.action, parameters: currentActionPlan.parameters }];
+      const step = steps[currentStepIndex];
+      const actionName = formatActionName(step.action);
+      
+      document.getElementById('stepText').textContent = `Executing Step ${currentStepIndex + 1}: ${actionName}`;
+      document.getElementById('stepResult').style.display = 'none';
+      document.getElementById('stepActions').style.display = 'none';
+      
+      try {
+        const stepActionPlan = {
+          action: step.action,
+          parameters: currentStepIndex === 0 ? currentActionPlan.parameters || {} : step.parameters || {},
+          complete_plan: currentActionPlan.complete_plan,
+          confidence: currentActionPlan.confidence || 0.9
+        };
+        
+        const response = await fetch('/api/orchestrator/execute-step', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            actionPlan: stepActionPlan,
+            stepIndex: currentStepIndex,
+            previousResults: stepResults
+          })
+        });
+        
+        const data = await response.json();
+        const result = data.result;
+        
+        // Store result
+        stepResults[currentStepIndex] = result;
+        
+        // Show result
+        const resultDiv = document.getElementById('stepResult');
+        if (result.success) {
+          const actionName = formatActionName(step.action);
+          const resultMessage = result.message || 'Step completed successfully';
+          resultDiv.textContent = `✅ ${actionName}: ${resultMessage}`;
+          resultDiv.className = 'step-result';
+        } else {
+          resultDiv.textContent = `❌ Failed: ${result.message || 'Unknown error'}`;
+          resultDiv.className = 'step-result error';
+        }
+        resultDiv.style.display = 'block';
+        
+        // Show next actions
+        document.getElementById('stepActions').style.display = 'block';
+        
+        if (!result.success) {
+          showAlert('Step failed. You can try starting over.', 'error');
+        }
+        
+      } catch (error) {
+        const resultDiv = document.getElementById('stepResult');
+        resultDiv.textContent = `❌ Error: ${error.message}`;
+        resultDiv.className = 'step-result error';
+        resultDiv.style.display = 'block';
+        document.getElementById('stepActions').style.display = 'block';
+        showAlert('Error executing step: ' + error.message, 'error');
+      } finally {
+        isProcessing = false;
+      }
+    }
+    
+    function continueToNextStep() {
+      const steps = currentActionPlan.complete_plan || [{ action: currentActionPlan.action }];
+      
+      if (currentStepIndex + 1 < steps.length) {
+        currentStepIndex++;
+        const nextStep = steps[currentStepIndex];
+        const nextActionName = formatActionName(nextStep.action);
+        
+        document.getElementById('stepText').textContent = `Ready for Step ${currentStepIndex + 1}: ${nextActionName}`;
+        document.getElementById('stepResult').style.display = 'none';
+        document.getElementById('stepActions').innerHTML = 
+          '<button class="action-button" onclick="confirmStep(true)">✅ Execute Step ' + (currentStepIndex + 1) + '</button>' +
+          '<button class="action-button secondary" onclick="resetWorkflow()">❌ Cancel</button>';
+      } else {
+        showAlert('🎉 All steps completed successfully!', 'success');
+        resetWorkflow();
+      }
     }
     
     function getActionIcon(action) {
@@ -613,241 +716,17 @@
       return action.replace(/_/g, ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); });
     }
     
-    async function startWorkflow() {
-      if (!currentActionPlan || currentWorkflowState.isRunning) return;
-      
-      currentWorkflowState.isRunning = true;
-      currentWorkflowState.currentStep = 0;
-      
-      const startButton = document.getElementById('startButton');
-      const continueButton = document.getElementById('continueButton');
-      
-      startButton.style.display = 'none';
-      
-      await executeCurrentStep();
-    }
-    
-    async function continueWorkflow() {
-      if (!currentWorkflowState.isRunning) return;
-      
-      currentWorkflowState.currentStep++;
-      await executeCurrentStep();
-    }
-    
-    async function executeCurrentStep() {
-      const stepIndex = currentWorkflowState.currentStep;
-      const steps = currentActionPlan.complete_plan || [{ action: currentActionPlan.action, parameters: currentActionPlan.parameters }];
-      
-      if (stepIndex >= steps.length) {
-        // Workflow completed
-        showAlert('🎉 Workflow completed successfully!', 'success');
-        currentWorkflowState.isRunning = false;
-        document.getElementById('continueButton').style.display = 'none';
-        return;
-      }
-      
-      const currentStep = steps[stepIndex];
-      
-      // Update UI to show current step as active
-      updateStepStatus(stepIndex, 'active', 'processing');
-      
-      try {
-        // Create action plan for current step
-        // For the first step, use the main action parameters
-        // For subsequent steps, let the backend handle parameter passing
-        let stepParameters = {};
-        if (stepIndex === 0) {
-          stepParameters = currentActionPlan.parameters || {};
-        } else {
-          stepParameters = currentStep.parameters || {};
-        }
-        
-        const stepActionPlan = {
-          action: currentStep.action,
-          parameters: stepParameters,
-          complete_plan: currentActionPlan.complete_plan,
-          confidence: currentActionPlan.confidence || 0.9
-        };
-        
-        console.log('🔍 V2 UI - Step ' + stepIndex + ' action plan:', JSON.stringify(stepActionPlan, null, 2));
-        
-        // Execute the step
-        const response = await fetch('/api/orchestrator/execute-step', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            actionPlan: stepActionPlan,
-            stepIndex: stepIndex,
-            previousResults: currentWorkflowState.stepResults || []
-          })
-        });
-        
-        if (!response.ok) {
-          throw new Error('HTTP error! status: ' + response.status);
-        }
-        
-        const data = await response.json();
-        const result = data.result;
-        
-        // Store result
-        currentWorkflowState.stepResults[stepIndex] = result;
-        
-        if (result.success) {
-          updateStepStatus(stepIndex, 'completed', 'completed');
-          displayStepResult(stepIndex, result);
-          
-          // Show continue button if there are more steps
-          if (stepIndex < steps.length - 1) {
-            document.getElementById('continueButton').style.display = 'inline-block';
-          } else {
-            // Workflow completed
-            showAlert('🎉 Workflow completed successfully!', 'success');
-            currentWorkflowState.isRunning = false;
-          }
-        } else {
-          updateStepStatus(stepIndex, 'failed', 'failed');
-          displayStepResult(stepIndex, result);
-          showAlert('Step ' + (stepIndex + 1) + ' failed: ' + result.message, 'error');
-          currentWorkflowState.isRunning = false;
-        }
-        
-      } catch (error) {
-        updateStepStatus(stepIndex, 'failed', 'failed');
-        showAlert('Error executing step ' + (stepIndex + 1) + ': ' + error.message, 'error');
-        currentWorkflowState.isRunning = false;
-      }
-    }
-    
-    function updateStepStatus(stepIndex, stepClass, statusType) {
-      const stepDiv = document.getElementById('step-' + stepIndex);
-      const stepNumber = document.getElementById('step-number-' + stepIndex);
-      const stepStatus = document.getElementById('step-status-' + stepIndex);
-      
-      // Reset classes
-      stepDiv.className = 'workflow-step';
-      stepNumber.className = 'step-number';
-      
-      // Add new classes
-      stepDiv.classList.add(stepClass);
-      stepNumber.classList.add(stepClass);
-      
-      // Update status icon
-      let statusHtml = '';
-      switch (statusType) {
-        case 'processing':
-          statusHtml = '<div class="spinner"></div>';
-          break;
-        case 'completed':
-          statusHtml = '<span class="status-icon">✅</span>';
-          break;
-        case 'failed':
-          statusHtml = '<span class="status-icon">❌</span>';
-          break;
-        default:
-          statusHtml = '<span class="status-icon">⏳</span>';
-      }
-      
-      stepStatus.innerHTML = statusHtml;
-    }
-    
-    function displayStepResult(stepIndex, result) {
-      const stepResultDiv = document.getElementById('step-result-' + stepIndex);
-      const stepResultContent = document.getElementById('step-result-content-' + stepIndex);
-      
-      if (result.success && result.data) {
-        // Format the result data based on action type
-        const steps = currentActionPlan.complete_plan || [{ action: currentActionPlan.action }];
-        const action = steps[stepIndex].action;
-        
-        stepResultContent.innerHTML = formatActionResults(action, result.data);
-      } else {
-        stepResultContent.innerHTML = '<div class="alert alert-error">' + (result.message || 'No result data available') + '</div>';
-      }
-      
-      stepResultDiv.classList.add('visible');
-    }
-    
-    function formatActionResults(action, data) {
-      let formattedHtml = '';
-      
-      switch (action) {
-        case 'search_parts':
-          const actualData = data.data || data;
-          if (actualData.recommended_result && actualData.recommended_result.oem_part_number) {
-            formattedHtml = 
-              '<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">' +
-                '<h4 style="margin: 0 0 10px 0; color: #4caf50;">🔧 Part Found</h4>' +
-                '<p><strong>Equipment:</strong> ' + (actualData.query?.description || 'Unknown') + '</p>' +
-                '<p><strong>OEM Part Number:</strong> ' + actualData.recommended_result.oem_part_number + '</p>' +
-                '<p><strong>Description:</strong> ' + (actualData.recommended_result.description || 'N/A') + '</p>' +
-                '<p><strong>Confidence:</strong> ' + Math.round((actualData.recommended_result.confidence || 0) * 100) + '%</p>' +
-              '</div>';
-          } else {
-            formattedHtml = '<div class="alert alert-error">🔧 No parts found matching the search criteria.</div>';
-          }
-          break;
-          
-        case 'search_suppliers':
-          const supplierData = data.data || data;
-          if (supplierData.suppliers && supplierData.suppliers.length > 0) {
-            formattedHtml = 
-              '<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">' +
-                '<h4 style="margin: 0 0 15px 0; color: #4caf50;">🏪 Suppliers Found (' + supplierData.suppliers.length + ' results)</h4>';
-            
-            supplierData.suppliers.slice(0, 3).forEach(function(supplier, index) {
-              formattedHtml += 
-                '<div style="margin: 10px 0; padding: 10px; background: white; border-radius: 6px;">' +
-                  '<p><strong>' + (index + 1) + '. ' + (supplier.title || supplier.name || 'Unknown') + '</strong></p>' +
-                  '<p><strong>Domain:</strong> ' + (supplier.domain || 'Unknown') + '</p>' +
-                  (supplier.url ? '<p><strong>URL:</strong> <a href="' + supplier.url + '" target="_blank">' + supplier.url + '</a></p>' : '') +
-                  (supplier.snippet ? '<p><strong>Description:</strong> ' + supplier.snippet + '</p>' : '') +
-                '</div>';
-            });
-            formattedHtml += '</div>';
-          } else {
-            formattedHtml = '<div class="alert alert-error">🏪 No suppliers found for this part.</div>';
-          }
-          break;
-          
-        case 'send_email':
-          if (data.success !== false) {
-            formattedHtml = '<div class="alert alert-success">📧 Email sent successfully!</div>';
-          } else {
-            formattedHtml = '<div class="alert alert-error">📧 Failed to send email.</div>';
-          }
-          break;
-          
-        case 'send_sms':
-          if (data.success !== false) {
-            formattedHtml = '<div class="alert alert-success">💬 SMS sent successfully!</div>';
-          } else {
-            formattedHtml = '<div class="alert alert-error">💬 Failed to send SMS.</div>';
-          }
-          break;
-          
-        default:
-          if (data && typeof data === 'object') {
-            formattedHtml = '<pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; white-space: pre-wrap;">' + JSON.stringify(data, null, 2) + '</pre>';
-          } else {
-            formattedHtml = '<div class="alert alert-info">Action completed successfully.</div>';
-          }
-      }
-      
-      return formattedHtml;
-    }
+    // Legacy functions removed - using simplified text-based confirmation approach
     
     function resetWorkflow() {
       currentActionPlan = null;
-      currentWorkflowState = {
-        plan: null,
-        currentStep: 0,
-        stepResults: [],
-        isRunning: false
-      };
+      currentStepIndex = 0;
+      stepResults = [];
+      isProcessing = false;
       
-      document.getElementById('workflowContainer').classList.remove('visible');
-      document.getElementById('startButton').style.display = 'none';
-      document.getElementById('continueButton').style.display = 'none';
+      document.getElementById('planSection').style.display = 'none';
+      document.getElementById('stepSection').style.display = 'none';
+      document.getElementById('workflowContainer').style.display = 'none';
       document.getElementById('objectiveInput').value = '';
       document.getElementById('alertContainer').innerHTML = '';
     }

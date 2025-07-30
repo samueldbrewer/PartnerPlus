@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Agent - PartnerPlus</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <style>
+    body { 
+      font-family: 'Segoe UI', Arial, sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      background-color: #f8f9fa;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .header { 
+      background-color: #1976d2; 
+      color: white; 
+      padding: 15px 0; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+      flex-shrink: 0;
+    }
+    
+    .header-inner { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 0 20px; 
+    }
+    
+    .nav { 
+      display: flex; 
+      align-items: center;
+    }
+    
+    .nav h1 { 
+      margin: 0; 
+      margin-right: 30px; 
+      font-size: 24px; 
+      color: white;
+    }
+    
+    .nav a { 
+      color: white; 
+      text-decoration: none; 
+      padding: 8px 16px; 
+      margin-right: 10px; 
+      border-radius: 4px; 
+      transition: background-color 0.3s;
+    }
+    
+    .nav a:hover { 
+      background-color: rgba(255,255,255,0.1);
+    }
+    
+    .nav a.active { 
+      background-color: rgba(255,255,255,0.2);
+    }
+
+    /* Dropdown Styles */
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle { cursor: pointer; }
+    .dropdown-menu { 
+      display: none; 
+      position: absolute; 
+      background-color: white; 
+      min-width: 160px; 
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
+      z-index: 1; 
+      border-radius: 4px; 
+      top: 100%; 
+      left: 0; 
+    }
+    .dropdown-menu a { 
+      color: #333; 
+      padding: 12px 16px; 
+      text-decoration: none; 
+      display: block; 
+      margin: 0; 
+      border-radius: 0; 
+    }
+    .dropdown-menu a:hover { 
+      background-color: #f1f1f1; 
+      color: #333; 
+    }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown:hover .dropdown-toggle { background-color: rgba(255,255,255,0.1); }
+
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      height: calc(100vh - 100px);
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .message {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .message.user {
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .message.user .message-avatar {
+      background: #1976d2;
+      color: white;
+    }
+
+    .message.assistant .message-avatar {
+      background: #4caf50;
+      color: white;
+    }
+
+    .message.system .message-avatar {
+      background: #ff9800;
+      color: white;
+    }
+
+    .message-content {
+      max-width: 70%;
+      padding: 12px 16px;
+      border-radius: 18px;
+      white-space: pre-wrap;
+      line-height: 1.4;
+    }
+
+    .message.user .message-content {
+      background: #1976d2;
+      color: white;
+    }
+
+    .message.assistant .message-content {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .message.system .message-content {
+      background: #fff3e0;
+      color: #e65100;
+      border: 1px solid #ffcc02;
+    }
+
+    .input-section {
+      display: flex;
+      gap: 10px;
+      background: white;
+      padding: 15px;
+      border-radius: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    #messageInput {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 12px 16px;
+      font-size: 16px;
+      border-radius: 20px;
+      background: #f8f9fa;
+    }
+
+    #sendButton {
+      padding: 12px 24px;
+      background: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    #sendButton:hover {
+      background: #1565c0;
+    }
+
+    #sendButton:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      color: #666;
+      font-style: italic;
+      margin-bottom: 15px;
+    }
+
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      background: #666;
+      border-radius: 50%;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+
+    .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes typing {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    .welcome-message {
+      text-align: center;
+      color: #666;
+      margin: 40px 0;
+      font-size: 18px;
+    }
+
+    .examples {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .example-item {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+    }
+
+    .example-item:hover {
+      background: #e3f2fd;
+      border-color: #1976d2;
+    }
+
+    .example-item strong {
+      color: #1976d2;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    @media (max-width: 768px) {
+      .examples {
+        grid-template-columns: 1fr;
+      }
+      
+      .message-content {
+        max-width: 85%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner">
+      <div class="nav">
+        <h1>PartnerPlus</h1>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle active">Agents ▼</a>
+          <div class="dropdown-menu">
+            <a href="/">WO Agent</a>
+            <a href="/ai-agent-simple">AI Agent</a>
+            <a href="/ai-agent-mobile">Mobile Agent</a>
+            <a href="/ai-agent">AI Agent v2</a>
+            <a href="/ai-agent-raw">Raw Output</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Tools ▼</a>
+          <div class="dropdown-menu">
+            <a href="/ai-chat">AI Chat</a>
+            <a href="/email">Email Service</a>
+            <a href="/sms">SMS Service</a>
+            <a href="/executor">Code Executor</a>
+            <a href="/purchase-agent">Purchase Agent</a>
+            <div style="border-top: 1px solid #ddd; margin: 5px 0;"></div>
+            <a href="/search-tools">Search Tools</a>
+            <a href="/api-docs">API Documentation</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-container">
+    <div class="chat-messages" id="chatMessages">
+      <div class="welcome-message">
+        <h2>🤖 AI Assistant</h2>
+        <p>I can help you with parts research, suppliers, emails, SMS, web searches, and more!</p>
+        
+        <div class="examples">
+          <div class="example-item" onclick="sendExample('Find suppliers for Henny Penny part 77575 and email the results to samueldbrewer@gmail.com')">
+            <strong>🔧➡️📧 Parts & Email</strong>
+            Find parts and email results
+          </div>
+          <div class="example-item" onclick="sendExample('Search the web for current commercial dishwasher prices')">
+            <strong>🔍 Web Search</strong>
+            Get current market information
+          </div>
+          <div class="example-item" onclick="sendExample('Check my email inbox for any urgent messages')">
+            <strong>📧 Email Check</strong>
+            Read recent emails
+          </div>
+          <div class="example-item" onclick="sendExample('Send an SMS to 5024456053 with pricing update')">
+            <strong>💬 SMS Alert</strong>
+            Send text messages
+          </div>
+        </div>
+      </div>
+      
+      <div class="typing-indicator" id="typingIndicator">
+        <div class="message-avatar">🤖</div>
+        <span>AI is thinking</span>
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-section">
+      <input type="text" id="messageInput" placeholder="Ask me anything..." />
+      <button id="sendButton" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    let conversationHistory = [];
+
+    function addMessage(role, content, isSystem = false) {
+      const messagesContainer = document.getElementById('chatMessages');
+      const welcome = messagesContainer.querySelector('.welcome-message');
+      if (welcome) welcome.style.display = 'none';
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${isSystem ? 'system' : role}`;
+      
+      const avatar = document.createElement('div');
+      avatar.className = 'message-avatar';
+      avatar.textContent = isSystem ? '⚙️' : (role === 'user' ? '👤' : '🤖');
+      
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'message-content';
+      contentDiv.textContent = content;
+      
+      messageDiv.appendChild(avatar);
+      messageDiv.appendChild(contentDiv);
+      messagesContainer.appendChild(messageDiv);
+      
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function showTyping(show) {
+      document.getElementById('typingIndicator').style.display = show ? 'flex' : 'none';
+      if (show) {
+        document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+      }
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+      if (!message) return;
+
+      const sendButton = document.getElementById('sendButton');
+      sendButton.disabled = true;
+      input.value = '';
+
+      // Add user message
+      addMessage('user', message);
+      conversationHistory.push({ role: 'user', content: message });
+
+      showTyping(true);
+
+      try {
+        const response = await fetch('/api/ai-agent-chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            message: message,
+            history: conversationHistory 
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.toolUsed) {
+          addMessage('assistant', data.toolMessage, true);
+        }
+        
+        addMessage('assistant', data.response);
+        conversationHistory.push({ role: 'assistant', content: data.response });
+
+      } catch (error) {
+        addMessage('assistant', 'Sorry, I encountered an error. Please try again.');
+        console.error('Error:', error);
+      } finally {
+        showTyping(false);
+        sendButton.disabled = false;
+      }
+    }
+
+    function sendExample(text) {
+      document.getElementById('messageInput').value = text;
+      sendMessage();
+    }
+
+    // Enter key sends message
+    document.getElementById('messageInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && !document.getElementById('sendButton').disabled) {
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>
