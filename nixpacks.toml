@@ -4,8 +4,8 @@ nixPkgs = ["nodejs_20", "npm-9_x", "python3", "python3Packages.pip", "python3Pac
 [phases.install]
 cmds = [
     "npm ci",
-    "pip install --upgrade pip setuptools wheel",
-    "cd manual-purchase-agent_20250513_125500_v15.6 && pip install -r requirements.txt"
+    "pip install --break-system-packages --upgrade pip setuptools wheel",
+    "cd manual-purchase-agent_20250513_125500_v15.6 && pip install --break-system-packages -r requirements.txt"
 ]
 
 [start]
