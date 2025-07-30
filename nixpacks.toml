@@ -1,3 +1,4 @@
+# Railway nixpacks configuration - Virtual Environment Approach v2
 [phases.setup]
 nixPkgs = ["nodejs_20", "npm-9_x", "python3", "python3Packages.pip", "python3Packages.virtualenv"]
 
