@@ -3,17 +3,20 @@
 # Start Railway deployment script
 echo "🚀 Starting PartnerPlus services on Railway..."
 
+# Activate virtual environment
+source /app/venv/bin/activate
+
 # Start Flask purchase agent service in background
 echo "🐍 Starting Flask purchase agent service..."
 cd manual-purchase-agent_20250513_125500_v15.6
 
 # Check if required modules are available
 echo "🔍 Checking Python environment..."
-python3 -c "import flask; print('✅ Flask is available')" || { echo "❌ Flask not found"; exit 1; }
-python3 -c "import openai; print('✅ OpenAI client is available')" || { echo "❌ OpenAI not found"; exit 1; }
+python -c "import flask; print('✅ Flask is available')" || { echo "❌ Flask not found"; exit 1; }
+python -c "import openai; print('✅ OpenAI client is available')" || { echo "❌ OpenAI not found"; exit 1; }
 
 # Start Flask service
-python3 app.py &
+python app.py &
 FLASK_PID=$!
 
 # Wait a moment for Flask to start

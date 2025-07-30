@@ -1,12 +1,13 @@
 [phases.setup]
-nixPkgs = ["nodejs_20", "npm-9_x", "python3", "python3Packages.pip", "python3Packages.setuptools", "python3Packages.wheel"]
+nixPkgs = ["nodejs_20", "npm-9_x", "python3", "python3Packages.pip", "python3Packages.virtualenv"]
 
 [phases.install]
 cmds = [
     "npm ci",
-    "pip install --break-system-packages --upgrade pip setuptools wheel",
-    "cd manual-purchase-agent_20250513_125500_v15.6 && pip install --break-system-packages -r requirements.txt"
+    "python3 -m venv /app/venv",
+    "source /app/venv/bin/activate && pip install --upgrade pip setuptools wheel",
+    "source /app/venv/bin/activate && cd manual-purchase-agent_20250513_125500_v15.6 && pip install -r requirements.txt"
 ]
 
 [start]
-cmd = "chmod +x start-railway.sh && ./start-railway.sh"
+cmd = "source /app/venv/bin/activate && chmod +x start-railway.sh && ./start-railway.sh"
