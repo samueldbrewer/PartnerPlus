@@ -1,11 +1,11 @@
 [phases.setup]
-nixPkgs = ["nodejs_20", "npm-9_x", "python3", "python3Packages.pip", "python3Packages.virtualenv"]
+nixPkgs = ["nodejs_20", "npm-9_x", "python3", "python3Packages.pip", "python3Packages.setuptools", "python3Packages.wheel"]
 
 [phases.install]
 cmds = [
     "npm ci",
-    "python3 -m pip install --upgrade pip",
-    "cd manual-purchase-agent_20250513_125500_v15.6 && python3 -m pip install -r requirements.txt"
+    "pip install --upgrade pip setuptools wheel",
+    "cd manual-purchase-agent_20250513_125500_v15.6 && pip install -r requirements.txt"
 ]
 
 [start]

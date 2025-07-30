@@ -10,6 +10,7 @@ cd manual-purchase-agent_20250513_125500_v15.6
 # Check if required modules are available
 echo "🔍 Checking Python environment..."
 python3 -c "import flask; print('✅ Flask is available')" || { echo "❌ Flask not found"; exit 1; }
+python3 -c "import openai; print('✅ OpenAI client is available')" || { echo "❌ OpenAI not found"; exit 1; }
 
 # Start Flask service
 python3 app.py &
