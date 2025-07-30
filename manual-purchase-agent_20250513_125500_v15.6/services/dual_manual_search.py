@@ -382,7 +382,7 @@ def ai_manual_arbitrator(serpapi_results, gpt_results, make, model, year=None, m
         # Get arbitrator decision (WITHOUT web search)
         if USING_NEW_OPENAI_CLIENT:
             response = client.chat.completions.create(
-                model="gpt-4.1-nano",  # Use nano for arbitration, no web search needed
+                model="gpt-4o-mini",  # Use nano for arbitration, no web search needed
                 messages=[
                     {"role": "system", "content": "You are an expert AI arbitrator who analyzes different manual search results to select the most accurate and official equipment documentation. You do not have web search capabilities - you analyze only the provided search results to make your decision."},
                     {"role": "user", "content": arbitrator_prompt}
@@ -394,7 +394,7 @@ def ai_manual_arbitrator(serpapi_results, gpt_results, make, model, year=None, m
         else:
             import openai
             response = openai.ChatCompletion.create(
-                model="gpt-4.1-nano",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are an expert AI arbitrator who analyzes different manual search results to select the most accurate and official equipment documentation. You do not have web search capabilities - you analyze only the provided search results to make your decision."},
                     {"role": "user", "content": arbitrator_prompt}
@@ -562,7 +562,7 @@ def ai_manual_arbitrator_multiple(serpapi_results, gpt_results, make, model, yea
         # Get arbitrator ranking (WITHOUT web search)
         if USING_NEW_OPENAI_CLIENT:
             response = client.chat.completions.create(
-                model="gpt-4.1-nano",  # Use nano for arbitration, no web search needed
+                model="gpt-4o-mini",  # Use nano for arbitration, no web search needed
                 messages=[
                     {"role": "system", "content": "You are an expert AI arbitrator who ranks technical documentation search results to help users find the most relevant and high-quality equipment manuals. You analyze search results to provide comprehensive rankings based on relevance, authenticity, and usefulness."},
                     {"role": "user", "content": arbitrator_prompt}
@@ -574,7 +574,7 @@ def ai_manual_arbitrator_multiple(serpapi_results, gpt_results, make, model, yea
         else:
             import openai
             response = openai.ChatCompletion.create(
-                model="gpt-4.1-nano",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are an expert AI arbitrator who ranks technical documentation search results to help users find the most relevant and high-quality equipment manuals. You analyze search results to provide comprehensive rankings based on relevance, authenticity, and usefulness."},
                     {"role": "user", "content": arbitrator_prompt}

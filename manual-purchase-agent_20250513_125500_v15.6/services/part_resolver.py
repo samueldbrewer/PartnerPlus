@@ -181,7 +181,7 @@ def call_gpt_for_analysis(prompt, max_tokens=32768):
     try:
         if USING_NEW_OPENAI_CLIENT:
             response = client.chat.completions.create(
-                model="gpt-4.1-nano",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a technical assistant that extracts specific information from text. Using GPT-4.1-Nano for precise analysis."},
                     {"role": "user", "content": prompt}
@@ -193,7 +193,7 @@ def call_gpt_for_analysis(prompt, max_tokens=32768):
         else:
             import openai
             response = openai.ChatCompletion.create(
-                model="gpt-4.1-nano",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a technical assistant that extracts specific information from text. Using GPT-4.1-Nano for precise analysis."},
                     {"role": "user", "content": prompt}
@@ -660,7 +660,7 @@ def find_part_with_dual_search(description, make=None, model=None, year=None, by
         # Generate completion with GPT-4.1-Nano - handle both client versions
         if USING_NEW_OPENAI_CLIENT:
             ai_response = client.chat.completions.create(
-                model="gpt-4.1-nano",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a parts specialist who analyzes search results to find precise OEM part numbers. You carefully extract information from search results and only provide accurate manufacturer part numbers that you find in the provided sources. You MUST ensure the part type matches what was requested - if user asks for a fan, find a fan, not some other component. Using GPT-4.1-Nano for comprehensive analysis."},
                     {"role": "user", "content": prompt}
@@ -673,7 +673,7 @@ def find_part_with_dual_search(description, make=None, model=None, year=None, by
         else:
             import openai
             ai_response = openai.ChatCompletion.create(
-                model="gpt-4.1-nano",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a parts specialist who analyzes search results to find precise OEM part numbers. You carefully extract information from search results and only provide accurate manufacturer part numbers that you find in the provided sources. You MUST ensure the part type matches what was requested - if user asks for a fan, find a fan, not some other component. Using GPT-4.1-Nano for comprehensive analysis."},
                     {"role": "user", "content": prompt}
@@ -865,7 +865,7 @@ def find_part_in_manuals(description, make=None, model=None, year=None, bypass_c
         # Get GPT manual analysis
         if USING_NEW_OPENAI_CLIENT:
             ai_response = client.chat.completions.create(
-                model="gpt-4.1-nano",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a technical manual specialist who extracts precise OEM part numbers from service manuals and technical documentation. You carefully analyze manual content and only extract verified part numbers from official sources. Using GPT-4.1-Nano for comprehensive manual analysis."},
                     {"role": "user", "content": prompt}
@@ -877,7 +877,7 @@ def find_part_in_manuals(description, make=None, model=None, year=None, bypass_c
         else:
             import openai
             ai_response = openai.ChatCompletion.create(
-                model="gpt-4.1-nano",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a technical manual specialist who extracts precise OEM part numbers from service manuals and technical documentation. You carefully analyze manual content and only extract verified part numbers from official sources. Using GPT-4.1-Nano for comprehensive manual analysis."},
                     {"role": "user", "content": prompt}
@@ -1075,7 +1075,7 @@ def find_similar_parts(description, make=None, model=None, year=None, failed_par
         # Get GPT similar parts analysis
         if USING_NEW_OPENAI_CLIENT:
             ai_response = client.chat.completions.create(
-                model="gpt-4.1-nano",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a parts compatibility specialist who identifies similar and interchangeable parts from search results. You carefully analyze compatibility information and provide accurate part alternatives. Using GPT-4.1-Nano for comprehensive compatibility analysis."},
                     {"role": "user", "content": prompt}
@@ -1087,7 +1087,7 @@ def find_similar_parts(description, make=None, model=None, year=None, failed_par
         else:
             import openai
             ai_response = openai.ChatCompletion.create(
-                model="gpt-4.1-nano",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a parts compatibility specialist who identifies similar and interchangeable parts from search results. You carefully analyze compatibility information and provide accurate part alternatives. Using GPT-4.1-Nano for comprehensive compatibility analysis."},
                     {"role": "user", "content": prompt}
@@ -1224,7 +1224,7 @@ def validate_part_with_serpapi(part_number, make=None, model=None, original_desc
         # Get GPT validation analysis
         if USING_NEW_OPENAI_CLIENT:
             ai_response = client.chat.completions.create(
-                model="gpt-4.1-nano",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a parts validation specialist who analyzes search results to verify OEM part numbers. You carefully evaluate evidence from search results and only validate parts with solid proof. Using GPT-4.1-Nano for comprehensive validation analysis."},
                     {"role": "user", "content": prompt}
@@ -1236,7 +1236,7 @@ def validate_part_with_serpapi(part_number, make=None, model=None, original_desc
         else:
             import openai
             ai_response = openai.ChatCompletion.create(
-                model="gpt-4.1-nano",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are a parts validation specialist who analyzes search results to verify OEM part numbers. You carefully evaluate evidence from search results and only validate parts with solid proof. Using GPT-4.1-Nano for comprehensive validation analysis."},
                     {"role": "user", "content": prompt}

@@ -408,7 +408,7 @@ def ai_supplier_arbitrator(serpapi_results, gpt_results, part_number, part_descr
         # Get arbitrator decision (WITHOUT web search)
         if USING_NEW_OPENAI_CLIENT:
             response = client.chat.completions.create(
-                model="gpt-4.1-nano",  # Use nano for arbitration, no web search needed
+                model="gpt-4o-mini",  # Use nano for arbitration, no web search needed
                 messages=[
                     {"role": "system", "content": "You are an expert AI arbitrator who analyzes different supplier search results to select the most reliable and appropriate supplier for parts procurement. You do not have web search capabilities - you analyze only the provided search results to make your decision."},
                     {"role": "user", "content": arbitrator_prompt}
@@ -420,7 +420,7 @@ def ai_supplier_arbitrator(serpapi_results, gpt_results, part_number, part_descr
         else:
             import openai
             response = openai.ChatCompletion.create(
-                model="gpt-4.1-nano",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are an expert AI arbitrator who analyzes different supplier search results to select the most reliable and appropriate supplier for parts procurement. You do not have web search capabilities - you analyze only the provided search results to make your decision."},
                     {"role": "user", "content": arbitrator_prompt}
