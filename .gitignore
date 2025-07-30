@@ -7,3 +7,47 @@ venv/
 __pycache__/
 *.pyc
 temp/
+
+# Database files
+*.db
+instance/
+
+# Large media files  
+recordings/
+*.webm
+screenshots/
+*.png
+*.jpg
+*.jpeg
+
+# Test and debug files
+*debug*.json
+*test*.json
+query*_response.json
+*_result.json
+temp-vars-*.json
+
+# Backup directories
+*copy/
+*backup*/
+*backup*/
+
+# Virtual environments
+venv*/
+__pycache__/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+temp/
+tmp/
