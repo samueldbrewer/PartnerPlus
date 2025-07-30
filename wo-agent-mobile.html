@@ -848,13 +848,17 @@
         const activityContext = getActivityLogContext();
         const activityContextText = activityContext.length > 0 ? `
 
-COMPLETED ACTIONS & RESULTS:
+COMPLETED ACTIONS & DETAILED RESULTS:
 ${activityContext.map((item, index) => `
 ${index + 1}. ${item.timestamp} - ${item.summary}
-   Raw API Response: ${item.rawData}
+   Complete API Response Data: ${item.rawData}
 `).join('')}
 
-Based on the completed actions above, generate intelligent FOLLOW-UP actions that build on what has already been discovered.` : '';
+CRITICAL: Analyze the completed actions above and their detailed API responses to generate INTELLIGENT NEXT STEPS that:
+- Use specific part numbers, supplier info, prices, and contact details found in the raw data
+- Reference specific manual pages, error codes, or technical details discovered
+- Build logically on what was already accomplished (don't repeat completed work)
+- Progress the repair workflow toward resolution` : '';
 
         const response = await fetch('/api/chat', {
           method: 'POST',
@@ -884,17 +888,36 @@ AVAILABLE API TOOLS TO USE:
 - /api/sms/send - Send urgent alerts or assignments
 - /api/orchestrator/objective - Create multi-step workflows
 
-Generate actions that intelligently use this work order data:
-- For parts resolution: Generate SEPARATE actions for EACH individual part (e.g., "Resolve thermocouple part number", "Resolve control board part number")
-- SUPPLIER SEARCH RULE: ONLY recommend supplier searches if explicit part numbers (like "369194", "B3900704", "831250") are already found in the WO context or activity log
-- ${isFollowUp ? 'Build on completed actions - use found part numbers for supplier searches, use manual links for specific troubleshooting, etc.' : 'Mix random actions: resolve parts, find manuals, send tech/customer updates - NO strict order'}
-- Reference actual customer/technician names and contact info
-- Use equipment make/model for targeted searches
-- Consider location for service provider searches
-- Be contextually relevant to the actual issue described
-- ${isFollowUp ? 'Do NOT repeat actions that have already been completed' : ''}
+${isFollowUp ? 
+`FOLLOW-UP ACTION GENERATION RULES:
+1. LEVERAGE COMPLETED WORK: Extract specific part numbers, prices, supplier names, manual references, and technical details from the completed actions above
+2. LOGICAL NEXT STEPS: Generate actions that logically follow from discoveries (e.g., if part found → search suppliers, if manual found → reference specific pages, if suppliers found → compare prices)
+3. USE SPECIFIC DATA: Reference exact part numbers, supplier names, prices, manual page numbers, error codes from the raw API responses
+4. AVOID REPETITION: Never suggest actions that duplicate completed work
+5. PROGRESS WORKFLOW: Move toward order placement, scheduling, customer communication, or technical resolution
 
-Format: Simple numbered list, 10 words or less per action.`
+EXAMPLES OF INTELLIGENT FOLLOW-UP ACTIONS:
+- "Compare suppliers for thermocouple 00-920883-00003 and send quote to Clara"
+- "Use service manual page 15 to troubleshoot E03 error code"  
+- "Order heating element from WebstaurantStore ($47.99) for next-day delivery"
+- "Schedule callback with technician after parts arrive"
+- "Email Clara Thompson repair timeline and cost estimate"` 
+: 
+`INITIAL ACTION GENERATION RULES:
+1. SMART PRIORITIZATION: Start with part resolution for suspected parts, then manuals for troubleshooting
+2. CONTEXT AWARENESS: Use actual equipment make/model, customer names, technician info, and service notes
+3. VARIETY: Mix part resolution, manual searches, and communication actions
+4. NO SUPPLIER SEARCHES: Only suggest supplier searches if explicit part numbers are available
+5. RELEVANCE: All actions must directly relate to the reported issue and suspected parts
+
+GENERATE DIVERSE ACTIONS LIKE:
+- "Resolve [specific part] part number for [exact equipment model]"
+- "Find service manual for [equipment] to diagnose [error code/symptom]"  
+- "Send status update to [customer name] about [specific issue]"
+- "Search for [equipment] troubleshooting guides"
+- "Find local service providers for [equipment type] in [location]"`}
+
+Format: Concise action statements, 8-12 words each.`
           })
         });
 
