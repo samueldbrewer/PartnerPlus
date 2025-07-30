@@ -145,4 +145,6 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 7777)))
+    # Use FLASK_PORT for Flask service, default to 7777 (not the general PORT env var)
+    flask_port = int(os.environ.get('FLASK_PORT', 7777))
+    app.run(host='0.0.0.0', port=flask_port)
