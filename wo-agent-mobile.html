@@ -864,7 +864,7 @@ CRITICAL: Analyze the completed actions above and their detailed API responses t
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            message: `Generate ${isFollowUp ? getCurrentActionGap() : '4'} intelligent recommended actions for this work order using available API tools:
+            message: `Generate exactly ${isFollowUp ? getCurrentActionGap() : '4'} intelligent recommended actions for this work order using available API tools:
 
 WORK ORDER CONTEXT:
 Equipment: ${currentWorkOrder.equipment}
@@ -948,8 +948,16 @@ Format: Concise action statements, 8-12 words each.`
       const actions = [];
       
       lines.forEach(line => {
-        const cleanLine = line.replace(/^\d+\.?\s*|\*\s*|-\s*/g, '').trim();
-        if (cleanLine && cleanLine.length > 10) {
+        // Clean up markdown formatting, arrows, and other unwanted characters
+        const cleanLine = line
+          .replace(/^\d+\.?\s*|\*\s*|-\s*/g, '') // Remove bullets and numbers
+          .replace(/^▶\s*/g, '') // Remove arrow markers
+          .replace(/^\>\s*/g, '') // Remove quote markers
+          .replace(/^Here are.*actions?:?/i, '') // Remove intro text
+          .replace(/If you'd like to proceed.*$/i, '') // Remove outro text
+          .trim();
+          
+        if (cleanLine && cleanLine.length > 10 && !cleanLine.match(/^(Here|If)/i)) {
           // Determine action type based on keywords
           let type = 'general';
           const lowerLine = cleanLine.toLowerCase();
@@ -1310,8 +1318,8 @@ PartnerPlus Service Team`;
       updateCounts();
       
       // Auto-generate follow-up actions immediately when less than 4 actions remain
-      const currentActionCount = document.querySelectorAll('.mobile-action-btn').length;
-      if (currentActionCount < 4) { // Trigger when less than 4 actions remain
+      const actionGap = getCurrentActionGap();
+      if (actionGap > 0) { // Only generate if we need actions to reach exactly 4
         // Generate immediately without delay
         generateActionRecommendations(true); // Generate follow-up actions
       }
@@ -1375,7 +1383,8 @@ If no useful links or specific data, just summarize the key finding briefly.`;
     function getCurrentActionGap() {
       const currentCount = document.querySelectorAll('.mobile-action-btn').length;
       const targetCount = 4;
-      return Math.max(1, targetCount - currentCount); // Always generate at least 1, up to maintain target of 4
+      const gap = targetCount - currentCount;
+      return Math.max(0, gap); // Only generate what's needed to reach exactly 4, never exceed
     }
     
     function getActivityLogContext() {

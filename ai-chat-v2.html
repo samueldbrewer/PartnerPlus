@@ -6,6 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
+  <!-- Cache buster: 2025-07-30-v2 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
@@ -29,6 +30,7 @@
       padding: 0; 
       background-color: var(--secondary-color);
       height: 100vh;
+      height: 100dvh; /* Dynamic viewport height for iOS */
       display: flex;
       flex-direction: column;
     }
@@ -76,6 +78,26 @@
       display: flex;
       align-items: center;
       gap: 15px;
+    }
+
+    .info-button {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .info-button:hover {
+      background: rgba(255, 255, 255, 0.3);
     }
 
     .nav-button {
@@ -128,42 +150,7 @@
       overflow: hidden;
     }
 
-    .chat-header {
-      background: var(--secondary-color);
-      padding: 15px 20px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      justify-content: space-between;
-    }
 
-    .info-button {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background-color 0.2s;
-    }
-
-    .info-button:hover {
-      background: #1565c0;
-    }
-
-    .status-indicator {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--success-color);
-    }
 
     .chat-messages {
       flex: 1;
@@ -353,6 +340,9 @@
       padding: 20px;
       border-top: 1px solid var(--border-color);
       background: white;
+      position: sticky;
+      bottom: 0;
+      z-index: 100;
     }
 
     .input-group {
@@ -820,6 +810,7 @@
         <h1>PartnerGPT</h1>
         <div class="nav-center">Chat</div>
         <div class="nav-links">
+          <button class="info-button" id="infoButton">i</button>
           <a href="/wo-agent-mobile" class="nav-button">WO</a>
         </div>
       </div>
@@ -828,11 +819,6 @@
 
   <div class="chat-container">
     <div class="chat-main">
-      <div class="chat-header">
-        <div class="status-indicator"></div>
-        <span></span>
-        <button class="info-button" id="infoButton">i</button>
-      </div>
 
       <div class="chat-messages" id="chatMessages">
         <div class="message assistant">
@@ -1274,8 +1260,34 @@ Always be helpful, accurate, and suggest the most appropriate tools for the user
           // Show executing status
           this.addMessage('system', 'Executing API query...');
           
-          // Execute the query directly using eval to handle the complete fetch chain
-          const result = await eval(query.replace(/\.then\(data => console\.log\(data\)\)/, '.then(data => data)'));
+          // Extract the URL and data from the query instead of using eval
+          let result;
+          
+          if (query.includes('/api/purchase-agent/equipment-image')) {
+            // Extract make and model from the query
+            const makeMatch = query.match(/make:\s*['"]([^'"]+)['"]/);
+            const modelMatch = query.match(/model:\s*['"]([^'"]+)['"]/);
+            
+            if (makeMatch && modelMatch) {
+              const make = makeMatch[1];
+              const model = modelMatch[1];
+              
+              // Make direct fetch call with proper JSON parsing
+              const response = await fetch('/api/purchase-agent/equipment-image', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ make: make, model: model })
+              });
+              
+              result = await response.json();
+            } else {
+              result = { error: 'Could not extract make/model from query' };
+            }
+          } else {
+            // Fallback to eval for other queries
+            const modifiedQuery = query.replace(/\.then\(data => console\.log\(data\)\)/, '.then(data => data)');
+            result = await eval(modifiedQuery);
+          }
           
           // Remove the executing message
           const messages = this.chatMessages.querySelectorAll('.message');
@@ -1287,11 +1299,44 @@ Always be helpful, accurate, and suggest the most appropriate tools for the user
           // Format the result message based on the response
           let resultMessage = 'Query executed successfully!\n\n**API Response:**\n';
           
-          if (result && typeof result === 'object') {
-            resultMessage += `\`\`\`json\n${JSON.stringify(result, null, 2)}\n\`\`\``;
-            
-            // Add specific interpretation based on the endpoint
-            if (result.success && result.parts) {
+          try {
+            if (result && typeof result === 'object') {
+              resultMessage += `\`\`\`json\n${JSON.stringify(result, null, 2)}\n\`\`\``;
+              
+              // Add specific interpretation based on the endpoint
+              if (result.success && result.image && result.equipment_make) {
+              // Equipment image response
+              resultMessage += `\n\n**Found Equipment Image:**\n`;
+              resultMessage += `**Equipment:** ${result.equipment_make} ${result.equipment_model}\n`;
+              resultMessage += `**Confidence:** ${Math.round((result.image.confidence || 0) * 100)}%\n`;
+              if (result.image.title) resultMessage += `**Title:** ${result.image.title}\n`;
+              if (result.image.source) resultMessage += `**Source:** ${result.image.source}\n`;
+              if (result.total_images_found) resultMessage += `**Images Analyzed:** ${result.ai_analyzed_count} of ${result.total_images_found} found\n`;
+              if (result.image.reasoning) resultMessage += `**AI Reasoning:** ${result.image.reasoning}\n`;
+              
+              // Display the image
+              if (result.image.url) {
+                resultMessage += `\n![${result.image.title || 'Equipment Image'}](${result.image.url})\n`;
+                resultMessage += `[View Full Size](${result.image.url})\n`;
+              }
+            } else if (result.success && result.image && result.part_name) {
+              // Part image response
+              resultMessage += `\n\n**Found Part Image:**\n`;
+              resultMessage += `**Part:** ${result.part_name}\n`;
+              resultMessage += `**Equipment:** ${result.equipment_make} ${result.equipment_model}\n`;
+              if (result.oem_number) resultMessage += `**OEM Number:** ${result.oem_number}\n`;
+              resultMessage += `**Confidence:** ${Math.round((result.image.confidence || 0) * 100)}%\n`;
+              if (result.image.title) resultMessage += `**Title:** ${result.image.title}\n`;
+              if (result.image.source) resultMessage += `**Source:** ${result.image.source}\n`;
+              if (result.total_images_found) resultMessage += `**Images Analyzed:** ${result.ai_analyzed_count} of ${result.total_images_found} found\n`;
+              if (result.image.reasoning) resultMessage += `**AI Reasoning:** ${result.image.reasoning}\n`;
+              
+              // Display the image
+              if (result.image.url) {
+                resultMessage += `\n![${result.image.title || 'Part Image'}](${result.image.url})\n`;
+                resultMessage += `[View Full Size](${result.image.url})\n`;
+              }
+            } else if (result.success && result.parts) {
               resultMessage += `\n\n**Found ${result.parts.length} part(s):**\n`;
               result.parts.forEach(part => {
                 resultMessage += `- **${part.partNumber}** - ${part.description}\n`;
@@ -1308,8 +1353,12 @@ Always be helpful, accurate, and suggest the most appropriate tools for the user
             } else if (result.message) {
               resultMessage += `\n\n**Message:** ${result.message}`;
             }
-          } else {
-            resultMessage += `\`\`\`\n${result}\n\`\`\``;
+            } else {
+              resultMessage += `\`\`\`\n${result}\n\`\`\``;
+            }
+          } catch (error) {
+            console.error('JavaScript error in response processing:', error);
+            resultMessage += `\n\n**ERROR:** ${error.message}`;
           }
           
           // Add result to chat as a system message
