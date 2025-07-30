@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Search Tools - PartnerPlus</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .nav { display: flex; align-items: center; }
+    .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; color: white; }
+    .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
+    .nav a:hover { background-color: rgba(255,255,255,0.1); }
+    .nav a.active { background-color: rgba(255,255,255,0.2); }
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle { cursor: pointer; }
+    .dropdown-menu { display: none; position: absolute; background-color: white; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; border-radius: 4px; top: 100%; left: 0; }
+    .dropdown-menu a { color: #333; padding: 12px 16px; text-decoration: none; display: block; margin: 0; border-radius: 0; }
+    .dropdown-menu a:hover { background-color: #f1f1f1; color: #333; }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown:hover .dropdown-toggle { background-color: rgba(255,255,255,0.1); }
+    .content { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px 20px; }
+    
+    .search-section { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+    .search-section h2 { margin: 0 0 20px 0; color: #1976d2; font-size: 20px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+    input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+    textarea { min-height: 80px; resize: vertical; }
+    button { padding: 12px 24px; background-color: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; }
+    button:hover { background-color: #1565c0; }
+    .results { margin-top: 20px; padding: 15px; background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner">
+      <div class="nav">
+        <h1>PartnerPlus</h1>
+        <a href="/">WO Agent</a>
+        <a href="/ai-agent">AI Agent</a>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle active">Tools ▼</a>
+          <div class="dropdown-menu">
+            <a href="/ai-chat">AI Chat</a>
+            <a href="/email">Email Service</a>
+            <a href="/sms">SMS Service</a>
+            <a href="/executor">Code Executor</a>
+            <a href="/purchase-agent">Purchase Agent</a>
+            <div style="border-top: 1px solid #ddd; margin: 5px 0;"></div>
+            <a href="/search-tools">Search Tools</a>
+          </div>
+        </div>
+        <a href="/ai-agent-raw">Raw Output</a>
+        <a href="/ai-agent-v1">v1 Backup</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1>🔍 Search Tools</h1>
+    <p>Test page to verify the search tools interface is working.</p>
+    
+    <div class="search-section">
+      <h2>🧠 AI Web Search Test</h2>
+      <form id="testForm">
+        <div class="form-group">
+          <label for="testQuery">Test Search Query:</label>
+          <textarea id="testQuery" placeholder="Enter a test search query...">Hobart dishwasher parts</textarea>
+        </div>
+        <button type="submit">Test AI Search</button>
+      </form>
+      <div id="testResults" class="results" style="display: none;">
+        <h3>Results will appear here</h3>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('testForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const query = document.getElementById('testQuery').value.trim();
+      const resultsDiv = document.getElementById('testResults');
+      
+      if (!query) {
+        resultsDiv.innerHTML = '<p style="color: red;">Please enter a search query</p>';
+        resultsDiv.style.display = 'block';
+        return;
+      }
+      
+      resultsDiv.innerHTML = '<p>Testing search functionality with query: ' + query + '</p>';
+      resultsDiv.style.display = 'block';
+      
+      // Test the API endpoint
+      fetch('/api/purchase-agent/search/web', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: query,
+          maxResults: 5,
+          includeAnalysis: true
+        })
+      })
+      .then(response => {
+        resultsDiv.innerHTML += '<p>API Response Status: ' + response.status + '</p>';
+        return response.json();
+      })
+      .then(data => {
+        resultsDiv.innerHTML += '<p>API Response Data:</p><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+      })
+      .catch(error => {
+        resultsDiv.innerHTML += '<p style="color: red;">Error: ' + error.message + '</p>';
+      });
+    });
+  </script>
+</body>
+</html>

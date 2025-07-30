@@ -1293,10 +1293,10 @@ def save_part_match(description, oem_part_number, manufacturer, detailed_descrip
             
             # Create new part entry
             new_part = Part(
-                description=description,
+                generic_description=description,
                 oem_part_number=oem_part_number,
                 manufacturer=manufacturer or "Unknown",
-                detailed_description=detailed_description or description
+                description=detailed_description or description
             )
             
             # Add alternate part numbers if provided

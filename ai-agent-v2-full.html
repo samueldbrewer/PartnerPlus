@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Agent v2 - Visual Workflow - PartnerPlus</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <style>
+    body { 
+      font-family: 'Segoe UI', Arial, sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      background-color: #f8f9fa;
+    }
+    
+    .header { 
+      background-color: #1976d2; 
+      color: white; 
+      padding: 15px 0; 
+      margin-bottom: 30px; 
+      width: 100%; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    }
+    
+    .header-inner { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 0 20px; 
+    }
+    
+    .nav { 
+      display: flex; 
+      align-items: center;
+    }
+    
+    .nav h1 { 
+      margin: 0; 
+      margin-right: 30px; 
+      font-size: 24px; 
+      color: white;
+    }
+    
+    .nav a { 
+      color: white; 
+      text-decoration: none; 
+      padding: 8px 16px; 
+      margin-right: 10px; 
+      border-radius: 4px; 
+      transition: background-color 0.3s;
+    }
+    
+    .nav a:hover { 
+      background-color: rgba(255,255,255,0.1);
+    }
+    
+    .nav a.active { 
+      background-color: rgba(255,255,255,0.2);
+    }
+
+    /* Dropdown Styles */
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle { cursor: pointer; }
+    .dropdown-menu { 
+      display: none; 
+      position: absolute; 
+      background-color: white; 
+      min-width: 160px; 
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
+      z-index: 1; 
+      border-radius: 4px; 
+      top: 100%; 
+      left: 0; 
+    }
+    .dropdown-menu a { 
+      color: #333; 
+      padding: 12px 16px; 
+      text-decoration: none; 
+      display: block; 
+      margin: 0; 
+      border-radius: 0; 
+    }
+    .dropdown-menu a:hover { 
+      background-color: #f1f1f1; 
+      color: #333; 
+    }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown:hover .dropdown-toggle { background-color: rgba(255,255,255,0.1); }
+    
+    .content { 
+      max-width: 1400px; 
+      margin: 0 auto; 
+      padding: 0 20px 60px 20px; 
+    }
+    
+    .input-section {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    
+    .input-section h2 {
+      margin: 0 0 20px 0;
+      color: #1976d2;
+      font-size: 24px;
+      font-weight: 500;
+    }
+    
+    .input-container { 
+      display: flex; 
+      gap: 15px; 
+      align-items: stretch;
+    }
+    
+    #objectiveInput { 
+      flex: 1; 
+      padding: 15px 20px; 
+      border: 2px solid #e1e5e9; 
+      border-radius: 10px; 
+      font-size: 16px;
+      transition: border-color 0.3s;
+      resize: vertical;
+      min-height: 50px;
+    }
+    
+    #objectiveInput:focus {
+      outline: none;
+      border-color: #1976d2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+    }
+    
+    .plan-button, .action-button { 
+      padding: 15px 30px; 
+      background: linear-gradient(135deg, #1976d2, #1565c0); 
+      color: white; 
+      border: none; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s;
+      box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
+    }
+    
+    .plan-button:hover, .action-button:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4);
+    }
+    
+    .plan-button:disabled, .action-button:disabled { 
+      background: #ccc; 
+      cursor: not-allowed; 
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .workflow-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 30px;
+      margin-bottom: 30px;
+      display: none;
+    }
+    
+    .workflow-container.visible {
+      display: block;
+    }
+    
+    .workflow-header {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .workflow-header h3 {
+      margin: 0 0 10px 0;
+      color: #1976d2;
+      font-size: 22px;
+      font-weight: 500;
+    }
+    
+    .workflow-objective {
+      background: #f0f7ff;
+      padding: 15px 20px;
+      border-radius: 8px;
+      border-left: 4px solid #1976d2;
+      margin: 20px 0;
+      font-style: italic;
+      color: #1976d2;
+    }
+    
+    .workflow-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+    
+    .workflow-step {
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      padding: 25px;
+      transition: all 0.3s;
+      position: relative;
+    }
+    
+    .workflow-step.active {
+      border-color: #1976d2;
+      background: #f0f7ff;
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.15);
+    }
+    
+    .workflow-step.completed {
+      border-color: #4caf50;
+      background: #f1f8e9;
+    }
+    
+    .workflow-step.failed {
+      border-color: #f44336;
+      background: #ffebee;
+    }
+    
+    .step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+    
+    .step-title {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #6c757d;
+      font-size: 18px;
+    }
+    
+    .step-number.active {
+      background: #1976d2;
+      color: white;
+    }
+    
+    .step-number.completed {
+      background: #4caf50;
+      color: white;
+    }
+    
+    .step-number.failed {
+      background: #f44336;
+      color: white;
+    }
+    
+    .step-action {
+      font-size: 18px;
+      font-weight: 600;
+      color: #495057;
+    }
+    
+    .step-description {
+      color: #6c757d;
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+    
+    .step-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .status-icon {
+      font-size: 24px;
+    }
+    
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid #e9ecef;
+      border-top: 3px solid #1976d2;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .step-result {
+      margin-top: 20px;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+      display: none;
+    }
+    
+    .step-result.visible {
+      display: block;
+    }
+    
+    .result-header {
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #495057;
+    }
+    
+    .continue-section {
+      text-align: center;
+      margin-top: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      display: none;
+    }
+    
+    .continue-section.visible {
+      display: block;
+    }
+    
+    .workflow-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .examples {
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+    }
+    
+    .examples h3 {
+      margin: 0 0 20px 0;
+      color: #1976d2;
+      font-size: 20px;
+    }
+    
+    .example-item {
+      background: white;
+      margin: 12px 0;
+      padding: 15px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-left: 4px solid #1976d2;
+    }
+    
+    .example-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .example-item strong {
+      color: #1976d2;
+    }
+    
+    .alert {
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .alert-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner">
+      <div class="nav">
+        <h1>PartnerPlus</h1>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle active">Agents ▼</a>
+          <div class="dropdown-menu">
+            <a href="/">WO Agent</a>
+            <a href="/ai-agent">AI Agent v2</a>
+            <a href="/ai-agent-raw">Raw Output</a>
+            <a href="/ai-agent-v1">v1 Backup</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Tools ▼</a>
+          <div class="dropdown-menu">
+            <a href="/ai-chat">AI Chat</a>
+            <a href="/email">Email Service</a>
+            <a href="/sms">SMS Service</a>
+            <a href="/executor">Code Executor</a>
+            <a href="/purchase-agent">Purchase Agent</a>
+            <div style="border-top: 1px solid #ddd; margin: 5px 0;"></div>
+            <a href="/search-tools">Search Tools</a>
+            <a href="/api-docs">API Documentation</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="content">
+    <div class="input-section">
+      <h2>🎯 What would you like me to accomplish?</h2>
+      <div class="input-container">
+        <textarea id="objectiveInput" placeholder="Describe your objective... (e.g., 'Find suppliers for Henny Penny part 77575, then email the comparison to purchasing@company.com')"></textarea>
+        <button id="planButton" class="plan-button" onclick="generatePlan()">🧠 Plan Workflow</button>
+      </div>
+    </div>
+    
+    <div class="examples">
+      <h3>💡 Example Workflows</h3>
+      <div class="example-item" onclick="fillExample('Find the part number for Henny Penny 500 lid seal and email it to samueldbrewer@gmail.com')">
+        <strong>🔧➡️📧 Parts Resolution:</strong> "Find the part number for Henny Penny 500 lid seal and email it to samueldbrewer@gmail.com"
+      </div>
+      <div class="example-item" onclick="fillExample('Look up suppliers for Henny Penny part 77575, then text the best pricing to 5024456053')">
+        <strong>🏪➡️💬 Supplier Search:</strong> "Look up suppliers for Henny Penny part 77575, then text the best pricing to 5024456053"
+      </div>
+      <div class="example-item" onclick="fillExample('Resolve what part we need for a broken Vulcan oven door, find 3 suppliers with pricing, and email the comparison to samueldbrewer@gmail.com')">
+        <strong>🔧➡️🏪➡️📧 Complete Parts Chain:</strong> "Resolve what part we need for a broken Vulcan oven door, find 3 suppliers with pricing, and email the comparison to samueldbrewer@gmail.com"
+      </div>
+      <div class="example-item" onclick="fillExample('Check my email for any urgent messages, then find repair services near Louisville, KY for any equipment mentioned')">
+        <strong>📧➡️🔍 Inbox + Research:</strong> "Check my email for any urgent messages, then find repair services near Louisville, KY for any equipment mentioned"
+      </div>
+    </div>
+    
+    <div id="workflowContainer" class="workflow-container">
+      <div class="workflow-header">
+        <h3>🔄 Generated Workflow Plan</h3>
+        <div id="workflowObjective" class="workflow-objective"></div>
+      </div>
+      
+      <div id="workflowSteps" class="workflow-steps">
+        <!-- Steps will be dynamically generated here -->
+      </div>
+      
+      <div class="workflow-controls">
+        <button id="startButton" class="action-button" onclick="startWorkflow()" style="display: none;">🚀 Start Workflow</button>
+        <button id="continueButton" class="action-button" onclick="continueWorkflow()" style="display: none;">⏭️ Continue</button>
+        <button id="resetButton" class="action-button" onclick="resetWorkflow()" style="background: #6c757d;">🔄 Reset</button>
+      </div>
+    </div>
+    
+    <div id="alertContainer"></div>
+  </div>
+  
+  <script>
+    let currentActionPlan = null;
+    let currentWorkflowState = {
+      plan: null,
+      currentStep: 0,
+      stepResults: [],
+      isRunning: false
+    };
+    
+    function fillExample(text) {
+      document.getElementById('objectiveInput').value = text;
+      document.getElementById('objectiveInput').focus();
+    }
+    
+    function showAlert(message, type = 'info') {
+      const alertContainer = document.getElementById('alertContainer');
+      const alertDiv = document.createElement('div');
+      alertDiv.className = 'alert alert-' + type;
+      alertDiv.textContent = message;
+      alertContainer.appendChild(alertDiv);
+      
+      // Auto-remove after 5 seconds
+      setTimeout(function() {
+        if (alertDiv.parentNode) {
+          alertDiv.parentNode.removeChild(alertDiv);
+        }
+      }, 5000);
+    }
+    
+    async function generatePlan() {
+      const objective = document.getElementById('objectiveInput').value.trim();
+      if (!objective) {
+        showAlert('Please enter an objective first!', 'error');
+        return;
+      }
+      
+      const planButton = document.getElementById('planButton');
+      planButton.disabled = true;
+      planButton.textContent = '🧠 Analyzing...';
+      
+      try {
+        const response = await fetch('/api/orchestrator/objective', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ objective: objective })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to generate plan');
+        }
+        
+        const data = await response.json();
+        currentActionPlan = data.actionPlan;
+        
+        if (currentActionPlan.action === 'error' || currentActionPlan.action === 'clarification_needed') {
+          showAlert(currentActionPlan.reasoning || 'Could not generate a valid plan', 'error');
+          return;
+        }
+        
+        displayWorkflowPlan(currentActionPlan);
+        showAlert('Workflow plan generated successfully!', 'success');
+        
+      } catch (error) {
+        showAlert('Error generating plan: ' + error.message, 'error');
+      } finally {
+        planButton.disabled = false;
+        planButton.textContent = '🧠 Plan Workflow';
+      }
+    }
+    
+    function displayWorkflowPlan(actionPlan) {
+      const workflowContainer = document.getElementById('workflowContainer');
+      const workflowObjective = document.getElementById('workflowObjective');
+      const workflowSteps = document.getElementById('workflowSteps');
+      const startButton = document.getElementById('startButton');
+      
+      // Reset workflow state
+      currentWorkflowState = {
+        plan: actionPlan,
+        currentStep: 0,
+        stepResults: [],
+        isRunning: false
+      };
+      
+      // Display objective
+      workflowObjective.textContent = document.getElementById('objectiveInput').value;
+      
+      // Generate step visualization
+      const steps = actionPlan.complete_plan || [{ action: actionPlan.action, description: actionPlan.preview }];
+      
+      workflowSteps.innerHTML = '';
+      
+      steps.forEach(function(step, index) {
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'workflow-step';
+        stepDiv.id = 'step-' + index;
+        
+        stepDiv.innerHTML = 
+          '<div class="step-header">' +
+            '<div class="step-title">' +
+              '<div class="step-number" id="step-number-' + index + '">' + (index + 1) + '</div>' +
+              '<div>' +
+                '<div class="step-action">' + getActionIcon(step.action) + ' ' + formatActionName(step.action) + '</div>' +
+                '<div class="step-description">' + (step.description || (step.parameters ? JSON.stringify(step.parameters) : 'No description available')) + '</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="step-status" id="step-status-' + index + '">' +
+              '<span class="status-icon">⏳</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="step-result" id="step-result-' + index + '">' +
+            '<div class="result-header">Step Result:</div>' +
+            '<div id="step-result-content-' + index + '"></div>' +
+          '</div>';
+        
+        workflowSteps.appendChild(stepDiv);
+      });
+      
+      // Show the workflow container and start button
+      workflowContainer.classList.add('visible');
+      startButton.style.display = 'inline-block';
+    }
+    
+    function getActionIcon(action) {
+      const icons = {
+        'search_parts': '🔧',
+        'search_suppliers': '🏪',
+        'send_email': '📧',
+        'send_sms': '💬',
+        'read_email_inbox': '📧',
+        'read_sms_messages': '💬',
+        'web_search': '🔍',
+        'equipment_image_search': '📷'
+      };
+      return icons[action] || '⚙️';
+    }
+    
+    function formatActionName(action) {
+      return action.replace(/_/g, ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+    }
+    
+    async function startWorkflow() {
+      if (!currentActionPlan || currentWorkflowState.isRunning) return;
+      
+      currentWorkflowState.isRunning = true;
+      currentWorkflowState.currentStep = 0;
+      
+      const startButton = document.getElementById('startButton');
+      const continueButton = document.getElementById('continueButton');
+      
+      startButton.style.display = 'none';
+      
+      await executeCurrentStep();
+    }
+    
+    async function continueWorkflow() {
+      if (!currentWorkflowState.isRunning) return;
+      
+      currentWorkflowState.currentStep++;
+      await executeCurrentStep();
+    }
+    
+    async function executeCurrentStep() {
+      const stepIndex = currentWorkflowState.currentStep;
+      const steps = currentActionPlan.complete_plan || [{ action: currentActionPlan.action, parameters: currentActionPlan.parameters }];
+      
+      if (stepIndex >= steps.length) {
+        // Workflow completed
+        showAlert('🎉 Workflow completed successfully!', 'success');
+        currentWorkflowState.isRunning = false;
+        document.getElementById('continueButton').style.display = 'none';
+        return;
+      }
+      
+      const currentStep = steps[stepIndex];
+      
+      // Update UI to show current step as active
+      updateStepStatus(stepIndex, 'active', 'processing');
+      
+      try {
+        // Create action plan for current step
+        // For the first step, use the main action parameters
+        // For subsequent steps, let the backend handle parameter passing
+        let stepParameters = {};
+        if (stepIndex === 0) {
+          stepParameters = currentActionPlan.parameters || {};
+        } else {
+          stepParameters = currentStep.parameters || {};
+        }
+        
+        const stepActionPlan = {
+          action: currentStep.action,
+          parameters: stepParameters,
+          complete_plan: currentActionPlan.complete_plan,
+          confidence: currentActionPlan.confidence || 0.9
+        };
+        
+        console.log('🔍 V2 UI - Step ' + stepIndex + ' action plan:', JSON.stringify(stepActionPlan, null, 2));
+        
+        // Execute the step
+        const response = await fetch('/api/orchestrator/execute-step', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            actionPlan: stepActionPlan,
+            stepIndex: stepIndex,
+            previousResults: currentWorkflowState.stepResults || []
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error('HTTP error! status: ' + response.status);
+        }
+        
+        const data = await response.json();
+        const result = data.result;
+        
+        // Store result
+        currentWorkflowState.stepResults[stepIndex] = result;
+        
+        if (result.success) {
+          updateStepStatus(stepIndex, 'completed', 'completed');
+          displayStepResult(stepIndex, result);
+          
+          // Show continue button if there are more steps
+          if (stepIndex < steps.length - 1) {
+            document.getElementById('continueButton').style.display = 'inline-block';
+          } else {
+            // Workflow completed
+            showAlert('🎉 Workflow completed successfully!', 'success');
+            currentWorkflowState.isRunning = false;
+          }
+        } else {
+          updateStepStatus(stepIndex, 'failed', 'failed');
+          displayStepResult(stepIndex, result);
+          showAlert('Step ' + (stepIndex + 1) + ' failed: ' + result.message, 'error');
+          currentWorkflowState.isRunning = false;
+        }
+        
+      } catch (error) {
+        updateStepStatus(stepIndex, 'failed', 'failed');
+        showAlert('Error executing step ' + (stepIndex + 1) + ': ' + error.message, 'error');
+        currentWorkflowState.isRunning = false;
+      }
+    }
+    
+    function updateStepStatus(stepIndex, stepClass, statusType) {
+      const stepDiv = document.getElementById('step-' + stepIndex);
+      const stepNumber = document.getElementById('step-number-' + stepIndex);
+      const stepStatus = document.getElementById('step-status-' + stepIndex);
+      
+      // Reset classes
+      stepDiv.className = 'workflow-step';
+      stepNumber.className = 'step-number';
+      
+      // Add new classes
+      stepDiv.classList.add(stepClass);
+      stepNumber.classList.add(stepClass);
+      
+      // Update status icon
+      let statusHtml = '';
+      switch (statusType) {
+        case 'processing':
+          statusHtml = '<div class="spinner"></div>';
+          break;
+        case 'completed':
+          statusHtml = '<span class="status-icon">✅</span>';
+          break;
+        case 'failed':
+          statusHtml = '<span class="status-icon">❌</span>';
+          break;
+        default:
+          statusHtml = '<span class="status-icon">⏳</span>';
+      }
+      
+      stepStatus.innerHTML = statusHtml;
+    }
+    
+    function displayStepResult(stepIndex, result) {
+      const stepResultDiv = document.getElementById('step-result-' + stepIndex);
+      const stepResultContent = document.getElementById('step-result-content-' + stepIndex);
+      
+      if (result.success && result.data) {
+        // Format the result data based on action type
+        const steps = currentActionPlan.complete_plan || [{ action: currentActionPlan.action }];
+        const action = steps[stepIndex].action;
+        
+        stepResultContent.innerHTML = formatActionResults(action, result.data);
+      } else {
+        stepResultContent.innerHTML = '<div class="alert alert-error">' + (result.message || 'No result data available') + '</div>';
+      }
+      
+      stepResultDiv.classList.add('visible');
+    }
+    
+    function formatActionResults(action, data) {
+      let formattedHtml = '';
+      
+      switch (action) {
+        case 'search_parts':
+          const actualData = data.data || data;
+          if (actualData.recommended_result && actualData.recommended_result.oem_part_number) {
+            formattedHtml = 
+              '<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">' +
+                '<h4 style="margin: 0 0 10px 0; color: #4caf50;">🔧 Part Found</h4>' +
+                '<p><strong>Equipment:</strong> ' + (actualData.query?.description || 'Unknown') + '</p>' +
+                '<p><strong>OEM Part Number:</strong> ' + actualData.recommended_result.oem_part_number + '</p>' +
+                '<p><strong>Description:</strong> ' + (actualData.recommended_result.description || 'N/A') + '</p>' +
+                '<p><strong>Confidence:</strong> ' + Math.round((actualData.recommended_result.confidence || 0) * 100) + '%</p>' +
+              '</div>';
+          } else {
+            formattedHtml = '<div class="alert alert-error">🔧 No parts found matching the search criteria.</div>';
+          }
+          break;
+          
+        case 'search_suppliers':
+          const supplierData = data.data || data;
+          if (supplierData.suppliers && supplierData.suppliers.length > 0) {
+            formattedHtml = 
+              '<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">' +
+                '<h4 style="margin: 0 0 15px 0; color: #4caf50;">🏪 Suppliers Found (' + supplierData.suppliers.length + ' results)</h4>';
+            
+            supplierData.suppliers.slice(0, 3).forEach(function(supplier, index) {
+              formattedHtml += 
+                '<div style="margin: 10px 0; padding: 10px; background: white; border-radius: 6px;">' +
+                  '<p><strong>' + (index + 1) + '. ' + (supplier.title || supplier.name || 'Unknown') + '</strong></p>' +
+                  '<p><strong>Domain:</strong> ' + (supplier.domain || 'Unknown') + '</p>' +
+                  (supplier.url ? '<p><strong>URL:</strong> <a href="' + supplier.url + '" target="_blank">' + supplier.url + '</a></p>' : '') +
+                  (supplier.snippet ? '<p><strong>Description:</strong> ' + supplier.snippet + '</p>' : '') +
+                '</div>';
+            });
+            formattedHtml += '</div>';
+          } else {
+            formattedHtml = '<div class="alert alert-error">🏪 No suppliers found for this part.</div>';
+          }
+          break;
+          
+        case 'send_email':
+          if (data.success !== false) {
+            formattedHtml = '<div class="alert alert-success">📧 Email sent successfully!</div>';
+          } else {
+            formattedHtml = '<div class="alert alert-error">📧 Failed to send email.</div>';
+          }
+          break;
+          
+        case 'send_sms':
+          if (data.success !== false) {
+            formattedHtml = '<div class="alert alert-success">💬 SMS sent successfully!</div>';
+          } else {
+            formattedHtml = '<div class="alert alert-error">💬 Failed to send SMS.</div>';
+          }
+          break;
+          
+        default:
+          if (data && typeof data === 'object') {
+            formattedHtml = '<pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; white-space: pre-wrap;">' + JSON.stringify(data, null, 2) + '</pre>';
+          } else {
+            formattedHtml = '<div class="alert alert-info">Action completed successfully.</div>';
+          }
+      }
+      
+      return formattedHtml;
+    }
+    
+    function resetWorkflow() {
+      currentActionPlan = null;
+      currentWorkflowState = {
+        plan: null,
+        currentStep: 0,
+        stepResults: [],
+        isRunning: false
+      };
+      
+      document.getElementById('workflowContainer').classList.remove('visible');
+      document.getElementById('startButton').style.display = 'none';
+      document.getElementById('continueButton').style.display = 'none';
+      document.getElementById('objectiveInput').value = '';
+      document.getElementById('alertContainer').innerHTML = '';
+    }
+    
+    // Allow generating plan with Enter key
+    document.getElementById('objectiveInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && e.ctrlKey && !document.getElementById('planButton').disabled) {
+        generatePlan();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -113,6 +113,24 @@ echo "Node.js server starting (PID: $NODE_PID)..."
 # Wait for Node.js to start
 sleep 3
 
+# Step 3.5: Initialize Purchase Agent Service
+echo ""
+echo "Step 3.5: Initializing Purchase Agent Service..."
+echo "-------------------------------------------------"
+
+# Wait a bit more for Node.js to fully initialize
+sleep 2
+
+# Initialize the purchase agent service
+for i in {1..5}; do
+    if curl -s -X POST http://localhost:3000/api/purchase-agent/start >/dev/null; then
+        echo "✅ Purchase Agent service initialized!"
+        break
+    fi
+    echo "Waiting for Node.js server to accept connections... ($i/5)"
+    sleep 2
+done
+
 # Step 4: Verify services
 echo ""
 echo "Step 4: Verifying services..."
@@ -132,16 +150,29 @@ else
     echo "❌ PartnerPlus Server: Not responding"
 fi
 
+# Check Purchase Agent integration
+if curl -s http://localhost:3000/api/purchase-agent/health >/dev/null; then
+    echo "✅ Purchase Agent Integration: Connected and healthy"
+else
+    echo "❌ Purchase Agent Integration: Not connected"
+fi
+
 echo ""
 echo "==================================="
 echo "Service Status Complete"
 echo "==================================="
 echo ""
-echo "Access PartnerPlus at: http://localhost:3000"
-echo "Purchase Agent at: http://localhost:3000/purchase-agent"
+echo "🌐 Access PartnerPlus at: http://localhost:3000"
+echo "🤖 AI Agent at: http://localhost:3000/ai-agent"
+echo "🛒 Purchase Agent at: http://localhost:3000/purchase-agent"
 echo ""
-echo "To view logs:"
+echo "📋 API Endpoints:"
+echo "  • AI Orchestrator: http://localhost:3000/api/orchestrator/execute"
+echo "  • Supplier Search: http://localhost:3000/api/purchase-agent/suppliers/search"
+echo "  • Purchase Agent Health: http://localhost:3000/api/purchase-agent/health"
+echo ""
+echo "📊 To view logs:"
 echo "  Flask logs: tail -f /Users/sambrewer/Desktop/Partner+/manual-purchase-agent_20250513_125500_v15.6/flask.log"
 echo "  Node logs: tail -f /Users/sambrewer/Desktop/Partner+/node.log"
 echo ""
-echo "To stop all services, run: pkill -f 'flask|node'"
+echo "🛑 To stop all services: pkill -f 'flask|node'"

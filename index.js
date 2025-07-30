@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const Agent = require('./lib/agent');
 const OrchestratorAgent = require('./lib/orchestrator-agent');
 const EmailService = require('./lib/email-service');
@@ -155,16 +156,27 @@ function generateNavigation(currentPage) {
       <div class="header-inner">
         <div class="nav">
           <h1>PartnerPlus</h1>
-          <a href="/" class="${currentPage === 'wo-agent' ? 'active' : ''}">WO Agent</a>
           <div class="dropdown">
-            <a href="#" class="dropdown-toggle ${['ai-agent', 'ai-chat', 'email', 'sms', 'executor', 'purchase-agent'].includes(currentPage) ? 'active' : ''}">AI Tools ▼</a>
+            <a href="#" class="dropdown-toggle ${['wo-agent', 'ai-agent', 'ai-agent-v1', 'ai-agent-raw'].includes(currentPage) ? 'active' : ''}">Agents ▼</a>
             <div class="dropdown-menu">
-              <a href="/ai-agent">AI Agent</a>
+              <a href="/">WO Agent</a>
+              <a href="/ai-agent">AI Agent v2</a>
+              <a href="/ai-agent-mobile">📱 Mobile</a>
+              <a href="/ai-agent-raw">Raw Output</a>
+              <a href="/ai-agent-v1">v1 Backup</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <a href="#" class="dropdown-toggle ${['ai-chat', 'email', 'sms', 'executor', 'purchase-agent', 'search-tools', 'api-docs'].includes(currentPage) ? 'active' : ''}">Tools ▼</a>
+            <div class="dropdown-menu">
               <a href="/ai-chat">AI Chat</a>
               <a href="/email">Email Service</a>
               <a href="/sms">SMS Service</a>
               <a href="/executor">Code Executor</a>
               <a href="/purchase-agent">Purchase Agent</a>
+              <div style="border-top: 1px solid #ddd; margin: 5px 0;"></div>
+              <a href="/search-tools">Search Tools</a>
+              <a href="/api-docs">API Documentation</a>
             </div>
           </div>
         </div>
@@ -197,7 +209,7 @@ app.get('/ai-chat', (req, res) => {
         .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .nav { display: flex; align-items: center; }
-        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; color: white; }
         .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
         .nav a:hover { background-color: rgba(255,255,255,0.1); }
         .nav a.active { background-color: rgba(255,255,255,0.2); }
@@ -342,571 +354,1382 @@ app.get('/', (req, res) => {
       <title>WO Agent - PartnerPlus</title>
       <link rel="icon" type="image/svg+xml" href="/favicon.svg">
       <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; }
         .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .nav { display: flex; align-items: center; }
-        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; color: white; }
         .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
         .nav a:hover { background-color: rgba(255,255,255,0.1); }
         .nav a.active { background-color: rgba(255,255,255,0.2); }
         ${dropdownStyles}
-        .content { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px 20px; }
-        .main-container { text-align: center; padding: 60px 20px; }
-        .main-container h1 { font-size: 48px; color: #1976d2; margin-bottom: 20px; }
-        .main-container p { font-size: 20px; color: #666; margin-bottom: 40px; }
-        .demo-section { background-color: #f5f5f5; padding: 40px; border-radius: 10px; margin: 40px auto; max-width: 800px; }
-        .cta-button { display: inline-block; padding: 15px 30px; background-color: #1976d2; color: white; text-decoration: none; border-radius: 5px; font-size: 18px; transition: background-color 0.3s; }
-        .cta-button:hover { background-color: #1565c0; }
-        .features-list { text-align: left; display: inline-block; margin-top: 20px; }
-        .features-list li { margin: 10px 0; font-size: 16px; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .brand-title { color: #1976d2; text-align: center; margin-bottom: 10px; font-size: 36px; font-weight: bold; }
+        h1 { color: #1976d2; text-align: center; margin-bottom: 20px; }
+        p { text-align: center; color: #666; font-size: 18px; }
+        
+        .demo-section { text-align: center; margin: 30px 0; }
+        .primary-btn { background: #1976d2; color: white; border: none; padding: 15px 30px; font-size: 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .primary-btn:hover { background: #1565c0; transform: translateY(-2px); }
+        .primary-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        .demo-note { margin-top: 15px; padding: 10px; background: #e3f2fd; border-radius: 6px; font-size: 14px; color: #1976d2; }
+        
+        .work-order-section { margin-top: 30px; border: 2px solid #1976d2; border-radius: 10px; overflow: hidden; }
+        .wo-header { background: #1976d2; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .wo-header h2 { margin: 0; font-size: 24px; }
+        .status-badge { background: #4caf50; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .status-badge.high { background: #f44336; }
+        .status-badge.medium { background: #ff9800; }
+        .status-badge.low { background: #4caf50; }
+        
+        .wo-content { padding: 25px; }
+        .wo-basic-info { margin-bottom: 25px; }
+        .info-row { display: flex; margin-bottom: 15px; align-items: flex-start; }
+        .info-row label { font-weight: bold; color: #1976d2; min-width: 140px; margin-right: 15px; }
+        .info-row span { flex: 1; line-height: 1.4; }
+        .priority-badge { padding: 3px 12px; border-radius: 15px; font-size: 12px; font-weight: bold; }
+        .priority-badge.high { background: #ffebee; color: #c62828; }
+        .priority-badge.medium { background: #fff3e0; color: #ef6c00; }
+        .priority-badge.low { background: #e8f5e8; color: #2e7d32; }
+        
+        .technician-info-section { margin-top: 25px; padding: 20px; background: #fff8e1; border-radius: 8px; border: 1px solid #ffcc02; }
+        .technician-info-section h4 { margin: 0 0 15px 0; color: #ff9800; font-size: 16px; border-bottom: 1px solid #ffcc02; padding-bottom: 8px; }
+        .technician-info-content { background: white; padding: 15px; border-radius: 6px; }
+        
+        .service-notes-section { margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef; }
+        .service-notes-section h4 { margin: 0 0 15px 0; color: #1976d2; font-size: 16px; border-bottom: 1px solid #dee2e6; padding-bottom: 8px; }
+        .service-notes-content { background: white; padding: 15px; border-radius: 6px; }
+        
+        .wo-actions { border-top: 1px solid #eee; padding-top: 20px; text-align: center; }
+        .wo-actions h4 { margin: 0 0 20px 0; color: #1976d2; font-size: 18px; }
+        /* Tool button styles removed - functionality to be redesigned */
+        .action-btn { background: #ff9800; color: white; border: none; padding: 12px 25px; font-size: 14px; border-radius: 6px; cursor: pointer; margin: 5px; transition: all 0.3s; }
+        .action-btn:hover { background: #f57c00; transform: translateY(-1px); }
+        .action-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        .enhancement-note { margin-top: 10px; font-size: 13px; color: #666; font-style: italic; }
+        
+        .enhancement-section, .evaluation-section { margin-top: 25px; padding: 25px; background: #f8f9fa; border-radius: 8px; }
+        .enhancement-section h3, .evaluation-section h3 { margin: 0 0 20px 0; color: #1976d2; border-bottom: 2px solid #1976d2; padding-bottom: 8px; }
+        .enhancement-content, .evaluation-content { background: white; padding: 20px; border-radius: 6px; border-left: 4px solid #1976d2; margin-bottom: 20px; }
+        
+        .user-response-section { margin-top: 25px; }
+        .user-response-section h4 { margin: 0 0 15px 0; color: #1976d2; }
+        .user-response-section textarea { width: 100%; min-height: 100px; padding: 15px; border: 2px solid #ddd; border-radius: 6px; font-family: Arial, sans-serif; font-size: 14px; resize: vertical; box-sizing: border-box; }
+        .user-response-section textarea:focus { outline: none; border-color: #1976d2; }
+        
+        .loading { display: inline-block; color: #1976d2; font-style: italic; }
+        .loading:after { content: '...'; animation: dots 1.5s steps(5, end) infinite; }
+        @keyframes dots { 0%, 20% { color: rgba(0,0,0,0); text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); } 40% { color: #1976d2; text-shadow: .25em 0 0 rgba(0,0,0,0), .5em 0 0 rgba(0,0,0,0); } 60% { text-shadow: .25em 0 0 #1976d2, .5em 0 0 rgba(0,0,0,0); } 80%, 100% { text-shadow: .25em 0 0 #1976d2, .5em 0 0 #1976d2; } }
       </style>
     </head>
     <body>
       ${generateNavigation('wo-agent')}
-      <div class="content">
-        <div class="main-container">
-          <h1>Work Order Agent</h1>
-          <p>Intelligent work order management powered by AI</p>
-          
-          <div class="demo-section">
-            <h2>Coming Soon</h2>
-            <p>Our advanced Work Order Agent will revolutionize how you manage service requests, maintenance tasks, and equipment repairs.</p>
-            <p><strong>Features will include:</strong></p>
-            <ul class="features-list">
-              <li>🔧 Automated work order creation from emails and messages</li>
-              <li>🔍 Intelligent parts and supplier matching</li>
-              <li>👷 Service technician scheduling and dispatch</li>
-              <li>📊 Real-time status updates and tracking</li>
-              <li>🤖 Predictive maintenance recommendations</li>
-              <li>📧 Automated customer communication</li>
-              <li>💰 Cost estimation and approval workflows</li>
-            </ul>
-            <br><br>
-            <a href="/ai-agent" class="cta-button">Try AI Agent Demo</a>
+      <div class="container">
+        <div class="brand-title">PartnerPlus</div>
+        <h1>Work Order Agent Demo</h1>
+        <p>Demonstration of AI-powered work order processing and enhancement capabilities</p>
+        
+        <div class="demo-section">
+          <button id="generateWO" class="primary-btn">Generate Random Work Order</button>
+          <div class="demo-note">
+            <strong>Demo Mode:</strong> This generates realistic work orders for demonstration purposes
           </div>
         </div>
+        
+        <div id="workOrderDisplay" class="work-order-section" style="display: none;">
+          <div class="wo-header">
+            <h2>Work Order <span id="woNumber">#WO-001</span></h2>
+            <div class="wo-status">
+              <span class="status-badge" id="woStatus">Open</span>
+            </div>
+          </div>
+          
+          <div class="wo-content">
+            <div class="wo-basic-info">
+              <div class="info-row">
+                <label>Location:</label>
+                <span id="woLocation">Loading...</span>
+              </div>
+              <div class="info-row">
+                <label>Address:</label>
+                <span id="woAddress">Loading...</span>
+              </div>
+              <div class="info-row">
+                <label>Equipment:</label>
+                <span id="woEquipment">Loading...</span>
+              </div>
+              <div class="info-row">
+                <label>Issue Description:</label>
+                <span id="woDescription">Loading...</span>
+              </div>
+              <div class="info-row">
+                <label>Priority:</label>
+                <span id="woPriority" class="priority-badge">Medium</span>
+              </div>
+              <div class="info-row">
+                <label>Contact Phone:</label>
+                <span id="woPhone">Loading...</span>
+              </div>
+              <div class="info-row">
+                <label>Contact Email:</label>
+                <span id="woEmail">Loading...</span>
+              </div>
+            </div>
+            
+            <div class="technician-info-section">
+              <h4>Assigned Technician</h4>
+              <div class="technician-info-content">
+                <div class="info-row">
+                  <label>Technician:</label>
+                  <span id="woTechnicianName">Loading...</span>
+                </div>
+                <div class="info-row">
+                  <label>Tech Phone:</label>
+                  <span id="woTechnicianPhone">Loading...</span>
+                </div>
+                <div class="info-row">
+                  <label>Tech Email:</label>
+                  <span id="woTechnicianEmail">Loading...</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="service-notes-section">
+              <h4>Service Notes</h4>
+              <div class="service-notes-content">
+                <div class="info-row">
+                  <label>Suspected Parts:</label>
+                  <span id="woSuspectedParts">Loading...</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="wo-actions">
+              <p><em>Enhancement functionality to be redesigned...</em></p>
+            </div>
+          </div>
+          
+          <div id="enhancementResults" class="enhancement-section" style="display: none;">
+            <h3>Enhanced Information</h3>
+            <div id="enhancementContent" class="enhancement-content"></div>
+            
+            <div class="user-response-section">
+              <h4>Technician Response</h4>
+              <textarea id="userResponse" placeholder="Enter your findings, observations, or additional information about this work order..."></textarea>
+              <button id="evaluateWO" class="action-btn" disabled>Evaluate & Recommend Action</button>
+            </div>
+          </div>
+          
+          <div id="evaluationResults" class="evaluation-section" style="display: none;">
+            <h3>AI Recommendation</h3>
+            <div id="evaluationContent" class="evaluation-content"></div>
+          </div>
+        </div>
+      </div>
+      
+      <script>
+        let currentWorkOrder = null;
+        
+        document.getElementById('generateWO').addEventListener('click', generateRandomWorkOrder);
+        document.getElementById('evaluateWO').addEventListener('click', evaluateWorkOrder);
+        document.getElementById('userResponse').addEventListener('input', function() {
+          document.getElementById('evaluateWO').disabled = !this.value.trim();
+        });
+        
+        async function generateRandomWorkOrder() {
+          const generateBtn = document.getElementById('generateWO');
+          generateBtn.disabled = true;
+          generateBtn.textContent = 'Generating Work Order...';
+          
+          // Reset displays
+          document.getElementById('enhancementResults').style.display = 'none';
+          document.getElementById('evaluationResults').style.display = 'none';
+          document.getElementById('userResponse').value = '';
+          document.getElementById('evaluateWO').disabled = true;
+          
+          try {
+            // Show work order section immediately
+            document.getElementById('workOrderDisplay').style.display = 'block';
+            
+            // Set loading states
+            setLoadingState();
+            
+            // Generate work order using AI
+            const response = await fetch('/api/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                message: \`Create a realistic foodservice equipment work order with the following details:
+
+WORK ORDER GENERATION PROMPT:
+Generate a completely realistic work order for a foodservice establishment. Be creative and varied each time. Include:
+
+1. LOCATION: Create a realistic restaurant/hotel/cafeteria name and full address (street, city, state, zip)
+2. EQUIPMENT: Specify a real foodservice equipment brand and model (like Hobart, Vulcan, True, Hoshizaki, etc.)
+3. ISSUE: Describe a realistic equipment problem that would require service
+4. PRIORITY: Assign appropriate priority (High/Medium/Low) based on the issue severity
+5. CONTACT INFO: Generate realistic phone number and email for the establishment contact
+6. SERVICE NOTES: Include what parts/components are suspected to have failed based on the described issue
+7. TECHNICIAN INFO: Generate realistic technician name, email, and phone number for the assigned service tech
+
+Make this feel like a real work order a technician would receive. Vary the types of establishments (restaurants, hotels, schools, hospitals, etc.) and equipment types (fryers, ovens, refrigeration, dishwashers, etc.).
+
+Be creative with realistic contact details and thoughtful about what parts might fail based on the equipment issue described.
+
+Respond in this exact JSON format:
+{
+  "workOrderNumber": "WO-[random 3-digit number]",
+  "location": "[establishment name]",
+  "address": "[full street address, city, state zip]",
+  "equipment": "[Make Model - Equipment Type]",
+  "description": "[detailed problem description]",
+  "priority": "[High/Medium/Low]",
+  "phone": "[realistic phone number with area code]",
+  "email": "[establishment email address]",
+  "suspectedParts": "[parts/components likely to have failed]",
+  "technicianName": "[realistic technician name]",
+  "technicianEmail": "[technician email address]",
+  "technicianPhone": "[technician phone number]",
+  "status": "Open"
+}\`
+              })
+            });
+            
+            const data = await response.json();
+            
+            // Parse the JSON response from AI
+            let workOrderData;
+            try {
+              // Extract JSON from the AI response
+              const jsonMatch = data.response.match(/\\{[\\s\\S]*\\}/);
+              if (jsonMatch) {
+                workOrderData = JSON.parse(jsonMatch[0]);
+              } else {
+                throw new Error('No JSON found in response');
+              }
+            } catch (parseError) {
+              console.error('Failed to parse AI response:', parseError);
+              // Fallback to a default work order
+              workOrderData = createFallbackWorkOrder();
+            }
+            
+            currentWorkOrder = workOrderData;
+            displayWorkOrder(workOrderData);
+            
+            // Enable tool buttons
+            enableToolButtons();
+            
+          } catch (error) {
+            console.error('Error generating work order:', error);
+            // Show fallback work order
+            currentWorkOrder = createFallbackWorkOrder();
+            displayWorkOrder(currentWorkOrder);
+            enableToolButtons();
+          } finally {
+            generateBtn.disabled = false;
+            generateBtn.textContent = 'Generate Random Work Order';
+          }
+        }
+        
+        function createFallbackWorkOrder() {
+          const woNumber = 'WO-' + Math.floor(Math.random() * 900 + 100);
+          return {
+            workOrderNumber: woNumber,
+            location: "Murphy's Diner",
+            address: "1245 Main Street, Springfield, IL 62701",
+            equipment: "Vulcan 1TR45A - Gas Range",
+            description: "Pilot light keeps going out on burner #2, causing uneven heating and safety concerns",
+            priority: "Medium",
+            phone: "(217) 555-0142",
+            email: "manager@murphysdiner.com",
+            suspectedParts: "Pilot light assembly, gas valve, thermocouple",
+            technicianName: "Mike Rodriguez",
+            technicianEmail: "m.rodriguez@serviceteam.com",
+            technicianPhone: "(217) 555-0987",
+            status: "Open"
+          };
+        }
+        
+        function setLoadingState() {
+          document.getElementById('woNumber').textContent = '#Loading...';
+          document.getElementById('woLocation').innerHTML = '<span class="loading">Loading</span>';
+          document.getElementById('woAddress').innerHTML = '<span class="loading">Loading</span>';
+          document.getElementById('woEquipment').innerHTML = '<span class="loading">Loading</span>';
+          document.getElementById('woDescription').innerHTML = '<span class="loading">Loading</span>';
+          document.getElementById('woPriority').innerHTML = '<span class="loading">Loading</span>';
+          document.getElementById('woPhone').innerHTML = '<span class="loading">Loading</span>';
+          document.getElementById('woEmail').innerHTML = '<span class="loading">Loading</span>';
+          document.getElementById('woTechnicianName').innerHTML = '<span class="loading">Loading</span>';
+          document.getElementById('woTechnicianPhone').innerHTML = '<span class="loading">Loading</span>';
+          document.getElementById('woTechnicianEmail').innerHTML = '<span class="loading">Loading</span>';
+          document.getElementById('woSuspectedParts').innerHTML = '<span class="loading">Loading</span>';
+          document.getElementById('woStatus').textContent = 'Generating';
+        }
+        
+        function displayWorkOrder(workOrder) {
+          document.getElementById('woNumber').textContent = '#' + workOrder.workOrderNumber;
+          document.getElementById('woLocation').textContent = workOrder.location;
+          document.getElementById('woAddress').textContent = workOrder.address;
+          document.getElementById('woEquipment').textContent = workOrder.equipment;
+          document.getElementById('woDescription').textContent = workOrder.description;
+          document.getElementById('woPhone').textContent = workOrder.phone || 'Not provided';
+          document.getElementById('woEmail').textContent = workOrder.email || 'Not provided';
+          document.getElementById('woTechnicianName').textContent = workOrder.technicianName || 'Not assigned';
+          document.getElementById('woTechnicianPhone').textContent = workOrder.technicianPhone || 'Not provided';
+          document.getElementById('woTechnicianEmail').textContent = workOrder.technicianEmail || 'Not provided';
+          document.getElementById('woSuspectedParts').textContent = workOrder.suspectedParts || 'To be determined';
+          
+          const priorityElement = document.getElementById('woPriority');
+          priorityElement.textContent = workOrder.priority;
+          priorityElement.className = 'priority-badge ' + workOrder.priority.toLowerCase();
+          
+          const statusElement = document.getElementById('woStatus');
+          statusElement.textContent = workOrder.status;
+          statusElement.className = 'status-badge';
+        }
+        
+        function enableToolButtons() {
+          // Tool buttons removed - functionality to be redesigned
+        }
+        
+        // runTool function removed - functionality to be redesigned
+        
+        async function evaluateWorkOrder() {
+          const userResponse = document.getElementById('userResponse').value.trim();
+          if (!userResponse || !currentWorkOrder) return;
+          
+          const evaluateBtn = document.getElementById('evaluateWO');
+          evaluateBtn.disabled = true;
+          evaluateBtn.textContent = 'Evaluating...';
+          
+          // Show evaluation section
+          document.getElementById('evaluationResults').style.display = 'block';
+          document.getElementById('evaluationContent').innerHTML = '<div class="loading">Analyzing technician response and determining recommended actions</div>';
+          
+          try {
+            const response = await fetch('/api/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                message: \`WORK ORDER EVALUATION & RECOMMENDATION
+
+ORIGINAL WORK ORDER:
+- Equipment: \${currentWorkOrder.equipment}
+- Location: \${currentWorkOrder.location}
+- Issue: \${currentWorkOrder.description}
+- Priority: \${currentWorkOrder.priority}
+
+TECHNICIAN RESPONSE:
+\${userResponse}
+
+EVALUATION REQUEST:
+Based on the original work order and the technician's response, provide:
+
+1. SITUATION ANALYSIS
+   - Assessment of the technician's findings
+   - Validation of the diagnosis
+   - Any additional concerns identified
+
+2. RECOMMENDED ACTIONS
+   - Immediate actions required
+   - Parts ordering recommendations
+   - Follow-up procedures needed
+
+3. WORK ORDER STATUS
+   - Should this WO be: Completed, Pending Parts, Escalated, or Requires Additional Service?
+   - Reasoning for status recommendation
+
+4. BUSINESS IMPACT
+   - Criticality assessment for the business
+   - Downtime implications
+   - Customer communication needs
+
+5. NEXT STEPS
+   - Specific action items with priorities
+   - Timeline recommendations
+   - Resource requirements
+
+Provide actionable recommendations as if you're a service manager making decisions based on field technician feedback.\`
+              })
+            });
+            
+            const data = await response.json();
+            document.getElementById('evaluationContent').innerHTML = formatEvaluationContent(data.response);
+            
+          } catch (error) {
+            console.error('Error evaluating work order:', error);
+            document.getElementById('evaluationContent').innerHTML = 
+              '<p>Error processing evaluation. Please try again.</p>';
+          } finally {
+            evaluateBtn.disabled = false;
+            evaluateBtn.textContent = 'Evaluate & Recommend Action';
+          }
+        }
+        
+        function formatEnhancementContent(content) {
+          // Add some basic formatting to make the content more readable
+          return content
+            .replace(/\\n\\n/g, '</p><p>')
+            .replace(/\\n/g, '<br>')
+            .replace(/^/, '<p>')
+            .replace(/$/, '</p>')
+            .replace(/([A-Z][A-Z\\s]+:)/g, '<strong>$1</strong>')
+            .replace(/-\\s+/g, '<br>• ');
+        }
+        
+        function formatEvaluationContent(content) {
+          // Format evaluation content with emphasis on key sections
+          return content
+            .replace(/\\n\\n/g, '</p><p>')
+            .replace(/\\n/g, '<br>')
+            .replace(/^/, '<p>')
+            .replace(/$/, '</p>')
+            .replace(/([A-Z][A-Z\\s]+:)/g, '<strong style="color: #1976d2;">$1</strong>')
+            .replace(/-\\s+/g, '<br>• ')
+            .replace(/(RECOMMENDED|CRITICAL|URGENT|IMMEDIATE)/gi, '<span style="background: #ffeb3b; padding: 2px 6px; border-radius: 3px; font-weight: bold;">$1</span>');
+        }
+      </script>
+    </body>
+    </html>
+  `);
+});
+// Agent Hub route - NEW V2 Visual Workflow AI Agent (Full Version)
+app.get('/ai-agent', (req, res) => {
+  const fs = require('fs');
+  
+  try {
+    const htmlContent = fs.readFileSync(path.join(__dirname, 'ai-agent-v2-full.html'), 'utf8');
+    res.send(htmlContent);
+  } catch (error) {
+    console.error('Error reading v2 HTML file:', error);
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>AI Agent v2 - Error</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+      </head>
+      <body>
+        ${generateNavigation('ai-agent')}
+        <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+          <h1>AI Agent v2 - Loading Error</h1>
+          <p>Could not load the full v2 interface. <a href="/ai-agent-v1">Please use v1 Backup</a></p>
+        </div>
+      </body>
+      </html>
+    `);
+  }
+});
+
+// Add route for v1 backup
+app.get('/ai-agent-v1', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>AI Agent v1 (Backup) - PartnerPlus</title>
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+      <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f8f9fa; }
+        .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .nav { display: flex; align-items: center; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; color: white; }
+        .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
+        .nav a:hover { background-color: rgba(255,255,255,0.1); }
+        .nav a.active { background-color: rgba(255,255,255,0.2); }
+        .dropdown { position: relative; display: inline-block; }
+        .dropdown-toggle { cursor: pointer; }
+        .dropdown-menu { display: none; position: absolute; background-color: white; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; border-radius: 4px; top: 100%; left: 0; }
+        .dropdown-menu a { color: #333; padding: 12px 16px; text-decoration: none; display: block; margin: 0; border-radius: 0; }
+        .dropdown-menu a:hover { background-color: #f1f1f1; color: #333; }
+        .dropdown:hover .dropdown-menu { display: block; }
+        .dropdown:hover .dropdown-toggle { background-color: rgba(255,255,255,0.1); }
+        .content { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px 20px; }
+        .backup-notice { background: #fff3cd; color: #856404; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #ffeaa7; }
+      </style>
+    </head>
+    <body>
+      ${generateNavigation('ai-agent-v1')}
+      <div class="content">
+        <div class="backup-notice">
+          <h3>⚠️ This is the backup of the original chat-based interface</h3>
+          <p>This version has been preserved for reference. The active development is happening on the <a href="/ai-agent">new v2 visual workflow interface</a>.</p>
+          <p>The v1 interface provided a traditional chat experience where workflows were executed automatically. The new v2 interface provides step-by-step visual execution with user control.</p>
+        </div>
+        <p><strong>Functionality:</strong> This backup page is read-only and demonstrates the previous interface design. For active workflow execution, please use <a href="/ai-agent">AI Agent v2</a>.</p>
       </div>
     </body>
     </html>
   `);
 });
 
-// Agent Hub route - Main AI agent with orchestrator tools
-app.get('/ai-agent', (req, res) => {
+// Add route for mobile AI Agent page
+app.get('/ai-agent-mobile', (req, res) => {
   res.send(`
     <!DOCTYPE html>
     <html>
     <head>
-      <title>AI Agent - PartnerPlus</title>
+      <title>AI Agent Mobile - PartnerPlus</title>
       <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+      <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
       <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .nav { display: flex; align-items: center; }
-        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
-        .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
-        .nav a:hover { background-color: rgba(255,255,255,0.1); }
-        .nav a.active { background-color: rgba(255,255,255,0.2); }
-        .content { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px 20px; }
-        .chat-container { border: 1px solid #ccc; border-radius: 10px; padding: 20px; height: 400px; overflow-y: auto; margin-bottom: 20px; }
-        .message { margin: 10px 0; padding: 10px; border-radius: 5px; }
-        .user { background-color: #e3f2fd; text-align: right; }
-        .assistant { background-color: #f5f5f5; }
-        .action-plan { background-color: #fff3e0; border: 2px solid #ff9800; margin: 10px 0; padding: 15px; border-radius: 8px; }
-        .action-details { margin: 10px 0; font-family: monospace; background: #f5f5f5; padding: 10px; border-radius: 4px; }
-        .confirmation-buttons { margin-top: 10px; display: flex; gap: 10px; }
-        .confirm-btn { background-color: #4caf50; }
-        .cancel-btn { background-color: #f44336; }
-        .result { background-color: #e8f5e9; border-left: 4px solid #4caf50; margin: 10px 0; padding: 10px; }
-        .error { background-color: #ffebee; border-left: 4px solid #f44336; margin: 10px 0; padding: 10px; }
-        .examples { background-color: #f0f7ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        .examples h3 { margin-top: 0; color: #1976d2; }
-        .examples li { margin: 8px 0; line-height: 1.4; }
-        .examples-note { background-color: #e8f5e9; border-left: 4px solid #4caf50; padding: 12px; margin-top: 15px; border-radius: 4px; }
-        .examples-note p { margin: 0; font-style: italic; }
-        .complete-plan { background-color: #f3f4f6; border: 1px solid #d1d5db; border-radius: 6px; padding: 12px; margin: 10px 0; }
-        .complete-plan ol { margin: 8px 0 0 0; padding-left: 20px; }
-        .complete-plan li { margin: 4px 0; }
-        .workflow-summary { background-color: #e8f5e9; border: 2px solid #4caf50; border-radius: 8px; padding: 15px; margin: 15px 0; }
-        .workflow-summary h4 { margin: 0 0 10px 0; color: #2e7d32; }
-        .workflow-summary .action-steps { margin-top: 12px; }
-        .workflow-summary ol { margin: 8px 0 0 0; padding-left: 20px; }
-        .workflow-summary li { margin: 4px 0; }
-        .results-display { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; padding: 15px; margin: 15px 0; }
-        .results-display h4 { margin: 0 0 12px 0; color: #495057; }
-        .results-display hr { margin: 10px 0; border: none; border-top: 1px solid #dee2e6; }
-        .email-item, .sms-item, .part-item, .supplier-item { margin: 8px 0; }
-        .search-results { background-color: #ffffff; padding: 10px; border-radius: 4px; border: 1px solid #e9ecef; white-space: pre-wrap; }
-        .input-container { display: flex; gap: 10px; }
-        #messageInput { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
-        button { padding: 10px 20px; background-color: #1976d2; color: white; border: none; border-radius: 5px; cursor: pointer; }
-        button:hover { background-color: #1565c0; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
-        .cursor { animation: blink 1s infinite; color: #1976d2; }
-        @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
-        ${dropdownStyles}
+        * { box-sizing: border-box; }
+        body { 
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+          margin: 0; 
+          padding: 0; 
+          background: #f8f9fa;
+          height: 100vh;
+          overflow: hidden;
+        }
+        
+        /* Minimized Header */
+        .header { 
+          background: #1976d2; 
+          color: white; 
+          padding: 10px 15px; 
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          min-height: 50px;
+        }
+        
+        .header h1 { 
+          margin: 0; 
+          font-size: 18px; 
+          font-weight: 500;
+        }
+        
+        .header-actions {
+          display: flex;
+          gap: 10px;
+        }
+        
+        .examples-btn {
+          background: rgba(255,255,255,0.2);
+          border: none;
+          color: white;
+          padding: 8px 12px;
+          border-radius: 6px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: background 0.3s;
+        }
+        
+        .examples-btn:hover {
+          background: rgba(255,255,255,0.3);
+        }
+        
+        /* Chat Container */
+        .chat-container {
+          height: calc(100vh - 50px);
+          display: flex;
+          flex-direction: column;
+        }
+        
+        /* Messages Area */
+        .messages-area {
+          flex: 1;
+          overflow-y: auto;
+          padding: 15px;
+          background: #f8f9fa;
+        }
+        
+        .message {
+          margin-bottom: 15px;
+          display: flex;
+          align-items: flex-start;
+          gap: 10px;
+        }
+        
+        .message.user {
+          flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 16px;
+          flex-shrink: 0;
+        }
+        
+        .message.user .message-avatar {
+          background: #1976d2;
+          color: white;
+        }
+        
+        .message.assistant .message-avatar {
+          background: #4caf50;
+          color: white;
+        }
+        
+        .message-content {
+          max-width: 85%;
+          padding: 12px 16px;
+          border-radius: 18px;
+          font-size: 15px;
+          line-height: 1.4;
+        }
+        
+        .message.user .message-content {
+          background: #1976d2;
+          color: white;
+          border-bottom-right-radius: 6px;
+        }
+        
+        .message.assistant .message-content {
+          background: white;
+          color: #333;
+          border: 1px solid #e0e0e0;
+          border-bottom-left-radius: 6px;
+        }
+        
+        /* Workflow Steps in Chat */
+        .workflow-message {
+          background: #e3f2fd;
+          border: 1px solid #1976d2;
+          border-radius: 12px;
+          padding: 15px;
+          margin: 10px 0;
+        }
+        
+        .workflow-title {
+          font-weight: 600;
+          color: #1976d2;
+          margin-bottom: 10px;
+          font-size: 16px;
+        }
+        
+        .workflow-step {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 8px 0;
+          border-bottom: 1px solid rgba(25, 118, 210, 0.1);
+        }
+        
+        .workflow-step:last-child {
+          border-bottom: none;
+        }
+        
+        .step-icon {
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          background: #1976d2;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          font-weight: bold;
+        }
+        
+        .step-icon.active {
+          background: #4caf50;
+          animation: pulse 1.5s infinite;
+        }
+        
+        .step-icon.completed {
+          background: #4caf50;
+        }
+        
+        .step-icon.failed {
+          background: #f44336;
+        }
+        
+        @keyframes pulse {
+          0% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.1); opacity: 0.8; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .step-text {
+          flex: 1;
+          font-size: 14px;
+        }
+        
+        .step-action {
+          font-weight: 500;
+          color: #1976d2;
+        }
+        
+        .step-description {
+          color: #666;
+          font-size: 13px;
+          margin-top: 2px;
+        }
+        
+        /* Input Area */
+        .input-area {
+          padding: 15px;
+          background: white;
+          border-top: 1px solid #e0e0e0;
+        }
+        
+        .input-container {
+          display: flex;
+          gap: 10px;
+          align-items: flex-end;
+        }
+        
+        .message-input {
+          flex: 1;
+          min-height: 40px;
+          max-height: 120px;
+          padding: 10px 15px;
+          border: 1px solid #e0e0e0;
+          border-radius: 20px;
+          font-size: 15px;
+          resize: none;
+          background: #f8f9fa;
+          outline: none;
+        }
+        
+        .message-input:focus {
+          border-color: #1976d2;
+          background: white;
+        }
+        
+        .send-btn {
+          width: 40px;
+          height: 40px;
+          border: none;
+          background: #1976d2;
+          color: white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.3s;
+          flex-shrink: 0;
+        }
+        
+        .send-btn:hover:not(:disabled) {
+          background: #1565c0;
+          transform: scale(1.05);
+        }
+        
+        .send-btn:disabled {
+          background: #ccc;
+          cursor: not-allowed;
+          transform: none;
+        }
+        
+        /* Modal */
+        .modal {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.5);
+          z-index: 1000;
+        }
+        
+        .modal.show {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .modal-content {
+          background: white;
+          border-radius: 12px;
+          margin: 20px;
+          max-width: 90vw;
+          max-height: 80vh;
+          overflow-y: auto;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+          padding: 20px 20px 0 20px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        
+        .modal-title {
+          font-size: 18px;
+          font-weight: 600;
+          color: #1976d2;
+          margin: 0;
+        }
+        
+        .close-btn {
+          background: none;
+          border: none;
+          font-size: 24px;
+          color: #666;
+          cursor: pointer;
+          padding: 5px;
+        }
+        
+        .modal-body {
+          padding: 20px;
+        }
+        
+        .example-item {
+          background: #f8f9fa;
+          border: 1px solid #e0e0e0;
+          border-radius: 8px;
+          padding: 15px;
+          margin-bottom: 12px;
+          cursor: pointer;
+          transition: all 0.3s;
+        }
+        
+        .example-item:hover {
+          background: #e3f2fd;
+          border-color: #1976d2;
+          transform: translateY(-1px);
+        }
+        
+        .example-item:active {
+          transform: translateY(0);
+        }
+        
+        .example-title {
+          font-weight: 600;
+          color: #1976d2;
+          margin-bottom: 5px;
+          font-size: 14px;
+        }
+        
+        .example-text {
+          color: #333;
+          font-size: 14px;
+          line-height: 1.4;
+        }
+        
+        /* Loading Animation */
+        .typing-indicator {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 12px 16px;
+        }
+        
+        .typing-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #999;
+          animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+          0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+          40% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        
+        /* Continue Button */
+        .continue-btn {
+          background: #4caf50;
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-size: 14px;
+          cursor: pointer;
+          margin-top: 10px;
+          transition: background 0.3s;
+        }
+        
+        .continue-btn:hover {
+          background: #388e3c;
+        }
+        
+        .continue-btn:disabled {
+          background: #ccc;
+          cursor: not-allowed;
+        }
       </style>
     </head>
     <body>
-      ${generateNavigation('ai-agent')}
-      <div class="content">
-        <h2>AI Agent</h2>
-        <p>Give me an objective and I'll coordinate our tools (email, SMS, purchase agent) to help you accomplish it!</p>
-        <div class="examples">
-          <h3>🚀 Multi-Step Workflows I Can Execute:</h3>
-          <ul>
-            <li><strong>🔧➡️📧 Parts Resolution:</strong> "Find the part number for Henny Penny 500 lid seal and email it to samueldbrewer@gmail.com"</li>
-            <li><strong>🏪➡️💬 Supplier Search:</strong> "Look up suppliers for Henny Penny part 77575, then text the best pricing to our manager at +15551234567"</li>
-            <li><strong>📧➡️🔍 Inbox + Research:</strong> "Check my email for any urgent messages, then find repair services near 10001 for any equipment mentioned"</li>
-            <li><strong>🌐➡️📧 Market Updates:</strong> "Get today's Tesla stock price and email a summary to investors@fund.com with current market analysis"</li>
-            <li><strong>🔧➡️🏪➡️📧 Complete Parts Chain:</strong> "Resolve what part we need for a broken Vulcan oven door, find 3 suppliers with pricing, and email the comparison to purchasing@company.com"</li>
-            <li><strong>💬➡️📧 Communication Bridge:</strong> "Check recent SMS messages for any equipment issues, then email a status report to operations@business.com"</li>
-            <li><strong>📧➡️🔍➡️💬 Service Coordination:</strong> "Read my latest emails, find local service companies for any equipment problems mentioned, and text me the top recommendations"</li>
-          </ul>
-          <div class="examples-note">
-            <p><strong>💡 Pro Tip:</strong> I can chain multiple actions together! Just describe your end goal and I'll coordinate all the necessary steps across email, SMS, parts research, and web search.</p>
+      <!-- Header -->
+      <div class="header">
+        <h1>🤖 AI Agent</h1>
+        <div class="header-actions">
+          <button class="examples-btn" onclick="showExamples()">💡 Examples</button>
+        </div>
+      </div>
+      
+      <!-- Chat Container -->
+      <div class="chat-container">
+        <!-- Messages Area -->
+        <div class="messages-area" id="messagesArea">
+          <div class="message assistant">
+            <div class="message-avatar">🤖</div>
+            <div class="message-content">
+              Hi! I'm your AI workflow assistant. I can help you automate tasks like finding parts, contacting suppliers, sending emails, and more. What would you like me to help you with today?
+            </div>
           </div>
         </div>
-      <div id="chatContainer" class="chat-container"></div>
-      <div class="input-container">
-        <input type="text" id="messageInput" placeholder="What would you like me to help you accomplish?" />
-        <button id="sendButton" onclick="sendObjective()">Execute</button>
-        <button onclick="clearChat()">Clear</button>
+        
+        <!-- Input Area -->
+        <div class="input-area">
+          <div class="input-container">
+            <textarea 
+              id="messageInput" 
+              class="message-input" 
+              placeholder="Describe what you'd like me to do..."
+              rows="1"
+            ></textarea>
+            <button id="sendBtn" class="send-btn" onclick="sendMessage()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Examples Modal -->
+      <div class="modal" id="examplesModal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">💡 Example Workflows</h3>
+            <button class="close-btn" onclick="hideExamples()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="example-item" onclick="selectExample('Find the part number for Henny Penny 500 lid seal and email it to samueldbrewer@gmail.com')">
+              <div class="example-title">🔧➡️📧 Parts Resolution</div>
+              <div class="example-text">Find the part number for Henny Penny 500 lid seal and email it to samueldbrewer@gmail.com</div>
+            </div>
+            
+            <div class="example-item" onclick="selectExample('Look up suppliers for Henny Penny part 77575, then text the best pricing to 5024456053')">
+              <div class="example-title">🏪➡️💬 Supplier Search</div>
+              <div class="example-text">Look up suppliers for Henny Penny part 77575, then text the best pricing to 5024456053</div>
+            </div>
+            
+            <div class="example-item" onclick="selectExample('Resolve what part we need for a broken Vulcan oven door, find 3 suppliers with pricing, and email the comparison to samueldbrewer@gmail.com')">
+              <div class="example-title">🔧➡️🏪➡️📧 Complete Parts Chain</div>
+              <div class="example-text">Resolve what part we need for a broken Vulcan oven door, find 3 suppliers with pricing, and email the comparison to samueldbrewer@gmail.com</div>
+            </div>
+            
+            <div class="example-item" onclick="selectExample('Check my email for any urgent messages, then find repair services near Louisville, KY for any equipment mentioned')">
+              <div class="example-title">📧➡️🔍 Inbox + Research</div>
+              <div class="example-text">Check my email for any urgent messages, then find repair services near Louisville, KY for any equipment mentioned</div>
+            </div>
+            
+            <div class="example-item" onclick="selectExample('Search for True refrigeration repair manual, then text key troubleshooting steps to 5024456053')">
+              <div class="example-title">📋➡️💬 Manual Lookup</div>
+              <div class="example-text">Search for True refrigeration repair manual, then text key troubleshooting steps to 5024456053</div>
+            </div>
+            
+            <div class="example-item" onclick="selectExample('Find contact info for Hobart service center near Louisville, then email their details to samueldbrewer@gmail.com')">
+              <div class="example-title">🔍➡️📧 Service Center Lookup</div>
+              <div class="example-text">Find contact info for Hobart service center near Louisville, then email their details to samueldbrewer@gmail.com</div>
+            </div>
+          </div>
+        </div>
       </div>
       
       <script>
-        let currentActionPlan = null;
+        let currentWorkflow = null;
+        let currentStep = 0;
+        let isProcessing = false;
         
-        async function sendObjective() {
+        // Auto-resize textarea
+        const messageInput = document.getElementById('messageInput');
+        messageInput.addEventListener('input', function() {
+          this.style.height = 'auto';
+          this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+        
+        // Send message on Enter (but allow Shift+Enter for new lines)
+        messageInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+        });
+        
+        // Examples modal functions
+        function showExamples() {
+          document.getElementById('examplesModal').classList.add('show');
+        }
+        
+        function hideExamples() {
+          document.getElementById('examplesModal').classList.remove('show');
+        }
+        
+        function selectExample(text) {
+          document.getElementById('messageInput').value = text;
+          hideExamples();
+          messageInput.style.height = 'auto';
+          messageInput.style.height = Math.min(messageInput.scrollHeight, 120) + 'px';
+          messageInput.focus();
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('examplesModal').addEventListener('click', function(e) {
+          if (e.target === this) {
+            hideExamples();
+          }
+        });
+        
+        async function sendMessage() {
           const input = document.getElementById('messageInput');
-          const objective = input.value.trim();
-          if (!objective) return;
+          const message = input.value.trim();
           
-          const chatContainer = document.getElementById('chatContainer');
-          const sendButton = document.getElementById('sendButton');
+          if (!message || isProcessing) return;
           
-          // Add user objective to chat
-          chatContainer.innerHTML += '<div class="message user"><strong>Objective:</strong> ' + objective + '</div>';
+          isProcessing = true;
           input.value = '';
-          sendButton.disabled = true;
-          sendButton.textContent = 'Analyzing...';
+          input.style.height = 'auto';
+          document.getElementById('sendBtn').disabled = true;
+          
+          // Add user message
+          addMessage('user', message);
+          
+          // Show typing indicator
+          const typingId = addTypingIndicator();
           
           try {
+            // Generate workflow plan
             const response = await fetch('/api/orchestrator/objective', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ objective })
+              body: JSON.stringify({ objective: message })
             });
-            
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
             
             const data = await response.json();
-            currentActionPlan = data.actionPlan;
+            currentWorkflow = data.actionPlan;
+            currentStep = 0;
             
-            // Display action plan
-            displayActionPlan(currentActionPlan);
+            // Remove typing indicator
+            removeMessage(typingId);
+            
+            if (currentWorkflow.action === 'error' || currentWorkflow.action === 'clarification_needed') {
+              addMessage('assistant', currentWorkflow.reasoning || 'I need more information to help you with that request.');
+            } else {
+              // Add workflow plan message
+              addWorkflowMessage(currentWorkflow);
+              
+              // Auto-start execution
+              setTimeout(() => executeNextStep(), 1000);
+            }
             
           } catch (error) {
-            chatContainer.innerHTML += '<div class="message error">Error: ' + error.message + '</div>';
+            removeMessage(typingId);
+            addMessage('assistant', 'Sorry, I encountered an error processing your request. Please try again.');
           } finally {
-            sendButton.disabled = false;
-            sendButton.textContent = 'Execute';
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            isProcessing = false;
+            document.getElementById('sendBtn').disabled = false;
+            input.focus();
           }
         }
         
-        function displayActionPlan(actionPlan) {
-          console.log('displayActionPlan called with:', actionPlan);
-          const chatContainer = document.getElementById('chatContainer');
-          const buttonId = 'executeBtn_' + Date.now(); // Unique ID for each button
-          const cancelId = 'cancelBtn_' + Date.now();
+        function addMessage(type, content) {
+          const messagesArea = document.getElementById('messagesArea');
+          const messageId = 'msg-' + Date.now();
           
-          if (actionPlan.action === 'clarification_needed') {
-            chatContainer.innerHTML += 
-              '<div class="message assistant">' +
-                '<div class="action-plan">' +
-                  '<strong>Need More Information</strong>' +
-                  '<p>' + actionPlan.reasoning + '</p>' +
-                  (actionPlan.missing_info.length > 0 ? 
-                    '<p><strong>Missing:</strong> ' + actionPlan.missing_info.join(', ') + '</p>' : '') +
-                '</div>' +
-              '</div>';
-            return;
-          }
-
-          if (actionPlan.action === 'web_search') {
-            chatContainer.innerHTML += 
-              '<div class="message assistant">' +
-                '<div class="action-plan">' +
-                  '<strong>🔍 Web Search Required</strong>' +
-                  '<p><strong>Query:</strong> ' + actionPlan.parameters.query + '</p>' +
-                  '<p><strong>Plan:</strong> ' + actionPlan.reasoning + '</p>' +
-                  '<div class="confirmation-buttons">' +
-                    '<button class="confirm-btn" onclick="executeCurrentAction()">🔍 Search & Continue</button>' +
-                    '<button class="cancel-btn" onclick="cancelAction()">✗ Cancel</button>' +
-                  '</div>' +
-                '</div>' +
-              '</div>';
-            return;
-          }
+          const messageDiv = document.createElement('div');
+          messageDiv.className = 'message ' + type;
+          messageDiv.id = messageId;
           
-          if (actionPlan.action === 'error') {
-            chatContainer.innerHTML += 
-              '<div class="message error">' +
-                '<strong>Error:</strong> ' + actionPlan.reasoning +
-                (actionPlan.error_message ? '<br><em>' + actionPlan.error_message + '</em>' : '') +
-              '</div>';
-            return;
-          }
+          const avatar = type === 'user' ? '👤' : '🤖';
           
-          // Display action plan details  
-          const isFollowup = actionPlan.isFollowup || false;
-          let actionHtml = 
-            '<div class="message assistant">' +
-              '<div class="action-plan">' +
-                '<strong>' + (isFollowup ? '📧 Follow-up Action: ' : 'Action Plan: ') + actionPlan.action + '</strong>' +
-                '<p><strong>Plan:</strong> ' + (actionPlan.reasoning || 'Ready to proceed with next step') + '</p>' +
-                '<p><strong>Preview:</strong> ' + (actionPlan.preview || 'Will execute the planned action') + '</p>' +
-                '<p><strong>Confidence:</strong> ' + Math.round((actionPlan.confidence || 0.9) * 100) + '%</p>' +
-                
-                // Show complete plan if available
-                (actionPlan.complete_plan && actionPlan.complete_plan.length > 0 ? 
-                  '<div class="complete-plan">' +
-                    '<strong>📋 Complete Workflow:</strong>' +
-                    '<ol>' +
-                      actionPlan.complete_plan.map(function(step) {
-                        return '<li><strong>' + step.action + ':</strong> ' + step.description + '</li>';
-                      }).join('') +
-                    '</ol>' +
-                  '</div>' : '') +
-                
-                '<div class="action-details">' +
-                  '<strong>Parameters:</strong><br>' +
-                  JSON.stringify(actionPlan.parameters, null, 2) +
-                '</div>' +
-                
-                (actionPlan.missing_info.length > 0 ? 
-                  '<p><strong>Missing Info:</strong> ' + actionPlan.missing_info.join(', ') + '</p>' : '') +
-                
-                (actionPlan.default_values ? 
-                  '<div class="action-details">' +
-                    '<strong>Default Values Being Used:</strong><br>' +
-                    Object.entries(actionPlan.default_values).map(function(entry) {
-                      return '• <strong>' + entry[0] + ':</strong> ' + entry[1];
-                    }).join('<br>') +
-                  '</div>' : '');
+          messageDiv.innerHTML = 
+            '<div class="message-avatar">' + avatar + '</div>' +
+            '<div class="message-content">' + content + '</div>';
           
-          if (actionPlan.requires_confirmation) {
-            actionHtml += 
-                '<div class="confirmation-buttons">' +
-                  '<button class="confirm-btn" id="' + buttonId + '">✓ Confirm & Execute</button>' +
-                  '<button class="cancel-btn" id="' + cancelId + '">✗ Cancel</button>' +
-                '</div>';
-          } else {
-            actionHtml += 
-                '<div class="confirmation-buttons">' +
-                  '<button class="confirm-btn" id="' + buttonId + '">▶ Execute</button>' +
-                '</div>';
-          }
+          messagesArea.appendChild(messageDiv);
+          messagesArea.scrollTop = messagesArea.scrollHeight;
           
-          actionHtml += '</div></div>';
-          chatContainer.innerHTML += actionHtml;
+          return messageId;
+        }
+        
+        function addTypingIndicator() {
+          const messagesArea = document.getElementById('messagesArea');
+          const typingId = 'typing-' + Date.now();
           
-          // Add event listeners for the buttons after they're added to DOM
-          const executeBtn = document.getElementById(buttonId);
-          const cancelBtn = document.getElementById(cancelId);
+          const messageDiv = document.createElement('div');
+          messageDiv.className = 'message assistant';
+          messageDiv.id = typingId;
           
-          console.log('Looking for button with ID:', buttonId);
-          console.log('Found executeBtn element:', executeBtn);
+          messageDiv.innerHTML = 
+            '<div class="message-avatar">🤖</div>' +
+            '<div class="message-content">' +
+              '<div class="typing-indicator">' +
+                '<div class="typing-dot"></div>' +
+                '<div class="typing-dot"></div>' +
+                '<div class="typing-dot"></div>' +
+              '</div>' +
+            '</div>';
           
-          if (executeBtn) {
-            console.log('Adding click listener to execute button');
-            executeBtn.addEventListener('click', function() {
-              console.log('Execute button clicked via event listener');
-              console.log('currentActionPlan at button click:', currentActionPlan);
-              executeCurrentAction();
-            });
-          } else {
-            console.log('ERROR: Execute button not found!');
-          }
+          messagesArea.appendChild(messageDiv);
+          messagesArea.scrollTop = messagesArea.scrollHeight;
           
-          if (cancelBtn) {
-            cancelBtn.addEventListener('click', function() {
-              console.log('Cancel button clicked via event listener');
-              cancelAction();
-            });
+          return typingId;
+        }
+        
+        function removeMessage(messageId) {
+          const message = document.getElementById(messageId);
+          if (message) {
+            message.remove();
           }
         }
         
-        function formatActionResults(action, data) {
-          console.log('formatActionResults called with action:', action, 'data:', data);
-          let formattedHtml = '';
+        function addWorkflowMessage(workflow) {
+          const messagesArea = document.getElementById('messagesArea');
+          const steps = workflow.complete_plan || [{ action: workflow.action, description: workflow.preview }];
           
-          switch (action) {
-            case 'read_email_inbox':
-              if (data.emails && data.emails.length > 0) {
-                formattedHtml += '<div class="results-display">';
-                formattedHtml += '<h4>📧 Email Inbox (' + data.emails.length + ' emails)</h4>';
-                data.emails.forEach(function(email, index) {
-                  formattedHtml += 
-                    '<div class="email-item">' +
-                      '<strong>From:</strong> ' + (email.from || email.sender || 'Unknown') + '<br>' +
-                      '<strong>Subject:</strong> ' + (email.subject || 'No Subject') + '<br>' +
-                      '<strong>Date:</strong> ' + (email.date ? new Date(email.date).toLocaleString() : 'Unknown') + '<br>' +
-                      '<strong>Preview:</strong> ' + (email.text || email.body || 'No content').substring(0, 100) +
-                      (email.text && email.text.length > 100 ? '...' : '') +
-                    '</div>';
-                  if (index < data.emails.length - 1) formattedHtml += '<hr>';
-                });
-                formattedHtml += '</div>';
-              } else {
-                formattedHtml += '<div class="results-display"><p>📧 No emails found in inbox.</p></div>';
-              }
-              break;
-              
-            case 'read_sms_messages':
-              if (data.messages && data.messages.length > 0) {
-                formattedHtml += '<div class="results-display">';
-                formattedHtml += '<h4>💬 SMS Messages (' + data.messages.length + ' messages)</h4>';
-                data.messages.forEach(function(msg, index) {
-                  formattedHtml += 
-                    '<div class="sms-item">' +
-                      '<strong>From:</strong> ' + (msg.from || 'Unknown') + '<br>' +
-                      '<strong>To:</strong> ' + (msg.to || 'Unknown') + '<br>' +
-                      '<strong>Date:</strong> ' + (msg.dateSent ? new Date(msg.dateSent).toLocaleString() : 'Unknown') + '<br>' +
-                      '<strong>Message:</strong> ' + (msg.body || msg.message || 'No content') +
-                    '</div>';
-                  if (index < data.messages.length - 1) formattedHtml += '<hr>';
-                });
-                formattedHtml += '</div>';
-              } else {
-                formattedHtml += '<div class="results-display"><p>💬 No SMS messages found.</p></div>';
-              }
-              break;
-              
-            case 'search_parts':
-              console.log('Formatting search_parts results, data:', data);
-              // Handle the nested data structure (data.data contains the actual results)
-              const actualData = data.data || data;
-              console.log('Actual parts data:', actualData);
-              // Handle the purchase agent's specific response format
-              if (actualData.recommended_result && actualData.recommended_result.oem_part_number) {
-                formattedHtml += '<div class="results-display">';
-                formattedHtml += '<h4>🔧 Part Found (Recommended Result)</h4>';
-                formattedHtml += 
-                  '<div class="part-item">' +
-                    '<strong>Equipment:</strong> ' + (actualData.query.description || 'Unknown') + '<br>' +
-                    '<strong>OEM Part Number:</strong> ' + actualData.recommended_result.oem_part_number + '<br>' +
-                    '<strong>Description:</strong> ' + (actualData.recommended_result.description || 'N/A') + '<br>' +
-                    '<strong>Confidence:</strong> ' + Math.round((actualData.recommended_result.confidence || 0) * 100) + '%<br>' +
-                    (actualData.summary ? '<strong>Search Summary:</strong> ' + actualData.summary + '<br>' : '') +
-                  '</div>';
-                formattedHtml += '</div>';
-              } else if (actualData.parts && actualData.parts.length > 0) {
-                formattedHtml += '<div class="results-display">';
-                formattedHtml += '<h4>🔧 Parts Found (' + actualData.parts.length + ' results)</h4>';
-                actualData.parts.forEach(function(part, index) {
-                  formattedHtml += 
-                    '<div class="part-item">' +
-                      '<strong>Part:</strong> ' + (part.name || part.description || 'Unknown') + '<br>' +
-                      (part.partNumber ? '<strong>Part #:</strong> ' + part.partNumber + '<br>' : '') +
-                      (part.make ? '<strong>Make:</strong> ' + part.make + '<br>' : '') +
-                      (part.model ? '<strong>Model:</strong> ' + part.model + '<br>' : '') +
-                      (part.price ? '<strong>Price:</strong> ' + part.price + '<br>' : '') +
-                    '</div>';
-                  if (index < data.parts.length - 1) formattedHtml += '<hr>';
-                });
-                formattedHtml += '</div>';
-              } else {
-                formattedHtml += '<div class="results-display"><p>🔧 No parts found matching the search criteria.</p></div>';
-              }
-              break;
-              
-            case 'search_suppliers':
-              if (data.suppliers && data.suppliers.length > 0) {
-                formattedHtml += '<div class="results-display">';
-                formattedHtml += '<h4>🏪 Suppliers Found (' + data.suppliers.length + ' results)</h4>';
-                data.suppliers.forEach(function(supplier, index) {
-                  formattedHtml += 
-                    '<div class="supplier-item">' +
-                      '<strong>Supplier:</strong> ' + (supplier.name || supplier.company || 'Unknown') + '<br>' +
-                      (supplier.price ? '<strong>Price:</strong> ' + supplier.price + '<br>' : '') +
-                      (supplier.availability ? '<strong>Availability:</strong> ' + supplier.availability + '<br>' : '') +
-                      (supplier.contact ? '<strong>Contact:</strong> ' + supplier.contact + '<br>' : '') +
-                    '</div>';
-                  if (index < data.suppliers.length - 1) formattedHtml += '<hr>';
-                });
-                formattedHtml += '</div>';
-              } else {
-                formattedHtml += '<div class="results-display"><p>🏪 No suppliers found for this part.</p></div>';
-              }
-              break;
-              
-            case 'web_search':
-              if (data.results) {
-                formattedHtml += '<div class="results-display">';
-                formattedHtml += '<h4>🔍 Web Search Results</h4>';
-                formattedHtml += '<div class="search-results">' + (data.results || 'No results content') + '</div>';
-                formattedHtml += '</div>';
-              }
-              break;
-              
-            default:
-              // For other actions, show raw data if interesting
-              if (data && typeof data === 'object' && Object.keys(data).length > 0) {
-                formattedHtml += '<div class="action-details">' + JSON.stringify(data, null, 2) + '</div>';
-              }
-          }
+          let stepsHtml = '';
+          steps.forEach((step, index) => {
+            const actionIcon = getActionIcon(step.action);
+            const actionName = formatActionName(step.action);
+            
+            stepsHtml += 
+              '<div class="workflow-step" id="step-' + index + '">' +
+                '<div class="step-icon" id="step-icon-' + index + '">' + (index + 1) + '</div>' +
+                '<div class="step-text">' +
+                  '<div class="step-action">' + actionIcon + ' ' + actionName + '</div>' +
+                  '<div class="step-description">' + (step.description || 'Processing...') + '</div>' +
+                '</div>' +
+              '</div>';
+          });
           
-          return formattedHtml;
+          const workflowHtml = 
+            '<div class="workflow-message" id="workflow-' + Date.now() + '">' +
+              '<div class="workflow-title">📋 Workflow Plan (' + steps.length + ' steps)</div>' +
+              stepsHtml +
+              '<button class="continue-btn" onclick="executeNextStep()">▶️ Start Execution</button>' +
+            '</div>';
+          
+          const messageDiv = document.createElement('div');
+          messageDiv.className = 'message assistant';
+          messageDiv.innerHTML = 
+            '<div class="message-avatar">🤖</div>' +
+            '<div class="message-content">' + workflowHtml + '</div>';
+          
+          messagesArea.appendChild(messageDiv);
+          messagesArea.scrollTop = messagesArea.scrollHeight;
         }
         
-        async function executeCurrentAction() {
-          console.log('Execute button clicked, currentActionPlan:', currentActionPlan);
-          if (!currentActionPlan) {
-            console.log('No current action plan available');
-            alert('No current action plan available. Please refresh the page and try again.');
+        async function executeNextStep() {
+          if (!currentWorkflow || isProcessing) return;
+          
+          const steps = currentWorkflow.complete_plan || [{ action: currentWorkflow.action, parameters: currentWorkflow.parameters }];
+          
+          if (currentStep >= steps.length) {
+            addMessage('assistant', '✅ All steps completed successfully!');
             return;
           }
           
-          const chatContainer = document.getElementById('chatContainer');
+          isProcessing = true;
+          const step = steps[currentStep];
           
-          // Show execution status
-          chatContainer.innerHTML += '<div class="message assistant">🔄 Executing action...</div>';
-          chatContainer.scrollTop = chatContainer.scrollHeight;
+          // Update step icon to active
+          const stepIcon = document.getElementById('step-icon-' + currentStep);
+          if (stepIcon) {
+            stepIcon.classList.add('active');
+          }
           
           try {
-            console.log('Sending request to execute action:', currentActionPlan);
-            console.log('currentActionPlan.complete_plan:', currentActionPlan.complete_plan);
-            console.log('complete_plan length:', currentActionPlan.complete_plan ? currentActionPlan.complete_plan.length : 'undefined');
-            const response = await fetch('/api/orchestrator/execute', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ actionPlan: currentActionPlan })
-            });
-            
-            console.log('Response status:', response.status);
-            if (!response.ok) {
-              throw new Error('HTTP error! status: ' + response.status);
+            // Create action plan for current step
+            let stepParameters = {};
+            if (currentStep === 0) {
+              stepParameters = currentWorkflow.parameters || {};
+            } else {
+              stepParameters = step.parameters || {};
             }
             
+            const stepActionPlan = {
+              action: step.action,
+              parameters: stepParameters,
+              complete_plan: currentWorkflow.complete_plan,
+              confidence: currentWorkflow.confidence || 0.9
+            };
+            
+            const response = await fetch('/api/orchestrator/execute-step', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                actionPlan: stepActionPlan,
+                stepIndex: currentStep,
+                previousResults: []
+              })
+            });
+            
             const data = await response.json();
-            console.log('Response data:', data);
             const result = data.result;
             
-            if (result.success) {
-              // Check if there's a follow-up action that needs confirmation
-              if (result.data && result.data.requiresFollowup && result.data.followupAction) {
-                // Show the primary action results first
-                let resultHtml = 
-                  '<div class="message assistant">' +
-                    '<div class="result">' +
-                      '<strong>✅ Success:</strong> ' + result.message;
-                
-                // Display the primary action results
-                if (result.data.primaryAction) {
-                  resultHtml += formatActionResults(currentActionPlan.action, result.data.primaryAction);
-                }
-                
-                resultHtml += '</div></div>';
-                chatContainer.innerHTML += resultHtml;
-                
-                // Display the follow-up action plan
-                currentActionPlan = result.data.followupAction;
-                currentActionPlan.isFollowup = true; // Mark as follow-up for UI display
-                console.log('Setting follow-up currentActionPlan:', currentActionPlan);
-                displayActionPlan(currentActionPlan);
-                console.log('currentActionPlan after displayActionPlan:', currentActionPlan);
-                // Don't clear currentActionPlan - we need it for the follow-up action
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-                return; // Early return to avoid clearing currentActionPlan
+            // Update step icon
+            if (stepIcon) {
+              stepIcon.classList.remove('active');
+              if (result.success) {
+                stepIcon.classList.add('completed');
+                stepIcon.innerHTML = '✓';
               } else {
-                // Check if there's a workflow summary
-                let resultHtml = 
-                  '<div class="message assistant">' +
-                    '<div class="result">' +
-                      '<strong>✅ Success:</strong> ' + result.message;
-                
-                // Display actual results based on action type
-                if (currentActionPlan && result.data) {
-                  console.log('About to format results for action:', currentActionPlan.action);
-                  console.log('Result data structure:', result.data);
-                  resultHtml += formatActionResults(currentActionPlan.action, result.data);
-                }
-                
-                // Display workflow summary if available
-                if (result.workflowSummary) {
-                  const summary = result.workflowSummary;
-                  resultHtml += 
-                    '<div class="workflow-summary">' +
-                      '<h4>📋 Workflow Summary</h4>' +
-                      '<p><strong>Objective:</strong> ' + summary.originalObjective + '</p>' +
-                      '<p><strong>Total Actions:</strong> ' + summary.totalActions + '</p>' +
-                      '<p><strong>Duration:</strong> ' + summary.totalDuration + 'ms</p>' +
-                      '<p><strong>Completed:</strong> ' + new Date(summary.endTime).toLocaleTimeString() + '</p>' +
-                      '<div class="action-steps">' +
-                        '<strong>Steps Completed:</strong>' +
-                        '<ol>' +
-                          summary.actions.map(function(action) {
-                            return '<li><strong>' + action.action + '</strong> - ' + action.status + ' (' + action.duration + ')</li>';
-                          }).join('') +
-                        '</ol>' +
-                      '</div>' +
-                    '</div>';
-                } else if (result.data) {
-                  resultHtml += '<div class="action-details">' + JSON.stringify(result.data, null, 2) + '</div>';
-                }
-                
-                resultHtml += '</div></div>';
-                chatContainer.innerHTML += resultHtml;
-                currentActionPlan = null; // Clear after final action completion
+                stepIcon.classList.add('failed');
+                stepIcon.innerHTML = '✗';
+              }
+            }
+            
+            // Add result message
+            const resultMessage = formatStepResult(step.action, result);
+            addMessage('assistant', resultMessage);
+            
+            if (result.success) {
+              currentStep++;
+              // Continue to next step after a short delay
+              if (currentStep < steps.length) {
+                setTimeout(() => executeNextStep(), 1500);
+              } else {
+                addMessage('assistant', '🎉 Workflow completed successfully!');
               }
             } else {
-              chatContainer.innerHTML += 
-                '<div class="message assistant">' +
-                  '<div class="error">' +
-                    '<strong>❌ Error:</strong> ' + result.message +
-                    (result.data ? '<div class="action-details">' + JSON.stringify(result.data, null, 2) + '</div>' : '') +
-                  '</div>' +
-                '</div>';
-              currentActionPlan = null; // Clear after error
+              addMessage('assistant', '❌ Step failed: ' + (result.message || 'Unknown error'));
             }
             
           } catch (error) {
-            chatContainer.innerHTML += '<div class="message error">Execution Error: ' + error.message + '</div>';
-            currentActionPlan = null; // Clear on error
+            if (stepIcon) {
+              stepIcon.classList.remove('active');
+              stepIcon.classList.add('failed');
+              stepIcon.innerHTML = '✗';
+            }
+            addMessage('assistant', '❌ Error executing step: ' + error.message);
+          } finally {
+            isProcessing = false;
+          }
+        }
+        
+        function getActionIcon(action) {
+          const icons = {
+            'search_parts': '🔧',
+            'search_suppliers': '🏪',
+            'send_email': '📧',
+            'send_sms': '💬',
+            'read_email_inbox': '📧',
+            'read_sms_messages': '💬',
+            'web_search': '🔍',
+            'equipment_image_search': '📷'
+          };
+          return icons[action] || '⚙️';
+        }
+        
+        function formatActionName(action) {
+          return action.replace(/_/g, ' ').replace(/\\b\\w/g, l => l.toUpperCase());
+        }
+        
+        function formatStepResult(action, result) {
+          if (!result.success) {
+            return '❌ Step failed: ' + (result.message || 'Unknown error');
           }
           
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-        
-        function cancelAction() {
-          const chatContainer = document.getElementById('chatContainer');
-          chatContainer.innerHTML += '<div class="message assistant">❌ Action cancelled by user.</div>';
-          currentActionPlan = null;
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-        
-        async function clearChat() {
-          document.getElementById('chatContainer').innerHTML = '';
-          currentActionPlan = null;
-          await fetch('/api/orchestrator/clear', { method: 'POST' });
-        }
-        
-        // Allow sending objective with Enter key
-        document.getElementById('messageInput').addEventListener('keypress', function(e) {
-          if (e.key === 'Enter' && !document.getElementById('sendButton').disabled) {
-            sendObjective();
+          switch (action) {
+            case 'search_parts':
+              if (result.data && result.data.data && result.data.data.recommended_result) {
+                const part = result.data.data.recommended_result;
+                return '🔧 **Part Found:** ' + part.oem_part_number + ' - ' + (part.description || 'No description');
+              }
+              return '🔧 Part search completed';
+              
+            case 'search_suppliers':
+              if (result.data && result.data.data && result.data.data.suppliers) {
+                const count = result.data.data.suppliers.length;
+                return '🏪 **Suppliers Found:** ' + count + ' suppliers located';
+              }
+              return '🏪 Supplier search completed';
+              
+            case 'send_email':
+              return '📧 **Email Sent:** Message delivered successfully';
+              
+            case 'send_sms':
+              return '💬 **SMS Sent:** Text message delivered successfully';
+              
+            default:
+              return '✅ **' + formatActionName(action) + ':** Completed successfully';
           }
+        }
+        
+        // Focus input on load
+        window.addEventListener('load', () => {
+          document.getElementById('messageInput').focus();
         });
       </script>
     </body>
     </html>
   `);
+});
+
+// Add route for raw output page
+app.get('/ai-agent-raw', (req, res) => {
+  try {
+    const fs = require('fs');
+    const htmlContent = fs.readFileSync(path.join(__dirname, 'ai-agent-raw.html'), 'utf8');
+    res.send(htmlContent);
+  } catch (error) {
+    console.error('Error loading ai-agent-raw.html:', error);
+    res.status(500).send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Raw Output - PartnerPlus</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+        <style>
+          ${dropdownStyles}
+        </style>
+      </head>
+      <body>
+        ${generateNavigation('ai-agent-raw')}
+        <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+          <h1>AI Agent Raw Output - Loading Error</h1>
+          <p>Could not load the raw output interface. <a href="/ai-agent">Please use AI Agent v2</a></p>
+        </div>
+      </body>
+      </html>
+    `);
+  }
+});
+
+// Add route for API documentation
+app.get('/api-docs', (req, res) => {
+  try {
+    const fs = require('fs');
+    const htmlContent = fs.readFileSync(path.join(__dirname, 'api-docs.html'), 'utf8');
+    res.send(htmlContent);
+  } catch (error) {
+    console.error('Error loading api-docs.html:', error);
+    res.status(500).send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>API Documentation - PartnerPlus</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+        <style>
+          ${dropdownStyles}
+        </style>
+      </head>
+      <body>
+        ${generateNavigation('api-docs')}
+        <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+          <h1>API Documentation - Loading Error</h1>
+          <p>Could not load the API documentation. Please check that api-docs.html exists.</p>
+        </div>
+      </body>
+      </html>
+    `);
+  }
 });
 
 // Redirect old agent-hub URL to AI agent page
@@ -1009,6 +1832,109 @@ app.post('/api/orchestrator/execute', async (req, res) => {
   } catch (error) {
     console.error('Action execution error:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// New endpoint for step-by-step execution in v2 visual workflow
+app.post('/api/orchestrator/execute-step', async (req, res) => {
+  try {
+    const { actionPlan, stepIndex, previousResults } = req.body;
+    
+    console.log(`🎯 V2 WORKFLOW - Executing step ${stepIndex}:`, actionPlan.action);
+    console.log(`🎯 V2 WORKFLOW - Action plan:`, JSON.stringify(actionPlan, null, 2));
+    console.log(`🎯 V2 WORKFLOW - Previous results count:`, previousResults ? previousResults.length : 0);
+    
+    // For steps beyond the first, we may need to pass data from previous steps
+    if (stepIndex > 0 && previousResults && previousResults.length > 0) {
+      // Enhance parameters with data from previous steps
+      const previousStepResult = previousResults[stepIndex - 1];
+      
+      if (previousStepResult && previousStepResult.success && previousStepResult.data) {
+        console.log(`🔗 V2 WORKFLOW - Using previous step result for parameter enhancement`);
+        
+        // Pass along relevant data based on the workflow pattern
+        if (actionPlan.action === 'search_suppliers' && previousStepResult.data.data?.recommended_result?.oem_part_number) {
+          // Parts -> Suppliers workflow
+          const partData = previousStepResult.data.data.recommended_result;
+          actionPlan.parameters = {
+            partNumber: partData.oem_part_number,
+            options: {
+              make: partData.manufacturer || actionPlan.parameters?.make || 'Unknown',
+              model: actionPlan.parameters?.model || '',
+              limit: 5
+            }
+          };
+          console.log(`🔗 V2 WORKFLOW - Enhanced supplier search params:`, actionPlan.parameters);
+        } else if (actionPlan.action === 'send_email' && previousStepResult.data.data?.suppliers?.length > 0) {
+          // Suppliers -> Email workflow  
+          const supplierData = previousStepResult.data.data;
+          const suppliers = supplierData.suppliers.slice(0, 3);
+          
+          const supplierComparison = suppliers.map((supplier, index) => 
+            (index + 1) + '. ' + (supplier.title || supplier.name || 'Unknown Supplier') + '\n' +
+            '   Website: ' + (supplier.domain || 'Unknown') + '\n' +
+            '   URL: ' + (supplier.url || 'No URL available') + '\n' +
+            '   Description: ' + (supplier.snippet || 'No description available') + '\n' +
+            '   ' + (supplier.price ? 'Price: ' + supplier.price : 'Contact for pricing')
+          ).join('\\n\\n');
+          
+          const partNumber = supplierData.part_number || supplierData.partNumber || 'Unknown part';
+          
+          // Use existing email parameters or defaults
+          actionPlan.parameters = {
+            to: actionPlan.parameters?.to || actionPlan.parameters?.email || 'purchasing@company.com',
+            subject: actionPlan.parameters?.subject || `Supplier Comparison for Part ${partNumber}`,
+            text: `Supplier Comparison Report for Part: ${partNumber}
+
+We found ${suppliers.length} suppliers for this part. Here are the top 3 options:
+
+${supplierComparison}
+
+Please review these options and contact the suppliers directly for current pricing and availability.
+
+Best regards,
+PartnerPlus Purchase Agent`
+          };
+          console.log(`🔗 V2 WORKFLOW - Enhanced email params:`, actionPlan.parameters);
+        } else if (actionPlan.action === 'send_sms' && previousStepResult.data.data?.suppliers?.length > 0) {
+          // Suppliers -> SMS workflow
+          const supplierData = previousStepResult.data.data;
+          const suppliers = supplierData.suppliers.slice(0, 3);
+          
+          const supplierList = suppliers.map((supplier, index) => 
+            (index + 1) + '. ' + (supplier.title || supplier.name || 'Unknown') + '\\n   ' + 
+            (supplier.url || 'No URL') + '\\n   Domain: ' + (supplier.domain || 'Unknown')
+          ).join('\\n\\n');
+          
+          const partNumber = supplierData.part_number || supplierData.partNumber || 'Part';
+          
+          actionPlan.parameters = {
+            to: actionPlan.parameters?.to || actionPlan.parameters?.phone || '+18775641118',
+            message: 'Top 3 Suppliers for ' + partNumber + ':\\n\\n' + supplierList
+          };
+          console.log(`🔗 V2 WORKFLOW - Enhanced SMS params:`, actionPlan.parameters);
+        }
+      }
+    }
+    
+    // Execute the single step using the existing orchestrator logic
+    const result = await orchestratorAgent.executeAction(actionPlan);
+    
+    console.log(`🎯 V2 WORKFLOW - Step ${stepIndex} completed:`, result.success ? 'SUCCESS' : 'FAILED');
+    if (!result.success) {
+      console.log(`🎯 V2 WORKFLOW - Step ${stepIndex} error:`, result.message);
+    }
+    
+    res.json({ result });
+  } catch (error) {
+    console.error(`V2 WORKFLOW - Step execution error:`, error);
+    res.status(500).json({ 
+      result: { 
+        success: false, 
+        message: `Error executing step: ${error.message}`,
+        data: null 
+      } 
+    });
   }
 });
 
@@ -1216,7 +2142,7 @@ app.get('/email', (req, res) => {
         .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .nav { display: flex; align-items: center; }
-        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; color: white; }
         .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
         .nav a:hover { background-color: rgba(255,255,255,0.1); }
         .nav a.active { background-color: rgba(255,255,255,0.2); }
@@ -1246,16 +2172,11 @@ app.get('/email', (req, res) => {
         .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
         .close:hover { color: black; }
         .email-body { white-space: pre-wrap; word-wrap: break-word; }
+        ${dropdownStyles}
       </style>
     </head>
     <body>
-      <div class="header">
-        <div class="header-inner">
-          <div class="nav">
-            <h1>PartnerPlus</h1>
-          </div>
-        </div>
-      </div>
+      ${generateNavigation('email')}
       <div class="content">
         <h2>Email Service Manual Interface</h2>
       
@@ -1437,12 +2358,11 @@ app.get('/email', (req, res) => {
               dateDisplay = emailDate.toLocaleDateString([], {month: 'short', day: 'numeric'});
             }
             
-            emailItem.innerHTML = \`
-              <div class="email-from">\${fromName}</div>
-              <div class="email-subject">\${email.subject || '(No Subject)'}</div>
-              <div class="email-date">\${dateDisplay}</div>
-              <div class="email-preview">\${preview}</div>
-            \`;
+            emailItem.innerHTML = 
+              '<div class="email-from">' + fromName + '</div>' +
+              '<div class="email-subject">' + (email.subject || '(No Subject)') + '</div>' +
+              '<div class="email-date">' + dateDisplay + '</div>' +
+              '<div class="email-preview">' + preview + '</div>';
             
             emailList.appendChild(emailItem);
           });
@@ -1456,7 +2376,7 @@ app.get('/email', (req, res) => {
           let fromName = email.from;
           const emailMatch = fromName.match(/"?(.*?)"?\\s*<(.+?)>/);
           if (emailMatch) {
-            fromName = \`\${emailMatch[1]} <\${emailMatch[2]}>\`;
+            fromName = emailMatch[1] + ' <' + emailMatch[2] + '>';
           }
           
           document.getElementById('modalFrom').textContent = fromName;
@@ -1517,7 +2437,7 @@ app.get('/sms', (req, res) => {
         .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .nav { display: flex; align-items: center; }
-        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; color: white; }
         .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
         .nav a:hover { background-color: rgba(255,255,255,0.1); }
         .nav a.active { background-color: rgba(255,255,255,0.2); }
@@ -1547,21 +2467,11 @@ app.get('/sms', (req, res) => {
         .char-count { font-size: 0.8em; color: #666; text-align: right; margin-top: 5px; }
         .char-count.warning { color: #f57c00; }
         .char-count.error { color: #d32f2f; }
+        ${dropdownStyles}
       </style>
     </head>
     <body>
-      <div class="header">
-        <div class="header-inner">
-          <div class="nav">
-            <h1>PartnerPlus</h1>
-            <a href="/">AI Agent</a>
-            <a href="/email">Email Service</a>
-            <a href="/sms" class="active">SMS Service</a>
-            <a href="/executor">Code Executor</a>
-            <a href="/purchase-agent">Purchase Agent</a>
-          </div>
-        </div>
-      </div>
+      ${generateNavigation('sms')}
       <div class="content">
         <h2>SMS Service Manual Interface</h2>
       
@@ -1611,7 +2521,7 @@ app.get('/sms', (req, res) => {
             smsCount = Math.ceil(length / 153); // SMS segments after first are 153 chars
           }
           
-          charCountDiv.textContent = \`\${length} / \${length <= 160 ? '160' : '1600'} characters (\${smsCount} SMS)\`;
+          charCountDiv.textContent = length + ' / ' + (length <= 160 ? '160' : '1600') + ' characters (' + smsCount + ' SMS)';
           
           if (length > 1600) {
             charCountDiv.className = 'char-count error';
@@ -1725,7 +2635,7 @@ app.get('/sms', (req, res) => {
 
           messages.forEach((message) => {
             const messageItem = document.createElement('div');
-            messageItem.className = \`message-item \${message.type}\`;
+            messageItem.className = 'message-item ' + message.type;
             
             // Format phone number for display
             const phoneNumber = formatPhoneForDisplay(message.type === 'sent' ? message.to : message.from);
@@ -1746,12 +2656,11 @@ app.get('/sms', (req, res) => {
               dateDisplay = messageDate.toLocaleDateString([], {month: 'short', day: 'numeric'}) + ' ' + messageDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             }
             
-            messageItem.innerHTML = \`
-              <div class="message-from">\${message.type === 'sent' ? 'To: ' + phoneNumber : 'From: ' + phoneNumber}</div>
-              <div class="message-body">\${message.body}</div>
-              <div class="message-date">\${dateDisplay}</div>
-              \${message.status ? '<div class="message-status">Status: ' + message.status + '</div>' : ''}
-            \`;
+            messageItem.innerHTML = 
+              '<div class="message-from">' + (message.type === 'sent' ? 'To: ' + phoneNumber : 'From: ' + phoneNumber) + '</div>' +
+              '<div class="message-body">' + message.body + '</div>' +
+              '<div class="message-date">' + dateDisplay + '</div>' +
+              (message.status ? '<div class="message-status">Status: ' + message.status + '</div>' : '');
             
             messageList.appendChild(messageItem);
           });
@@ -1764,9 +2673,9 @@ app.get('/sms', (req, res) => {
           const digits = phoneNumber.replace(/\\D/g, '');
           
           if (digits.length === 10) {
-            return \`(\${digits.slice(0, 3)}) \${digits.slice(3, 6)}-\${digits.slice(6)}\`;
+            return '(' + digits.slice(0, 3) + ') ' + digits.slice(3, 6) + '-' + digits.slice(6);
           } else if (digits.length === 11 && digits.startsWith('1')) {
-            return \`+1 (\${digits.slice(1, 4)}) \${digits.slice(4, 7)}-\${digits.slice(7)}\`;
+            return '+1 (' + digits.slice(1, 4) + ') ' + digits.slice(4, 7) + '-' + digits.slice(7);
           }
           
           return phoneNumber; // Return original if can't format
@@ -1996,6 +2905,147 @@ app.post('/api/purchase-agent/parts/find-generic', async (req, res) => {
   }
 });
 
+// AI Web Search endpoint - GPT with web search enabled
+app.post('/api/purchase-agent/search/web', async (req, res) => {
+  try {
+    const { query } = req.body;
+    
+    if (!query) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Search query is required' 
+      });
+    }
+
+    // Use OpenAI client with web search capability
+    const OpenAIClient = require('./lib/openai-client');
+    const openaiClient = new OpenAIClient();
+    
+    // Query GPT with web search enabled
+    const input = `Please search the web for: ${query}. Use web search to find the most current, real-time data and provide a comprehensive answer.`;
+    
+    console.log('GPT web search input:', input);
+    
+    const response = await openaiClient.chatWithResponses(input, {
+      model: 'gpt-4o',
+      tools: [{ type: 'web_search_preview' }],
+      stream: false
+    });
+    
+    console.log('GPT web search response:', JSON.stringify(response, null, 2));
+    
+    res.json({
+      success: true,
+      query: query,
+      response: response,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('AI web search error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// SERP Search endpoint - Returns 10 real Google search results via SerpAPI
+app.post('/api/purchase-agent/search/serp', async (req, res) => {
+  try {
+    const { query } = req.body;
+    
+    if (!query) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Search query is required' 
+      });
+    }
+
+    // Use real SerpAPI like the Flask service does
+    const axios = require('axios');
+    const serpApiKey = process.env.SERPAPI_KEY;
+    
+    if (!serpApiKey) {
+      return res.status(500).json({
+        success: false,
+        error: 'SERPAPI_KEY not configured'
+      });
+    }
+
+    const searchParams = {
+      q: query,
+      engine: 'google',
+      api_key: serpApiKey,
+      num: 10
+    };
+
+    const response = await axios.get('https://serpapi.com/search', {
+      params: searchParams,
+      timeout: 30000
+    });
+
+    const serpResults = response.data;
+    
+    res.json({
+      success: true,
+      query: query,
+      searchEngine: "Google (via SerpAPI)",
+      count: serpResults.organic_results ? serpResults.organic_results.length : 0,
+      results: {
+        search_metadata: serpResults.search_metadata,
+        search_parameters: serpResults.search_parameters,
+        search_information: serpResults.search_information,
+        organic_results: serpResults.organic_results || [],
+        related_searches: serpResults.related_searches || []
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('SERP search error:', error);
+    if (error.response) {
+      res.status(500).json({
+        success: false,
+        error: `SerpAPI error: ${error.response.status} - ${error.response.data?.error || error.response.statusText}`
+      });
+    } else {
+      res.status(500).json({ 
+        success: false, 
+        error: error.message 
+      });
+    }
+  }
+});
+
+// Search Tools page
+app.get('/search-tools', (req, res) => {
+  const fs = require('fs');
+  
+  try {
+    // Load the simplified tabbed search tools page
+    const htmlContent = fs.readFileSync(path.join(__dirname, 'search-tools-simple-tabs.html'), 'utf8');
+    res.send(htmlContent);
+  } catch (error) {
+    console.error('Error loading search tools page:', error);
+    res.status(500).send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Search Tools - Error - PartnerPlus</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+      </head>
+      <body>
+        ${generateNavigation('search-tools')}
+        <div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+          <h1>Search Tools - Loading Error</h1>
+          <p>Could not load the search tools interface. Error: ${error.message}</p>
+          <p>File path attempted: ${path.join(__dirname, 'search-tools-simple.html')}</p>
+        </div>
+      </body>
+      </html>
+    `);
+  }
+});
+
 // Code Executor page
 app.get('/executor', (req, res) => {
   res.send(`
@@ -2009,7 +3059,7 @@ app.get('/executor', (req, res) => {
         .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .nav { display: flex; align-items: center; }
-        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; color: white; }
         .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
         .nav a:hover { background-color: rgba(255,255,255,0.1); }
         .nav a.active { background-color: rgba(255,255,255,0.2); }
@@ -2041,21 +3091,11 @@ app.get('/executor', (req, res) => {
         .examples code { background-color: white; padding: 2px 4px; border-radius: 3px; font-family: 'Monaco', 'Consolas', monospace; }
         .html-preview { border: 1px solid #ddd; border-radius: 4px; background: white; min-height: 200px; }
         .html-preview iframe { width: 100%; height: 300px; border: none; }
+        ${dropdownStyles}
       </style>
     </head>
     <body>
-      <div class="header">
-        <div class="header-inner">
-          <div class="nav">
-            <h1>PartnerPlus</h1>
-            <a href="/">AI Agent</a>
-            <a href="/email">Email Service</a>
-            <a href="/sms">SMS Service</a>
-            <a href="/executor" class="active">Code Executor</a>
-            <a href="/purchase-agent">Purchase Agent</a>
-          </div>
-        </div>
-      </div>
+      ${generateNavigation('executor')}
       <div class="content">
         <h2>Code Executor</h2>
         <p>Execute code in multiple languages. Code can be imported from AI Agent conversations.</p>
@@ -2256,7 +3296,7 @@ app.get('/purchase-agent', (req, res) => {
         .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .nav { display: flex; align-items: center; }
-        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; color: white; }
         .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
         .nav a:hover { background-color: rgba(255,255,255,0.1); }
         .nav a.active { background-color: rgba(255,255,255,0.2); }
@@ -2301,21 +3341,11 @@ app.get('/purchase-agent', (req, res) => {
         .status-indicator.running { background-color: #4caf50; animation: pulse 1.5s infinite; }
         .status-indicator.stopped { background-color: #f44336; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        ${dropdownStyles}
       </style>
     </head>
     <body>
-      <div class="header">
-        <div class="header-inner">
-          <div class="nav">
-            <h1>PartnerPlus</h1>
-            <a href="/">AI Agent</a>
-            <a href="/email">Email Service</a>
-            <a href="/sms">SMS Service</a>
-            <a href="/executor">Code Executor</a>
-            <a href="/purchase-agent" class="active">Purchase Agent</a>
-          </div>
-        </div>
-      </div>
+      ${generateNavigation('purchase-agent')}
       <div class="content">
         <h2>Purchase Agent <span id="serviceStatus"><span class="status-indicator stopped"></span>Service Stopped</span></h2>
         <div class="info">
@@ -3085,7 +4115,7 @@ app.get('/optin', (req, res) => {
         .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .nav { display: flex; align-items: center; }
-        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; }
+        .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; color: white; }
         .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
         .nav a:hover { background-color: rgba(255,255,255,0.1); }
         .content { max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
@@ -3097,19 +4127,7 @@ app.get('/optin', (req, res) => {
       </style>
     </head>
     <body>
-      <div class="header">
-        <div class="header-inner">
-          <div class="nav">
-            <h1>PartnerPlus</h1>
-            <a href="/">AI Agent</a>
-            <a href="/email">Email Service</a>
-            <a href="/sms">SMS Service</a>
-            <a href="/executor">Code Executor</a>
-            <a href="/purchase-agent">Purchase Agent</a>
-            <a href="/agent-hub">Agent Hub</a>
-          </div>
-        </div>
-      </div>
+      ${generateNavigation('optin')}
       <div class="content">
         <h1>SMS Opt-In Policy & Terms of Service</h1>
         

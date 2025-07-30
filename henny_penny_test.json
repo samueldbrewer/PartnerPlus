@@ -1,0 +1,42 @@
+{
+  "actionPlan": {
+    "action": "search_suppliers",
+    "parameters": {
+      "partNumber": "77575",
+      "options": {
+        "make": "Henny Penny",
+        "limit": 5
+      }
+    },
+    "confidence": 0.95,
+    "missing_info": [],
+    "default_values": {},
+    "requires_confirmation": false,
+    "complete_plan": [
+      {
+        "step": 1,
+        "action": "search_suppliers",
+        "description": "Find suppliers for Henny Penny part 77575",
+        "parameters": {
+          "partNumber": "77575",
+          "options": {
+            "make": "Henny Penny",
+            "limit": 5
+          }
+        }
+      },
+      {
+        "step": 2,
+        "action": "send_sms",
+        "description": "Text the best pricing information to manager at +1555123456",
+        "parameters": {
+          "to": "+1555123456",
+          "message": "supplier pricing info"
+        }
+      }
+    ],
+    "requires_planning_confirmation": true,
+    "reasoning": "User wants supplier search followed by SMS with pricing info, requires 2-step workflow",
+    "preview": "Complete workflow: 1) Search for suppliers carrying Henny Penny part 77575, 2) Send SMS with best pricing to +1555123456"
+  }
+}

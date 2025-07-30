@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>API Documentation - PartnerPlus</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <style>
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      line-height: 1.6;
+      color: #333;
+    }
+    .header { 
+      background-color: #1976d2; 
+      color: white; 
+      padding: 15px 0; 
+      margin-bottom: 20px; 
+      width: 100%; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    }
+    .header-inner { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 0 20px; 
+    }
+    .nav { 
+      display: flex; 
+      align-items: center;
+    }
+    .nav h1 { 
+      margin: 0; 
+      margin-right: 30px; 
+      font-size: 24px; 
+      color: white;
+    }
+    .nav a { 
+      color: white; 
+      text-decoration: none; 
+      padding: 8px 16px; 
+      margin-right: 10px; 
+      border-radius: 4px; 
+      transition: background-color 0.3s;
+    }
+    .nav a:hover { 
+      background-color: rgba(255,255,255,0.1);
+    }
+    .nav a.active { 
+      background-color: rgba(255,255,255,0.2);
+    }
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle { cursor: pointer; }
+    .dropdown-menu { 
+      display: none; 
+      position: absolute; 
+      background-color: white; 
+      min-width: 160px; 
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
+      z-index: 1; 
+      border-radius: 4px; 
+      top: 100%; 
+      left: 0; 
+    }
+    .dropdown-menu a { 
+      color: #333; 
+      padding: 12px 16px; 
+      text-decoration: none; 
+      display: block; 
+      margin: 0; 
+      border-radius: 0; 
+    }
+    .dropdown-menu a:hover { 
+      background-color: #f1f1f1; 
+      color: #333; 
+    }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown:hover .dropdown-toggle { background-color: rgba(255,255,255,0.1); }
+    
+    .content { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 0 20px 60px 20px; 
+    }
+    
+    .toc {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+    .toc h2 {
+      margin: 0 0 15px 0;
+      color: #1976d2;
+    }
+    .toc ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    .toc li {
+      margin: 8px 0;
+    }
+    .toc a {
+      color: #1976d2;
+      text-decoration: none;
+      padding: 4px 0;
+      display: block;
+    }
+    .toc a:hover {
+      text-decoration: underline;
+    }
+    
+    .section {
+      margin-bottom: 40px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 30px;
+    }
+    .section:last-child {
+      border-bottom: none;
+    }
+    
+    h1 {
+      color: #1976d2;
+      margin-bottom: 20px;
+    }
+    h2 {
+      color: #1976d2;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #1976d2;
+    }
+    h3 {
+      color: #333;
+      margin-top: 25px;
+      margin-bottom: 10px;
+    }
+    
+    .endpoint {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
+    
+    .endpoint-header {
+      background: #f8f9fa;
+      padding: 15px 20px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .method {
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: white;
+    }
+    .method.get { background: #28a745; }
+    .method.post { background: #007bff; }
+    .method.put { background: #ffc107; color: #333; }
+    .method.delete { background: #dc3545; }
+    
+    .endpoint-path {
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    
+    .endpoint-body {
+      padding: 20px;
+    }
+    
+    .endpoint-description {
+      margin-bottom: 20px;
+      color: #666;
+    }
+    
+    .params, .response {
+      margin-bottom: 20px;
+    }
+    
+    .params h4, .response h4 {
+      margin: 0 0 10px 0;
+      color: #333;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .param {
+      margin-bottom: 12px;
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      border-left: 3px solid #1976d2;
+    }
+    
+    .param-name {
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-weight: bold;
+      color: #1976d2;
+    }
+    
+    .param-type {
+      color: #666;
+      font-size: 12px;
+      text-transform: uppercase;
+      margin-left: 8px;
+    }
+    
+    .param-required {
+      color: #dc3545;
+      font-size: 11px;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+    
+    .param-description {
+      margin-top: 5px;
+      color: #555;
+    }
+    
+    pre {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 14px;
+      line-height: 1.4;
+      margin: 15px 0;
+    }
+    
+    .example {
+      margin-top: 15px;
+    }
+    
+    .example-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    
+    .status-codes {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .status-code {
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+    .status-200 { background: #d4edda; color: #155724; }
+    .status-400 { background: #f8d7da; color: #721c24; }
+    .status-500 { background: #f8d7da; color: #721c24; }
+    
+    .note {
+      background: #e3f2fd;
+      border: 1px solid #bbdefb;
+      border-radius: 6px;
+      padding: 15px;
+      margin: 20px 0;
+      border-left: 4px solid #1976d2;
+    }
+    
+    .note-title {
+      font-weight: bold;
+      color: #1976d2;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner">
+      <div class="nav">
+        <h1>PartnerPlus</h1>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Agents ▼</a>
+          <div class="dropdown-menu">
+            <a href="/">WO Agent</a>
+            <a href="/ai-agent">AI Agent v2</a>
+            <a href="/ai-agent-raw">Raw Output</a>
+            <a href="/ai-agent-v1">v1 Backup</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle active">Tools ▼</a>
+          <div class="dropdown-menu">
+            <a href="/ai-chat">AI Chat</a>
+            <a href="/email">Email Service</a>
+            <a href="/sms">SMS Service</a>
+            <a href="/executor">Code Executor</a>
+            <a href="/purchase-agent">Purchase Agent</a>
+            <div style="border-top: 1px solid #ddd; margin: 5px 0;"></div>
+            <a href="/search-tools">Search Tools</a>
+            <a href="/api-docs">API Documentation</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <h1>📖 PartnerPlus API Documentation</h1>
+    
+    <div class="note">
+      <div class="note-title">📝 Quick Reference</div>
+      Complete API documentation for all PartnerPlus tools and services. Use this reference for integration, testing, and development.
+    </div>
+
+    <div class="toc">
+      <h2>📑 Table of Contents</h2>
+      <ul>
+        <li><a href="#orchestrator">🤖 AI Orchestrator Agent</a></li>
+        <li><a href="#chat">💬 AI Chat</a></li>
+        <li><a href="#email">📧 Email Service</a></li>
+        <li><a href="#sms">📱 SMS Service</a></li>
+        <li><a href="#purchase-agent">🛒 Purchase Agent</a></li>
+        <li><a href="#search">🔍 Search Tools</a></li>
+        <li><a href="#code">⚙️ Code Executor</a></li>
+        <li><a href="#system">🔧 System</a></li>
+      </ul>
+    </div>
+
+    <!-- AI Orchestrator Agent -->
+    <div class="section" id="orchestrator">
+      <h2>🤖 AI Orchestrator Agent</h2>
+      <p>Multi-step workflow automation with AI planning and execution.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method post">POST</span>
+          <span class="endpoint-path">/api/orchestrator/objective</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Generate an AI workflow plan from a natural language objective.
+          </div>
+          
+          <div class="params">
+            <h4>Request Body</h4>
+            <div class="param">
+              <span class="param-name">objective</span>
+              <span class="param-type">string</span>
+              <span class="param-required">required</span>
+              <div class="param-description">Natural language description of what you want to accomplish</div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="example-title">Example Request:</div>
+            <pre>{
+  "objective": "Find suppliers for Henny Penny part 77575, then email the comparison to purchasing@company.com"
+}</pre>
+          </div>
+
+          <div class="response">
+            <h4>Response</h4>
+            <pre>{
+  "actionPlan": {
+    "action": "search_parts",
+    "parameters": {
+      "description": "part 77575",
+      "make": "Henny Penny"
+    },
+    "confidence": 0.95,
+    "complete_plan": [
+      {"step": 1, "action": "search_parts", "description": "Find part 77575"},
+      {"step": 2, "action": "search_suppliers", "description": "Find suppliers"},
+      {"step": 3, "action": "send_email", "description": "Email comparison"}
+    ]
+  }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method post">POST</span>
+          <span class="endpoint-path">/api/orchestrator/execute-step</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Execute a single step of a multi-step workflow.
+          </div>
+          
+          <div class="params">
+            <h4>Request Body</h4>
+            <div class="param">
+              <span class="param-name">actionPlan</span>
+              <span class="param-type">object</span>
+              <span class="param-required">required</span>
+              <div class="param-description">The action plan from /objective endpoint</div>
+            </div>
+            <div class="param">
+              <span class="param-name">stepIndex</span>
+              <span class="param-type">number</span>
+              <span class="param-required">required</span>
+              <div class="param-description">Zero-based index of step to execute</div>
+            </div>
+            <div class="param">
+              <span class="param-name">previousResults</span>
+              <span class="param-type">array</span>
+              <span class="param-required">optional</span>
+              <div class="param-description">Array of results from previous steps</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Chat -->
+    <div class="section" id="chat">
+      <h2>💬 AI Chat</h2>
+      <p>Direct conversation interface with AI assistant.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method post">POST</span>
+          <span class="endpoint-path">/api/chat</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Send a message to the AI assistant and get a response.
+          </div>
+          
+          <div class="params">
+            <h4>Request Body</h4>
+            <div class="param">
+              <span class="param-name">message</span>
+              <span class="param-type">string</span>
+              <span class="param-required">required</span>
+              <div class="param-description">Your message to the AI</div>
+            </div>
+            <div class="param">
+              <span class="param-name">stream</span>
+              <span class="param-type">boolean</span>
+              <span class="param-required">optional</span>
+              <div class="param-description">Enable streaming response (default: false)</div>
+            </div>
+          </div>
+
+          <div class="response">
+            <h4>Response</h4>
+            <pre>{
+  "response": "AI assistant response text",
+  "timestamp": "2025-07-29T21:45:00.000Z"
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Service -->
+    <div class="section" id="email">
+      <h2>📧 Email Service</h2>
+      <p>Send and receive emails through SMTP/IMAP integration.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method post">POST</span>
+          <span class="endpoint-path">/api/email/send</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Send an email message.
+          </div>
+          
+          <div class="params">
+            <h4>Request Body</h4>
+            <div class="param">
+              <span class="param-name">to</span>
+              <span class="param-type">string</span>
+              <span class="param-required">required</span>
+              <div class="param-description">Recipient email address</div>
+            </div>
+            <div class="param">
+              <span class="param-name">subject</span>
+              <span class="param-type">string</span>
+              <span class="param-required">required</span>
+              <div class="param-description">Email subject line</div>
+            </div>
+            <div class="param">
+              <span class="param-name">text</span>
+              <span class="param-type">string</span>
+              <span class="param-required">required</span>
+              <div class="param-description">Email body text</div>
+            </div>
+            <div class="param">
+              <span class="param-name">html</span>
+              <span class="param-type">string</span>
+              <span class="param-required">optional</span>
+              <div class="param-description">HTML email body</div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="example-title">Example Request:</div>
+            <pre>{
+  "to": "user@example.com",
+  "subject": "Test Email",
+  "text": "This is a test email from PartnerPlus."
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method get">GET</span>
+          <span class="endpoint-path">/api/email/inbox</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Retrieve recent emails from inbox.
+          </div>
+          
+          <div class="params">
+            <h4>Query Parameters</h4>
+            <div class="param">
+              <span class="param-name">limit</span>
+              <span class="param-type">number</span>
+              <span class="param-required">optional</span>
+              <div class="param-description">Number of emails to retrieve (default: 10)</div>
+            </div>
+          </div>
+
+          <div class="response">
+            <h4>Response</h4>
+            <pre>{
+  "success": true,
+  "emails": [
+    {
+      "from": "sender@example.com",
+      "subject": "Email Subject",
+      "date": "2025-07-29T10:30:00.000Z",
+      "body": "Email content..."
+    }
+  ]
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SMS Service -->
+    <div class="section" id="sms">
+      <h2>📱 SMS Service</h2>
+      <p>Send and receive SMS messages via Twilio integration.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method post">POST</span>
+          <span class="endpoint-path">/api/sms/send</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Send an SMS message.
+          </div>
+          
+          <div class="params">
+            <h4>Request Body</h4>
+            <div class="param">
+              <span class="param-name">to</span>
+              <span class="param-type">string</span>
+              <span class="param-required">required</span>
+              <div class="param-description">Recipient phone number with country code (e.g., +1234567890)</div>
+            </div>
+            <div class="param">
+              <span class="param-name">message</span>
+              <span class="param-type">string</span>
+              <span class="param-required">required</span>
+              <div class="param-description">SMS message text</div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="example-title">Example Request:</div>
+            <pre>{
+  "to": "+1234567890",
+  "message": "Your order has been confirmed."
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method get">GET</span>
+          <span class="endpoint-path">/api/sms/messages</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Retrieve recent SMS messages.
+          </div>
+          
+          <div class="params">
+            <h4>Query Parameters</h4>
+            <div class="param">
+              <span class="param-name">limit</span>
+              <span class="param-type">number</span>
+              <span class="param-required">optional</span>
+              <div class="param-description">Number of messages to retrieve (default: 20)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Purchase Agent -->
+    <div class="section" id="purchase-agent">
+      <h2>🛒 Purchase Agent</h2>
+      <p>Equipment parts research, supplier search, and procurement automation.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method post">POST</span>
+          <span class="endpoint-path">/api/purchase-agent/parts/resolve</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Resolve a part description to specific OEM part numbers.
+          </div>
+          
+          <div class="params">
+            <h4>Request Body</h4>
+            <div class="param">
+              <span class="param-name">description</span>
+              <span class="param-type">string</span>
+              <span class="param-required">required</span>
+              <div class="param-description">Part description or name</div>
+            </div>
+            <div class="param">
+              <span class="param-name">make</span>
+              <span class="param-type">string</span>
+              <span class="param-required">optional</span>
+              <div class="param-description">Equipment manufacturer</div>
+            </div>
+            <div class="param">
+              <span class="param-name">model</span>
+              <span class="param-type">string</span>
+              <span class="param-required">optional</span>
+              <div class="param-description">Equipment model</div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="example-title">Example Request:</div>
+            <pre>{
+  "description": "door seal",
+  "make": "Hobart",
+  "model": "Dishwasher"
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method post">POST</span>
+          <span class="endpoint-path">/api/purchase-agent/suppliers/search</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Find suppliers for a specific part number.
+          </div>
+          
+          <div class="params">
+            <h4>Request Body</h4>
+            <div class="param">
+              <span class="param-name">partNumber</span>
+              <span class="param-type">string</span>
+              <span class="param-required">required</span>
+              <div class="param-description">OEM part number to search for</div>
+            </div>
+            <div class="param">
+              <span class="param-name">options</span>
+              <span class="param-type">object</span>
+              <span class="param-required">optional</span>
+              <div class="param-description">Additional search options (make, model, limit)</div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="example-title">Example Request:</div>
+            <pre>{
+  "partNumber": "77575",
+  "options": {
+    "make": "Henny Penny",
+    "limit": 5
+  }
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Tools -->
+    <div class="section" id="search">
+      <h2>🔍 Search Tools</h2>
+      <p>AI-powered web search and raw SERP results.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method post">POST</span>
+          <span class="endpoint-path">/api/purchase-agent/search/web</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Query GPT with web search enabled for intelligent answers.
+          </div>
+          
+          <div class="params">
+            <h4>Request Body</h4>
+            <div class="param">
+              <span class="param-name">query</span>
+              <span class="param-type">string</span>
+              <span class="param-required">required</span>
+              <div class="param-description">Your question or search query</div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="example-title">Example Request:</div>
+            <pre>{
+  "query": "What is the current NVDA stock price?"
+}</pre>
+          </div>
+
+          <div class="response">
+            <h4>Response</h4>
+            <pre>{
+  "success": true,
+  "query": "What is the current NVDA stock price?",
+  "response": {
+    "output_text": "As of July 29, 2025, NVIDIA Corporation (ticker: NVDA) is trading at $175.51...",
+    "model": "gpt-4o-2024-08-06"
+  },
+  "timestamp": "2025-07-29T21:45:00.000Z"
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method post">POST</span>
+          <span class="endpoint-path">/api/purchase-agent/search/serp</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Get 10 raw Google search results via SerpAPI.
+          </div>
+          
+          <div class="params">
+            <h4>Request Body</h4>
+            <div class="param">
+              <span class="param-name">query</span>
+              <span class="param-type">string</span>
+              <span class="param-required">required</span>
+              <div class="param-description">Google search query</div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="example-title">Example Request:</div>
+            <pre>{
+  "query": "restaurant equipment parts"
+}</pre>
+          </div>
+
+          <div class="response">
+            <h4>Response</h4>
+            <pre>{
+  "success": true,
+  "query": "restaurant equipment parts",
+  "searchEngine": "Google (via SerpAPI)",
+  "count": 10,
+  "results": {
+    "organic_results": [
+      {
+        "position": 1,
+        "title": "Restaurant Equipment Parts - Example Site",
+        "link": "https://example.com/parts",
+        "snippet": "Find all your restaurant equipment parts..."
+      }
+    ]
+  },
+  "timestamp": "2025-07-29T21:45:00.000Z"
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code Executor -->
+    <div class="section" id="code">
+      <h2>⚙️ Code Executor</h2>
+      <p>Execute code in various programming languages safely.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method post">POST</span>
+          <span class="endpoint-path">/api/execute-code</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Execute code in a sandboxed environment.
+          </div>
+          
+          <div class="params">
+            <h4>Request Body</h4>
+            <div class="param">
+              <span class="param-name">code</span>
+              <span class="param-type">string</span>
+              <span class="param-required">required</span>
+              <div class="param-description">Code to execute</div>
+            </div>
+            <div class="param">
+              <span class="param-name">language</span>
+              <span class="param-type">string</span>
+              <span class="param-required">required</span>
+              <div class="param-description">Programming language (python, javascript, bash)</div>
+            </div>
+          </div>
+
+          <div class="example">
+            <div class="example-title">Example Request:</div>
+            <pre>{
+  "code": "print('Hello, World!')",
+  "language": "python"
+}</pre>
+          </div>
+
+          <div class="response">
+            <h4>Response</h4>
+            <pre>{
+  "success": true,
+  "output": "Hello, World!\n",
+  "language": "python",
+  "timestamp": "2025-07-29T21:45:00.000Z"
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System -->
+    <div class="section" id="system">
+      <h2>🔧 System</h2>
+      <p>System health and status endpoints.</p>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method get">GET</span>
+          <span class="endpoint-path">/health</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Check overall system health.
+          </div>
+
+          <div class="response">
+            <h4>Response</h4>
+            <pre>{
+  "status": "healthy",
+  "timestamp": "2025-07-29T21:45:00.000Z",
+  "services": {
+    "database": "connected",
+    "email": "ready",
+    "sms": "ready"
+  }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="endpoint">
+        <div class="endpoint-header">
+          <span class="method get">GET</span>
+          <span class="endpoint-path">/api/purchase-agent/health</span>
+        </div>
+        <div class="endpoint-body">
+          <div class="endpoint-description">
+            Check Purchase Agent Flask service health.
+          </div>
+
+          <div class="response">
+            <h4>Response</h4>
+            <pre>{
+  "success": true,
+  "health": {
+    "database": "connected",
+    "response_time_ms": 5.42,
+    "service": "manual-purchase-agent",
+    "status": "healthy",
+    "timestamp": "2025-07-29T21:53:26.287425Z",
+    "version": "v15.6"
+  }
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note">
+      <div class="note-title">🔗 Base URL</div>
+      All endpoints are relative to: <code>http://localhost:3000</code> (or your configured domain)
+    </div>
+
+    <div class="note">
+      <div class="note-title">🔒 Authentication</div>
+      Currently, no authentication is required for API endpoints. In production, implement proper authentication and authorization.
+    </div>
+
+    <div class="note">
+      <div class="note-title">📊 Status Codes</div>
+      <div class="status-codes">
+        <span class="status-code status-200">200</span>
+        <span>Success - Request completed successfully</span>
+        <span class="status-code status-400">400</span>
+        <span>Bad Request - Invalid request parameters</span>
+        <span class="status-code status-500">500</span>
+        <span>Internal Server Error - Server-side error occurred</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

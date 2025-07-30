@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Agent Raw Output - PartnerPlus</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <style>
+    body { 
+      font-family: 'Courier New', monospace; 
+      margin: 0; 
+      padding: 0; 
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+      line-height: 1.4;
+    }
+    
+    .header { 
+      background-color: #1976d2; 
+      color: white; 
+      padding: 15px 0; 
+      margin-bottom: 20px; 
+      width: 100%; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+    }
+    
+    .header-inner { 
+      max-width: 1200px; 
+      margin: 0 auto; 
+      padding: 0 20px; 
+    }
+    
+    .nav { 
+      display: flex; 
+      align-items: center;
+    }
+    
+    .nav h1 { 
+      margin: 0; 
+      margin-right: 30px; 
+      font-size: 24px; 
+      color: white;
+    }
+    
+    .nav a { 
+      color: white; 
+      text-decoration: none; 
+      padding: 8px 16px; 
+      margin-right: 10px; 
+      border-radius: 4px; 
+      transition: background-color 0.3s;
+    }
+    
+    .nav a:hover { 
+      background-color: rgba(255,255,255,0.1);
+    }
+    
+    .nav a.active { 
+      background-color: rgba(255,255,255,0.2);
+    }
+
+    /* Dropdown Styles */
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle { cursor: pointer; }
+    .dropdown-menu { 
+      display: none; 
+      position: absolute; 
+      background-color: white; 
+      min-width: 160px; 
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
+      z-index: 1; 
+      border-radius: 4px; 
+      top: 100%; 
+      left: 0; 
+    }
+    .dropdown-menu a { 
+      color: #333; 
+      padding: 12px 16px; 
+      text-decoration: none; 
+      display: block; 
+      margin: 0; 
+      border-radius: 0; 
+    }
+    .dropdown-menu a:hover { 
+      background-color: #f1f1f1; 
+      color: #333; 
+    }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown:hover .dropdown-toggle { background-color: rgba(255,255,255,0.1); }
+
+    .main-content {
+      padding: 20px;
+    }
+    
+    .input-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #444;
+      border-radius: 4px;
+    }
+    
+    .input-section label {
+      display: block;
+      margin-bottom: 8px;
+      color: #ce9178;
+      font-weight: bold;
+    }
+    
+    #objectiveInput {
+      width: 100%;
+      min-height: 60px;
+      padding: 10px;
+      background: #2d2d30;
+      border: 1px solid #555;
+      color: #d4d4d4;
+      font-family: 'Courier New', monospace;
+      border-radius: 4px;
+      resize: vertical;
+    }
+    
+    #objectiveInput:focus {
+      outline: none;
+      border-color: #007acc;
+    }
+    
+    .buttons {
+      margin-top: 10px;
+    }
+    
+    button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-right: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+    }
+    
+    button:hover {
+      background: #1177bb;
+    }
+    
+    button:disabled {
+      background: #555;
+      cursor: not-allowed;
+    }
+    
+    .step-controls {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 3px;
+    }
+    
+    .step-controls h3 {
+      margin: 0 0 15px 0;
+      color: #4CAF50;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+    
+    .step-info {
+      margin-bottom: 15px;
+      padding: 10px;
+      background-color: #1e1e1e;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+    
+    .step-info .step-number {
+      color: #FFA500;
+      font-weight: bold;
+    }
+    
+    .step-info .step-action {
+      color: #4CAF50;
+      margin-left: 10px;
+    }
+    
+    .step-info .step-description {
+      color: #888;
+      margin-left: 10px;
+    }
+    
+    .parameter-editor {
+      margin: 15px 0;
+      padding: 15px;
+      background-color: #1e1e1e;
+      border: 1px solid #444;
+      border-radius: 3px;
+    }
+    
+    .parameter-editor h4 {
+      margin: 0 0 10px 0;
+      color: #FFA500;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    
+    .parameter-editor textarea {
+      width: 100%;
+      min-height: 100px;
+      background-color: #2a2a2a;
+      color: #d4d4d4;
+      border: 1px solid #444;
+      border-radius: 3px;
+      padding: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      resize: vertical;
+    }
+    
+    .parameter-editor .help-text {
+      margin-top: 5px;
+      font-size: 11px;
+      color: #888;
+    }
+    
+    .output-section {
+      margin-top: 20px;
+    }
+    
+    .output-box {
+      background: #252526;
+      border: 1px solid #444;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      overflow: hidden;
+    }
+    
+    .output-header {
+      background: #37373d;
+      padding: 8px 15px;
+      border-bottom: 1px solid #444;
+      font-weight: bold;
+      color: #cccccc;
+    }
+    
+    .output-content {
+      padding: 15px;
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .json-data {
+      color: #9cdcfe;
+    }
+    
+    .timestamp {
+      color: #608b4e;
+      font-size: 11px;
+    }
+    
+    .log-entry {
+      margin-bottom: 8px;
+      padding: 5px 0;
+      border-bottom: 1px solid #333;
+    }
+    
+    .log-level-info {
+      color: #4fc1ff;
+    }
+    
+    .log-level-success {
+      color: #4ec9b0;
+    }
+    
+    .log-level-error {
+      color: #f44747;
+    }
+    
+    .log-level-warning {
+      color: #ffcc02;
+    }
+    
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner">
+      <div class="nav">
+        <h1>PartnerPlus</h1>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle active">Agents ▼</a>
+          <div class="dropdown-menu">
+            <a href="/">WO Agent</a>
+            <a href="/ai-agent">AI Agent v2</a>
+            <a href="/ai-agent-raw">Raw Output</a>
+            <a href="/ai-agent-v1">v1 Backup</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Tools ▼</a>
+          <div class="dropdown-menu">
+            <a href="/ai-chat">AI Chat</a>
+            <a href="/email">Email Service</a>
+            <a href="/sms">SMS Service</a>
+            <a href="/executor">Code Executor</a>
+            <a href="/purchase-agent">Purchase Agent</a>
+            <div style="border-top: 1px solid #ddd; margin: 5px 0;"></div>
+            <a href="/search-tools">Search Tools</a>
+            <a href="/api-docs">API Documentation</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="input-section">
+    <label for="objectiveInput">QUERY:</label>
+    <textarea id="objectiveInput" placeholder="Enter your objective... (e.g., 'Find suppliers for Henny Penny part 77575, then email the comparison to purchasing@company.com')"></textarea>
+    <div class="buttons">
+      <button id="planButton" onclick="generatePlan()">GENERATE_PLAN</button>
+      <button id="executeButton" onclick="executeWorkflow()" disabled>EXECUTE_ALL</button>
+      <button id="executeStepButton" onclick="executeOneStep()" disabled>EXECUTE_NEXT_STEP</button>
+      <button id="clearButton" onclick="clearOutput()">CLEAR_OUTPUT</button>
+    </div>
+    
+    <div id="stepControls" class="step-controls" style="display: none;">
+      <h3>STEP_EXECUTION_CONTROL</h3>
+      <div id="currentStepInfo" class="step-info"></div>
+      <div id="parameterEditor" class="parameter-editor" style="display: none;">
+        <h4>STEP_PARAMETERS</h4>
+        <textarea id="stepParameters" placeholder='{"key": "value"}'></textarea>
+        <div class="help-text">Edit parameters as JSON. For email: {"to": "email@example.com", "subject": "Subject", "text": "Message body"}</div>
+      </div>
+      <div class="buttons">
+        <button id="continueStepButton" onclick="executeOneStep()">EXECUTE_NEXT_STEP</button>
+        <button id="resetStepsButton" onclick="resetSteps()">RESET_WORKFLOW</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="output-section">
+    <div class="output-box">
+      <div class="output-header">RAW_WORKFLOW_PLAN</div>
+      <div id="planOutput" class="output-content">// Workflow plan will appear here after generation...</div>
+    </div>
+
+    <div class="output-box">
+      <div class="output-header">EXECUTION_LOG</div>
+      <div id="executionLog" class="output-content">// Step-by-step execution logs will appear here...</div>
+    </div>
+
+    <div class="output-box">
+      <div class="output-header">RAW_STEP_RESULTS</div>
+      <div id="stepResults" class="output-content">// Raw API responses from each step will appear here...</div>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    let currentPlan = null;
+    let executionState = {
+      currentStep: 0,
+      results: [],
+      isRunning: false,
+      stepByStep: false
+    };
+
+    function generatePlan() {
+      const objective = document.getElementById('objectiveInput').value.trim();
+      if (!objective) {
+        logMessage('ERROR: No objective provided', 'error');
+        return;
+      }
+
+      const planButton = document.getElementById('planButton');
+      planButton.disabled = true;
+      planButton.textContent = 'GENERATING...';
+
+      logMessage('PLAN_REQUEST: Sending objective to orchestrator...', 'info');
+      logMessage(`OBJECTIVE: ${objective}`, 'info');
+
+      fetch('/api/orchestrator/objective', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ objective: objective })
+      })
+      .then(response => {
+        logMessage(`HTTP_RESPONSE: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+        return response.json();
+      })
+      .then(data => {
+        currentPlan = data.actionPlan;
+        document.getElementById('planOutput').textContent = JSON.stringify(data, null, 2);
+        
+        logMessage('PLAN_GENERATED: Successfully created workflow plan', 'success');
+        logMessage(`PLAN_ACTION: ${currentPlan.action}`, 'info');
+        logMessage(`PLAN_CONFIDENCE: ${currentPlan.confidence || 'N/A'}`, 'info');
+        
+        if (currentPlan.complete_plan) {
+          logMessage(`PLAN_STEPS: ${currentPlan.complete_plan.length} steps identified`, 'info');
+          currentPlan.complete_plan.forEach((step, index) => {
+            logMessage(`  STEP_${index + 1}: ${step.action}`, 'info');
+          });
+        }
+
+        document.getElementById('executeButton').disabled = false;
+        document.getElementById('executeStepButton').disabled = false;
+        
+        // Show step controls if multi-step plan
+        if (currentPlan.complete_plan && currentPlan.complete_plan.length > 1) {
+          document.getElementById('stepControls').style.display = 'block';
+          updateStepInfo();
+        }
+        
+      })
+      .catch(error => {
+        logMessage(`PLAN_ERROR: ${error.message}`, 'error');
+        document.getElementById('planOutput').textContent = `ERROR: ${error.message}`;
+      })
+      .finally(() => {
+        planButton.disabled = false;
+        planButton.textContent = 'GENERATE_PLAN';
+      });
+    }
+
+    function executeWorkflow() {
+      if (!currentPlan || executionState.isRunning) return;
+
+      executionState.isRunning = true;
+      executionState.currentStep = 0;
+      executionState.results = [];
+      executionState.stepByStep = false;
+
+      const executeButton = document.getElementById('executeButton');
+      executeButton.disabled = true;
+      executeButton.textContent = 'EXECUTING...';
+      document.getElementById('executeStepButton').disabled = true;
+
+      logMessage('WORKFLOW_START: Beginning automatic execution of all steps', 'info');
+      
+      executeNextStep();
+    }
+    
+    function executeOneStep() {
+      if (!currentPlan || executionState.isRunning) return;
+      
+      if (executionState.currentStep === 0) {
+        executionState.results = [];
+      }
+      
+      executionState.isRunning = true;
+      executionState.stepByStep = true;
+      
+      const steps = currentPlan.complete_plan || [{ action: currentPlan.action, parameters: currentPlan.parameters }];
+      
+      if (executionState.currentStep >= steps.length) {
+        logMessage('WORKFLOW_COMPLETE: All steps have been executed', 'success');
+        resetSteps();
+        return;
+      }
+      
+      updateStepButtons(true);
+      
+      if (executionState.currentStep === 0) {
+        logMessage('WORKFLOW_START: Beginning step-by-step execution', 'info');
+      }
+      
+      executeNextStep();
+    }
+
+    async function executeNextStep() {
+      const steps = currentPlan.complete_plan || [{ action: currentPlan.action, parameters: currentPlan.parameters }];
+      const stepIndex = executionState.currentStep;
+
+      if (stepIndex >= steps.length) {
+        logMessage('WORKFLOW_COMPLETE: All steps executed successfully', 'success');
+        executionState.isRunning = false;
+        document.getElementById('executeButton').disabled = false;
+        document.getElementById('executeButton').textContent = 'EXECUTE_WORKFLOW';
+        return;
+      }
+
+      const currentStep = steps[stepIndex];
+      logMessage(`STEP_${stepIndex + 1}_START: Executing ${currentStep.action}`, 'info');
+
+      // Prepare step parameters
+      let stepParameters = {};
+      if (stepIndex === 0) {
+        stepParameters = currentPlan.parameters || {};
+      } else {
+        // For subsequent steps, try to get parameters from the editor if in step-by-step mode
+        if (executionState.stepByStep) {
+          try {
+            const editorContent = document.getElementById('stepParameters').value.trim();
+            if (editorContent) {
+              stepParameters = JSON.parse(editorContent);
+            } else {
+              stepParameters = currentStep.parameters || {};
+            }
+          } catch (e) {
+            logMessage(`PARAMETER_PARSE_ERROR: Invalid JSON in parameter editor`, 'error');
+            executionState.isRunning = false;
+            updateStepButtons(false);
+            return;
+          }
+        } else {
+          stepParameters = currentStep.parameters || {};
+        }
+      }
+
+      const stepActionPlan = {
+        action: currentStep.action,
+        parameters: stepParameters,
+        complete_plan: currentPlan.complete_plan,
+        confidence: currentPlan.confidence || 0.9
+      };
+
+      logMessage(`STEP_${stepIndex + 1}_REQUEST: ${JSON.stringify(stepActionPlan, null, 2)}`, 'info');
+
+      try {
+        const response = await fetch('/api/orchestrator/execute-step', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            actionPlan: stepActionPlan,
+            stepIndex: stepIndex,
+            previousResults: executionState.results
+          })
+        });
+
+        logMessage(`STEP_${stepIndex + 1}_HTTP: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+
+        const data = await response.json();
+        const result = data.result;
+
+        // Log raw result
+        appendStepResult(stepIndex + 1, currentStep.action, result);
+        
+        // In step-by-step mode, we need to extract just the primary action result
+        // and ignore the plannedNextStep to prevent automatic continuation
+        if (executionState.stepByStep && result.data && result.data.primaryAction) {
+          // Use only the primary action result, not the planned next step
+          const primaryActionResult = {
+            success: result.data.primaryAction.success,
+            message: result.message || 'Step completed',
+            data: result.data.primaryAction.data
+          };
+          executionState.results[stepIndex] = primaryActionResult;
+          
+          if (primaryActionResult.success) {
+            logMessage(`STEP_${stepIndex + 1}_SUCCESS: ${primaryActionResult.message}`, 'success');
+            if (primaryActionResult.data) {
+              logMessage(`STEP_${stepIndex + 1}_DATA: ${JSON.stringify(primaryActionResult.data, null, 2)}`, 'info');
+            }
+          } else {
+            logMessage(`STEP_${stepIndex + 1}_FAILED: ${primaryActionResult.message || 'Step failed'}`, 'error');
+          }
+        } else {
+          // In automatic mode or if no primaryAction, use the full result
+          executionState.results[stepIndex] = result;
+          
+          if (result.success) {
+            logMessage(`STEP_${stepIndex + 1}_SUCCESS: ${result.message || 'Step completed'}`, 'success');
+            if (result.data) {
+              logMessage(`STEP_${stepIndex + 1}_DATA: ${JSON.stringify(result.data, null, 2)}`, 'info');
+            }
+          } else {
+            logMessage(`STEP_${stepIndex + 1}_FAILED: ${result.message || 'Unknown error'}`, 'error');
+            if (result.error) {
+              logMessage(`STEP_${stepIndex + 1}_ERROR_DETAILS: ${JSON.stringify(result.error, null, 2)}`, 'error');
+            }
+          }
+        }
+          
+        // Continue to next step only if successful
+        if ((executionState.stepByStep && result.data && result.data.primaryAction && result.data.primaryAction.success) ||
+            (!executionState.stepByStep && result.success)) {
+          executionState.currentStep++;
+          
+          if (executionState.stepByStep) {
+            // In step-by-step mode, stop and wait for user
+            executionState.isRunning = false;
+            updateStepInfo();
+            updateStepButtons(false);
+            
+            const steps = currentPlan.complete_plan || [{ action: currentPlan.action, parameters: currentPlan.parameters }];
+            if (executionState.currentStep >= steps.length) {
+              logMessage('WORKFLOW_COMPLETE: All steps executed successfully', 'success');
+              document.getElementById('executeStepButton').disabled = true;
+              document.getElementById('continueStepButton').disabled = true;
+            }
+          } else {
+            // In automatic mode, continue after delay
+            setTimeout(() => executeNextStep(), 1000);
+          }
+          
+        } else {
+          // Step failed - stop execution
+          executionState.isRunning = false;
+          document.getElementById('executeButton').disabled = false;
+          document.getElementById('executeButton').textContent = 'EXECUTE_ALL';
+          updateStepButtons(false);
+        }
+
+      } catch (error) {
+        logMessage(`STEP_${stepIndex + 1}_EXCEPTION: ${error.message}`, 'error');
+        executionState.isRunning = false;
+        document.getElementById('executeButton').disabled = false;
+        document.getElementById('executeButton').textContent = 'EXECUTE_WORKFLOW';
+      }
+    }
+
+    function logMessage(message, level = 'info') {
+      const logDiv = document.getElementById('executionLog');
+      const timestamp = new Date().toISOString();
+      const logEntry = document.createElement('div');
+      logEntry.className = 'log-entry';
+      
+      logEntry.innerHTML = 
+        `<span class="timestamp">[${timestamp}]</span> ` +
+        `<span class="log-level-${level}">${message}</span>`;
+      
+      logDiv.appendChild(logEntry);
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    function appendStepResult(stepNumber, action, result) {
+      const resultsDiv = document.getElementById('stepResults');
+      const resultEntry = document.createElement('div');
+      resultEntry.innerHTML = 
+        `\n=== STEP_${stepNumber}_RESULT [${action}] ===\n` +
+        JSON.stringify(result, null, 2) + '\n';
+      
+      resultsDiv.appendChild(resultEntry);
+      resultsDiv.scrollTop = resultsDiv.scrollHeight;
+    }
+
+    function updateStepInfo() {
+      if (!currentPlan || !currentPlan.complete_plan) return;
+      
+      const steps = currentPlan.complete_plan;
+      const currentStepIndex = executionState.currentStep;
+      
+      if (currentStepIndex < steps.length) {
+        const step = steps[currentStepIndex];
+        document.getElementById('currentStepInfo').innerHTML = 
+          `<span class="step-number">NEXT_STEP: ${currentStepIndex + 1}/${steps.length}</span>` +
+          `<span class="step-action">${step.action}</span>` +
+          `<span class="step-description">${step.description || ''}</span>`;
+          
+        // Show parameter editor for steps that need parameters
+        if (currentStepIndex > 0 || needsParameters(step.action)) {
+          document.getElementById('parameterEditor').style.display = 'block';
+          prepareParameterEditor(step.action, currentStepIndex);
+        } else {
+          document.getElementById('parameterEditor').style.display = 'none';
+        }
+      } else {
+        document.getElementById('currentStepInfo').innerHTML = 
+          `<span class="step-number">WORKFLOW_COMPLETE</span>` +
+          `<span class="step-description">All ${steps.length} steps have been executed</span>`;
+        document.getElementById('parameterEditor').style.display = 'none';
+      }
+    }
+    
+    function needsParameters(action) {
+      // Actions that typically need parameters
+      return ['send_email', 'send_sms', 'search_suppliers'].includes(action);
+    }
+    
+    function prepareParameterEditor(action, stepIndex) {
+      const paramEditor = document.getElementById('stepParameters');
+      const helpText = document.querySelector('.parameter-editor .help-text');
+      
+      // Set default parameters based on action type and previous results
+      let suggestedParams = {};
+      const previousResult = stepIndex > 0 ? executionState.results[stepIndex - 1] : null;
+      
+      switch(action) {
+        case 'send_email':
+          suggestedParams = {
+            to: 'email@example.com',
+            subject: 'Subject here',
+            text: previousResult ? formatEmailBody(previousResult) : 'Email body here'
+          };
+          helpText.textContent = 'Required: {"to": "email@example.com", "subject": "Subject", "text": "Message body"}';
+          break;
+          
+        case 'send_sms':
+          suggestedParams = {
+            to: '+1234567890',
+            message: previousResult ? formatSmsBody(previousResult) : 'SMS message here'
+          };
+          helpText.textContent = 'Required: {"to": "+1234567890", "message": "SMS text"}';
+          break;
+          
+        case 'search_suppliers':
+          if (previousResult && previousResult.data) {
+            const partNumber = extractPartNumber(previousResult.data);
+            if (partNumber) {
+              suggestedParams = {
+                partNumber: partNumber,
+                options: { limit: 5 }
+              };
+            }
+          }
+          helpText.textContent = 'Required: {"partNumber": "12345", "options": {"limit": 5}}';
+          break;
+          
+        default:
+          helpText.textContent = 'Edit parameters as JSON format';
+      }
+      
+      // Set the suggested parameters in the editor
+      paramEditor.value = JSON.stringify(suggestedParams, null, 2);
+    }
+    
+    function formatEmailBody(result) {
+      if (result.data && result.data.results) {
+        return result.data.results;
+      } else if (result.data && result.data.output_text) {
+        return result.data.output_text;
+      }
+      return JSON.stringify(result.data, null, 2);
+    }
+    
+    function formatSmsBody(result) {
+      const body = formatEmailBody(result);
+      // Truncate for SMS
+      return body.length > 160 ? body.substring(0, 157) + '...' : body;
+    }
+    
+    function extractPartNumber(data) {
+      // Try to extract part number from various possible locations
+      if (data.recommended_result && data.recommended_result.oem_part_number) {
+        return data.recommended_result.oem_part_number;
+      }
+      if (data.oem_part_number) {
+        return data.oem_part_number;
+      }
+      if (data.partNumber) {
+        return data.partNumber;
+      }
+      return null;
+    }
+    
+    function updateStepButtons(disabled) {
+      document.getElementById('executeStepButton').disabled = disabled;
+      document.getElementById('executeStepButton').textContent = disabled ? 'EXECUTING_STEP...' : 'EXECUTE_NEXT_STEP';
+      document.getElementById('continueStepButton').disabled = disabled;
+      document.getElementById('continueStepButton').textContent = disabled ? 'EXECUTING_STEP...' : 'EXECUTE_NEXT_STEP';
+    }
+    
+    function resetSteps() {
+      executionState.currentStep = 0;
+      executionState.results = [];
+      executionState.isRunning = false;
+      executionState.stepByStep = false;
+      
+      document.getElementById('executeButton').disabled = false;
+      document.getElementById('executeButton').textContent = 'EXECUTE_ALL';
+      document.getElementById('executeStepButton').disabled = false;
+      document.getElementById('executeStepButton').textContent = 'EXECUTE_NEXT_STEP';
+      document.getElementById('continueStepButton').disabled = false;
+      document.getElementById('continueStepButton').textContent = 'EXECUTE_NEXT_STEP';
+      
+      updateStepInfo();
+      logMessage('WORKFLOW_RESET: Ready to execute from the beginning', 'info');
+    }
+    
+    function clearOutput() {
+      document.getElementById('planOutput').textContent = '// Workflow plan will appear here after generation...';
+      document.getElementById('executionLog').textContent = '// Step-by-step execution logs will appear here...';
+      document.getElementById('stepResults').textContent = '// Raw API responses from each step will appear here...';
+      document.getElementById('objectiveInput').value = '';
+      
+      currentPlan = null;
+      executionState = {
+        currentStep: 0,
+        results: [],
+        isRunning: false,
+        stepByStep: false
+      };
+      
+      document.getElementById('executeButton').disabled = true;
+      document.getElementById('executeStepButton').disabled = true;
+      document.getElementById('stepControls').style.display = 'none';
+    }
+
+    // Allow generating plan with Ctrl+Enter
+    document.getElementById('objectiveInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && e.ctrlKey && !document.getElementById('planButton').disabled) {
+        generatePlan();
+      }
+    });
+  </script>
+</body>
+</html>

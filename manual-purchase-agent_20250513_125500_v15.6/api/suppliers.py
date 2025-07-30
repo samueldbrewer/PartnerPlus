@@ -24,7 +24,8 @@ def search_suppliers():
         use_v2 = data.get('use_v2', True)  # Default to v2
         use_dual = data.get('use_dual', False)  # Option for dual search
         location = data.get('location')
-        logger.info(f"Parsed use_v2: {use_v2}, use_dual: {use_dual} (type: {type(use_v2)})")
+        bypass_cache = data.get('bypass_cache', False)  # Cache bypass option
+        logger.info(f"Parsed use_v2: {use_v2}, use_dual: {use_dual}, bypass_cache: {bypass_cache} (type: {type(use_v2)})")
     else:
         part_number = request.args.get('part_number')
         oem_only = request.args.get('oem_only', 'false').lower() == 'true'
@@ -33,17 +34,23 @@ def search_suppliers():
         use_v2 = request.args.get('use_v2', 'true').lower() == 'true'  # Default to v2
         use_dual = request.args.get('use_dual', 'false').lower() == 'true'
         location = request.args.get('location')
+        bypass_cache = request.args.get('bypass_cache', 'false').lower() == 'true'
     
     if not part_number:
         return jsonify({'error': 'Part number is required'}), 400
     
     try:
-        logger.info(f"Searching suppliers for part {part_number} (v2: {use_v2}, dual: {use_dual})")
+        # Force dual search if cache bypass is requested (only dual search supports cache bypass)
+        if bypass_cache:
+            use_dual = True
+            logger.info(f"Forcing dual search due to bypass_cache=True")
+        
+        logger.info(f"Searching suppliers for part {part_number} (v2: {use_v2}, dual: {use_dual}, bypass_cache: {bypass_cache})")
         
         if use_dual:
             # Use dual supplier search
             part_description = f"{make} {model}" if make and model else None
-            dual_result = find_supplier_with_dual_search(part_number, part_description, location)
+            dual_result = find_supplier_with_dual_search(part_number, part_description, location, bypass_cache)
             
             # Convert dual search result to expected format
             suppliers = []

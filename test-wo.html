@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WO Agent Test</title>
+</head>
+<body>
+    <div id="woCarousel">Loading...</div>
+    
+    <script>
+        console.log('Script starting...');
+        
+        const sampleWorkOrders = [
+          {
+            id: 'WO-001',
+            location: 'Kitchen - Station 2',
+            equipment: 'Henny Penny 500',
+            make: 'Henny Penny',
+            model: '500',
+            issue: 'Fryer not heating properly, temperature fluctuating between 250-300°F',
+            status: 'open',
+            priority: 'High',
+            created: '2025-01-15',
+            notes: [],
+            enhancements: {},
+            lastEnhanced: null
+          }
+        ];
+        
+        console.log('sampleWorkOrders:', sampleWorkOrders);
+        
+        function createWOCard(wo) {
+          return '<div class="wo-card">' +
+            '<h3>Work Order ' + wo.id + '</h3>' +
+            '<div><strong>Location:</strong> ' + wo.location + '</div>' +
+            '<div><strong>Equipment:</strong> ' + wo.equipment + '</div>' +
+            '<div><strong>Issue:</strong> ' + wo.issue + '</div>' +
+            '<div><strong>Status:</strong> ' + wo.status + '</div>' +
+            '<div><strong>Priority:</strong> ' + wo.priority + '</div>' +
+          '</div>';
+        }
+        
+        function renderWorkOrders() {
+          console.log('renderWorkOrders called');
+          const carousel = document.getElementById('woCarousel');
+          console.log('carousel:', carousel);
+          
+          carousel.innerHTML = '';
+          
+          const cards = sampleWorkOrders.map(wo => createWOCard(wo));
+          console.log('cards:', cards);
+          
+          carousel.innerHTML = cards.join('');
+          console.log('carousel innerHTML set');
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          console.log('DOM loaded');
+          try {
+            renderWorkOrders();
+            console.log('Success!');
+          } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('woCarousel').innerHTML = 'Error: ' + error.message;
+          }
+        });
+    </script>
+</body>
+</html>

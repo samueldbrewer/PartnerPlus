@@ -1,0 +1,60 @@
+{
+  "ai_ranked": true,
+  "count": 5,
+  "oem_only": false,
+  "part_number": "77575",
+  "ranking_method": "AI-based intelligent ranking v2 (PartsTown priority)",
+  "suppliers": [
+    {
+      "ai_ranking": true,
+      "domain": "www.partstown.com",
+      "has_part_number": true,
+      "is_product_page": true,
+      "score": 5,
+      "snippet": "Henny Penny 77575 Genuine OEM Replacement Part · Real OEM caster wheels protect floors from scuffs, scratches, and other damage during movement · Fits popular ...",
+      "title": "Henny Penny 77575 Caster with Brake, Swivel, Stem, 4",
+      "url": "https://www.partstown.com/henny-penny/hen77575?srsltid=AfmBOoqxVOVWE-RXQoiYpok1CDlcacpSLYXRRnnHj3MNDP3uFzV_y6YB"
+    },
+    {
+      "ai_ranking": true,
+      "domain": "www.amazon.com",
+      "has_part_number": true,
+      "is_product_page": true,
+      "score": 4,
+      "snippet": "Henny Penny 77575, Swivel Caster with Strap Brake, 4\": Amazon ... Genuine OEM replacement part; Henny Penny is committed to developing new concepts ...",
+      "title": "Henny Penny 77575, Swivel Caster with Strap Brake, 4",
+      "url": "https://www.amazon.com/Henny-Penny-77575-Swivel-Caster/dp/B00WEZ1OHC"
+    },
+    {
+      "ai_ranking": true,
+      "domain": "www.webstaurantstore.com",
+      "has_part_number": true,
+      "is_product_page": true,
+      "score": 3,
+      "snippet": "Shop Henny Penny 77575 Front Caster. Unbeatable prices and exceptional customer service from WebstaurantStore.",
+      "title": "Henny Penny 77575 Front Caster",
+      "url": "https://www.webstaurantstore.com/henny-penny-77575-front-caster/HP77575.html?srsltid=AfmBOornXjTqDQ-20znYrHh_8gUXUwzg9hM5L7ZpCrO6bmAAZXnaSh3s"
+    },
+    {
+      "ai_ranking": true,
+      "domain": "www.etundra.com",
+      "has_part_number": true,
+      "is_product_page": true,
+      "score": 2,
+      "snippet": "The 77575 Swivel Caster with Brake from Henny Penny is available from Tundra Restaurant Supply.",
+      "title": "Henny Penny - 77575 - Swivel Caster with Brake",
+      "url": "https://www.etundra.com/restaurant-parts/hardware/equipment-casters/specialty/henny-penny-77575-swivel-caster-with-brake/?srsltid=AfmBOopj4-o_7GsSh9pnoD-QjN1N25kWhWMbJFoaVgIdPCv4tcdbFh26"
+    },
+    {
+      "ai_ranking": true,
+      "domain": "www.zoro.com",
+      "has_part_number": true,
+      "is_product_page": true,
+      "score": 1,
+      "snippet": "Order Henny Penny Caster-4 Swivel With Strap Brake, 77575 at Zoro.com. Great prices & free shipping on orders over $50 when you sign in or sign up for an ...",
+      "title": "Henny Penny Caster-4 Swivel With Strap Brake 77575 | Zoro",
+      "url": "https://www.zoro.com/henny-penny-caster-4-swivel-with-strap-brake-77575/i/G1674024/"
+    }
+  ],
+  "version": "v2"
+}

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Search Tools - PartnerPlus</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .nav { display: flex; align-items: center; }
+    .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; color: white; }
+    .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
+    .nav a:hover { background-color: rgba(255,255,255,0.1); }
+    .nav a.active { background-color: rgba(255,255,255,0.2); }
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle { cursor: pointer; }
+    .dropdown-menu { display: none; position: absolute; background-color: white; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; border-radius: 4px; top: 100%; left: 0; }
+    .dropdown-menu a { color: #333; padding: 12px 16px; text-decoration: none; display: block; margin: 0; border-radius: 0; }
+    .dropdown-menu a:hover { background-color: #f1f1f1; color: #333; }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown:hover .dropdown-toggle { background-color: rgba(255,255,255,0.1); }
+    .content { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px 20px; }
+    
+    /* Tab Styles */
+    .tabs { display: flex; border-bottom: 2px solid #1976d2; margin-bottom: 25px; background: white; border-radius: 8px 8px 0 0; }
+    .tab { padding: 15px 25px; cursor: pointer; border-radius: 8px 8px 0 0; margin-right: 5px; background-color: #f5f5f5; font-weight: 500; transition: all 0.3s; }
+    .tab.active { background-color: #1976d2; color: white; }
+    .tab:hover:not(.active) { background-color: #e3f2fd; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
+    .search-section { background: white; border: 1px solid #ddd; border-radius: 0 8px 8px 8px; padding: 30px; }
+    .search-section h2 { margin: 0 0 15px 0; color: #1976d2; font-size: 24px; }
+    .search-section p { color: #666; margin-bottom: 25px; font-size: 16px; }
+    
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; font-size: 16px; }
+    textarea { width: 100%; padding: 15px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; min-height: 120px; resize: vertical; font-family: Arial, sans-serif; }
+    textarea:focus { outline: none; border-color: #1976d2; box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1); }
+    
+    button { padding: 15px 30px; background-color: #1976d2; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 500; transition: all 0.3s; }
+    button:hover { background-color: #1565c0; transform: translateY(-1px); }
+    button:disabled { background-color: #ccc; cursor: not-allowed; transform: none; }
+    
+    .results { margin-top: 30px; }
+    .result-header { font-weight: bold; margin-bottom: 15px; color: #1976d2; font-size: 18px; }
+    .result-content { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 25px; max-height: 600px; overflow-y: auto; }
+    .result-content pre { margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.4; }
+    
+    .loading { text-align: center; padding: 40px; color: #666; }
+    .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #1976d2; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    
+    .status { padding: 20px; border-radius: 8px; margin: 20px 0; font-size: 16px; }
+    .status.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .status.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    
+    .search-tip { background: #e3f2fd; padding: 25px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #1976d2; }
+    .search-tip h3 { margin: 0 0 15px 0; color: #1976d2; font-size: 20px; }
+    .search-tip p { margin: 0; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner">
+      <div class="nav">
+        <h1>PartnerPlus</h1>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Agents ▼</a>
+          <div class="dropdown-menu">
+            <a href="/">WO Agent</a>
+            <a href="/ai-agent">AI Agent v2</a>
+            <a href="/ai-agent-raw">Raw Output</a>
+            <a href="/ai-agent-v1">v1 Backup</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle active">Tools ▼</a>
+          <div class="dropdown-menu">
+            <a href="/ai-chat">AI Chat</a>
+            <a href="/email">Email Service</a>
+            <a href="/sms">SMS Service</a>
+            <a href="/executor">Code Executor</a>
+            <a href="/purchase-agent">Purchase Agent</a>
+            <div style="border-top: 1px solid #ddd; margin: 5px 0;"></div>
+            <a href="/search-tools">Search Tools</a>
+            <a href="/api-docs">API Documentation</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="search-tip">
+      <h3>🔍 Search Tools</h3>
+      <p><strong>AI Search:</strong> Query GPT with web search enabled for intelligent answers. <strong>SERP Search:</strong> Get raw Google search results (10 results).</p>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('ai-search')">🧠 AI Search</div>
+      <div class="tab" onclick="switchTab('serp-search')">🔗 SERP Search</div>
+    </div>
+
+    <!-- AI Search Tab -->
+    <div id="ai-search" class="tab-content active">
+      <div class="search-section">
+        <h2>🧠 AI Search</h2>
+        <p>Ask GPT any question with web search enabled for current information.</p>
+        
+        <form id="aiSearchForm">
+          <div class="form-group">
+            <label for="aiQuery">Your Question:</label>
+            <textarea id="aiQuery" placeholder="Ask any question... GPT will search the web and provide an intelligent answer."></textarea>
+          </div>
+          
+          <button type="submit">🔍 Ask GPT</button>
+        </form>
+        
+        <div id="aiResults" class="results"></div>
+      </div>
+    </div>
+
+    <!-- SERP Search Tab -->
+    <div id="serp-search" class="tab-content">
+      <div class="search-section">
+        <h2>🔗 SERP Search</h2>
+        <p>Get 10 raw Google search results with no processing.</p>
+        
+        <form id="serpSearchForm">
+          <div class="form-group">
+            <label for="serpQuery">Search Query:</label>
+            <textarea id="serpQuery" placeholder="Enter your Google search query..."></textarea>
+          </div>
+          
+          <button type="submit">🔗 Get Results</button>
+        </form>
+        
+        <div id="serpResults" class="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching functionality
+    function switchTab(tabId) {
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Remove active class from all tabs
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show selected tab content
+      document.getElementById(tabId).classList.add('active');
+      
+      // Add active class to clicked tab
+      event.target.classList.add('active');
+    }
+
+    // AI Search (GPT with web search)
+    document.getElementById('aiSearchForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const query = document.getElementById('aiQuery').value.trim();
+      if (!query) {
+        showStatus('aiResults', 'Please enter a question', 'error');
+        return;
+      }
+      
+      const submitButton = e.target.querySelector('button[type="submit"]');
+      const originalText = submitButton.textContent;
+      submitButton.disabled = true;
+      submitButton.textContent = 'Thinking...';
+      
+      const resultsDiv = document.getElementById('aiResults');
+      resultsDiv.innerHTML = '<div class="loading"><div class="spinner"></div>GPT is searching the web and thinking...<br><small>This may take a few moments</small></div>';
+      
+      try {
+        const response = await fetch('/api/purchase-agent/search/web', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: query
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success !== false) {
+          resultsDiv.innerHTML = `
+            <div class="result-header">🧠 GPT Response</div>
+            <div class="result-content">
+              <pre>${JSON.stringify(result, null, 2)}</pre>
+            </div>
+          `;
+        } else {
+          showStatus('aiResults', `Search failed: ${result.error || 'Unknown error'}`, 'error');
+        }
+      } catch (error) {
+        showStatus('aiResults', `Error: ${error.message}`, 'error');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+      }
+    });
+
+    // SERP Search (10 raw results)
+    document.getElementById('serpSearchForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const query = document.getElementById('serpQuery').value.trim();
+      if (!query) {
+        showStatus('serpResults', 'Please enter a search query', 'error');
+        return;
+      }
+      
+      const submitButton = e.target.querySelector('button[type="submit"]');
+      const originalText = submitButton.textContent;
+      submitButton.disabled = true;
+      submitButton.textContent = 'Searching...';
+      
+      const resultsDiv = document.getElementById('serpResults');
+      resultsDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Getting raw Google results...<br><small>Fetching 10 results</small></div>';
+      
+      try {
+        const response = await fetch('/api/purchase-agent/search/serp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: query,
+            numResults: 10
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success !== false) {
+          resultsDiv.innerHTML = `
+            <div class="result-header">🔗 Raw Google Results (10)</div>
+            <div class="result-content">
+              <pre>${JSON.stringify(result, null, 2)}</pre>
+            </div>
+          `;
+        } else {
+          showStatus('serpResults', `Search failed: ${result.error || 'Unknown error'}`, 'error');
+        }
+      } catch (error) {
+        showStatus('serpResults', `Error: ${error.message}`, 'error');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+      }
+    });
+
+    function showStatus(containerId, message, type) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = `<div class="status ${type}">${message}</div>`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Search Tools - PartnerPlus</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    .header { background-color: #1976d2; color: white; padding: 15px 0; margin-bottom: 20px; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .nav { display: flex; align-items: center; }
+    .nav h1 { margin: 0; margin-right: 30px; font-size: 24px; color: white; }
+    .nav a { color: white; text-decoration: none; padding: 8px 16px; margin-right: 10px; border-radius: 4px; transition: background-color 0.3s; }
+    .nav a:hover { background-color: rgba(255,255,255,0.1); }
+    .nav a.active { background-color: rgba(255,255,255,0.2); }
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-toggle { cursor: pointer; }
+    .dropdown-menu { display: none; position: absolute; background-color: white; min-width: 160px; box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); z-index: 1; border-radius: 4px; top: 100%; left: 0; }
+    .dropdown-menu a { color: #333; padding: 12px 16px; text-decoration: none; display: block; margin: 0; border-radius: 0; }
+    .dropdown-menu a:hover { background-color: #f1f1f1; color: #333; }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown:hover .dropdown-toggle { background-color: rgba(255,255,255,0.1); }
+    .content { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px 20px; }
+    
+    .search-container { display: flex; gap: 20px; margin-bottom: 30px; }
+    .search-section { flex: 1; background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; }
+    .search-section h2 { margin: 0 0 20px 0; color: #1976d2; font-size: 20px; }
+    .search-section p { color: #666; margin-bottom: 20px; font-size: 14px; }
+    
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+    input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+    textarea { min-height: 80px; resize: vertical; }
+    
+    button { padding: 12px 24px; background-color: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: 500; }
+    button:hover { background-color: #1565c0; }
+    button:disabled { background-color: #ccc; cursor: not-allowed; }
+    
+    .results { margin-top: 20px; }
+    .result-header { font-weight: bold; margin-bottom: 15px; color: #1976d2; font-size: 16px; }
+    .result-content { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 4px; padding: 15px; max-height: 400px; overflow-y: auto; }
+    .result-content pre { margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 13px; }
+    
+    .loading { text-align: center; padding: 20px; color: #666; }
+    .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #1976d2; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    
+    .status { padding: 10px; border-radius: 4px; margin: 10px 0; }
+    .status.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .status.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    
+    .search-tip { background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #1976d2; }
+    .search-tip h3 { margin: 0 0 10px 0; color: #1976d2; }
+    .search-tip ul { margin: 5px 0; padding-left: 20px; }
+    .search-tip li { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner">
+      <div class="nav">
+        <h1>PartnerPlus</h1>
+        <a href="/">WO Agent</a>
+        <a href="/ai-agent">AI Agent</a>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle active">Tools ▼</a>
+          <div class="dropdown-menu">
+            <a href="/ai-chat">AI Chat</a>
+            <a href="/email">Email Service</a>
+            <a href="/sms">SMS Service</a>
+            <a href="/executor">Code Executor</a>
+            <a href="/purchase-agent">Purchase Agent</a>
+            <div style="border-top: 1px solid #ddd; margin: 5px 0;"></div>
+            <a href="/search-tools">Search Tools</a>
+          </div>
+        </div>
+        <a href="/ai-agent-raw">Raw Output</a>
+        <a href="/ai-agent-v1">v1 Backup</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="search-tip">
+      <h3>🔍 Search Tools Overview</h3>
+      <p>Two powerful search capabilities for different use cases:</p>
+      <ul>
+        <li><strong>AI Web Search:</strong> Intelligent search with analysis, summaries, and key insights extracted by AI</li>
+        <li><strong>SERP Search:</strong> Raw Google search results with no processing - direct access to search engine data</li>
+      </ul>
+    </div>
+
+    <div class="search-container">
+      <!-- AI Web Search Section -->
+      <div class="search-section">
+        <h2>🧠 AI Web Search</h2>
+        <p>Get intelligent search results with AI analysis and key insights extraction</p>
+        
+        <form id="aiSearchForm">
+          <div class="form-group">
+            <label for="aiQuery">Search Query:</label>
+            <textarea id="aiQuery" placeholder="Enter your search query... (e.g., 'Hobart dishwasher parts pricing 2024')"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="aiMaxResults">Max Results:</label>
+            <select id="aiMaxResults">
+              <option value="5">5 results</option>
+              <option value="10" selected>10 results</option>
+              <option value="15">15 results</option>
+              <option value="20">20 results</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="aiFocusArea">Focus Area (Optional):</label>
+            <input type="text" id="aiFocusArea" placeholder="e.g., pricing, specifications, reviews">
+          </div>
+          
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="aiIncludeAnalysis" checked> Include AI Analysis
+            </label>
+          </div>
+          
+          <button type="submit">🔍 AI Search</button>
+        </form>
+        
+        <div id="aiResults" class="results"></div>
+      </div>
+
+      <!-- SERP Search Section -->
+      <div class="search-section">
+        <h2>🔗 SERP Search</h2>
+        <p>Get raw Google search results with no AI processing or analysis</p>
+        
+        <form id="serpSearchForm">
+          <div class="form-group">
+            <label for="serpQuery">Search Query:</label>
+            <textarea id="serpQuery" placeholder="Enter your search query... (e.g., 'commercial oven repair Chicago')"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="serpNumResults">Number of Results:</label>
+            <select id="serpNumResults">
+              <option value="5">5 results</option>
+              <option value="10" selected>10 results</option>
+              <option value="15">15 results</option>
+              <option value="20">20 results</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="serpLocation">Location (Optional):</label>
+            <input type="text" id="serpLocation" placeholder="e.g., Chicago, IL">
+          </div>
+          
+          <div class="form-group">
+            <label for="serpDomain">Google Domain:</label>
+            <select id="serpDomain">
+              <option value="google.com" selected>google.com</option>
+              <option value="google.co.uk">google.co.uk</option>
+              <option value="google.ca">google.ca</option>
+              <option value="google.com.au">google.com.au</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="serpLanguage">Language:</label>
+            <select id="serpLanguage">
+              <option value="en" selected>English</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+            </select>
+          </div>
+          
+          <button type="submit">🔗 SERP Search</button>
+        </form>
+        
+        <div id="serpResults" class="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // AI Web Search
+    document.getElementById('aiSearchForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const query = document.getElementById('aiQuery').value.trim();
+      if (!query) {
+        showStatus('aiResults', 'Please enter a search query', 'error');
+        return;
+      }
+      
+      const resultsDiv = document.getElementById('aiResults');
+      resultsDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Searching with AI analysis...</div>';
+      
+      try {
+        const response = await fetch('/api/purchase-agent/search/web', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: query,
+            maxResults: parseInt(document.getElementById('aiMaxResults').value),
+            includeAnalysis: document.getElementById('aiIncludeAnalysis').checked,
+            focusArea: document.getElementById('aiFocusArea').value || null
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success !== false) {
+          resultsDiv.innerHTML = `
+            <div class="result-header">🧠 AI Web Search Results</div>
+            <div class="result-content">
+              <pre>${JSON.stringify(result, null, 2)}</pre>
+            </div>
+          `;
+        } else {
+          showStatus('aiResults', `Search failed: ${result.error || 'Unknown error'}`, 'error');
+        }
+      } catch (error) {
+        showStatus('aiResults', `Error: ${error.message}`, 'error');
+      }
+    });
+
+    // SERP Search
+    document.getElementById('serpSearchForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const query = document.getElementById('serpQuery').value.trim();
+      if (!query) {
+        showStatus('serpResults', 'Please enter a search query', 'error');
+        return;
+      }
+      
+      const resultsDiv = document.getElementById('serpResults');
+      resultsDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Fetching raw search results...</div>';
+      
+      try {
+        const response = await fetch('/api/purchase-agent/search/serp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: query,
+            numResults: parseInt(document.getElementById('serpNumResults').value),
+            location: document.getElementById('serpLocation').value || null,
+            domain: document.getElementById('serpDomain').value,
+            language: document.getElementById('serpLanguage').value
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success !== false) {
+          resultsDiv.innerHTML = `
+            <div class="result-header">🔗 SERP Search Results</div>
+            <div class="result-content">
+              <pre>${JSON.stringify(result, null, 2)}</pre>
+            </div>
+          `;
+        } else {
+          showStatus('serpResults', `Search failed: ${result.error || 'Unknown error'}`, 'error');
+        }
+      } catch (error) {
+        showStatus('serpResults', `Error: ${error.message}`, 'error');
+      }
+    });
+
+    function showStatus(containerId, message, type) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = `<div class="status ${type}">${message}</div>`;
+    }
+  </script>
+</body>
+</html>
