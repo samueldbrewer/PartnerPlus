@@ -17,28 +17,96 @@
     body { 
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
       background-color: #f8f9fa;
-      padding: 10px;
+      margin: 0;
+      padding: 0;
       line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
     
-    .mobile-header {
-      background: #1976d2;
+    .header { 
+      background-color: #1976d2; 
+      color: white; 
+      padding: 15px 0; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+      flex-shrink: 0;
+    }
+    
+    .header-inner { 
+      max-width: 1000px; 
+      margin: 0 auto; 
+      padding: 0 20px; 
+    }
+    
+    .nav { 
+      display: flex; 
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+    
+    .nav h1 { 
+      margin: 0; 
+      font-size: 26px; 
       color: white;
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    
-    .mobile-header h1 {
-      font-size: 20px;
-      margin-bottom: 5px;
+
+    .nav-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
     }
-    
-    .mobile-header .subtitle {
+
+    .nav .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .nav-button {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
       font-size: 14px;
-      opacity: 0.9;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .nav-button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .main-content {
+      flex: 1;
+      padding: 15px;
+    }
+    
+    @media (max-width: 768px) {
+      .header {
+        padding: 10px 0;
+      }
+
+      .header-inner {
+        padding: 0 15px;
+      }
+
+      .nav h1 {
+        font-size: 20px;
+      }
+      
+      .nav-button {
+        padding: 6px 12px;
+        font-size: 13px;
+      }
     }
     
     .generate-section {
@@ -516,15 +584,22 @@
   </style>
 </head>
 <body>
-  <div class="mobile-header">
-    <h1>🔧 WO Agent</h1>
-    <div class="subtitle">Work Order Assistant</div>
-    <a href="/?desktop=true" style="position: absolute; top: 15px; right: 15px; color: rgba(255,255,255,0.8); text-decoration: none; font-size: 12px;">Desktop</a>
+  <div class="header">
+    <div class="header-inner">
+      <div class="nav">
+        <h1>PartnerGPT</h1>
+        <div class="nav-center">WO</div>
+        <div class="nav-links">
+          <a href="/partnerplus" class="nav-button">Chat</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="generate-section">
-    <button id="generateWO" class="generate-btn">Generate Work Order</button>
-  </div>
+  <div class="main-content">
+    <div class="generate-section">
+      <button id="generateWO" class="generate-btn">Generate Work Order</button>
+    </div>
 
   <div id="workOrderCard" class="wo-card hidden">
     <div class="wo-header" onclick="toggleWorkOrder()">
@@ -782,7 +857,7 @@ Based on the completed actions above, generate intelligent FOLLOW-UP actions tha
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            message: `Generate ${isFollowUp ? getCurrentActionGap() : '8'} intelligent recommended actions for this work order using available API tools:
+            message: `Generate ${isFollowUp ? getCurrentActionGap() : '4'} intelligent recommended actions for this work order using available API tools:
 
 WORK ORDER CONTEXT:
 Equipment: ${currentWorkOrder.equipment}
@@ -808,7 +883,8 @@ AVAILABLE API TOOLS TO USE:
 
 Generate actions that intelligently use this work order data:
 - For parts resolution: Generate SEPARATE actions for EACH individual part (e.g., "Resolve thermocouple part number", "Resolve control board part number")
-- ${isFollowUp ? 'Build on completed actions - use found part numbers for supplier searches, use manual links for specific troubleshooting, etc.' : 'Use specific suspected parts when searching suppliers'}
+- SUPPLIER SEARCH RULE: ONLY recommend supplier searches if explicit part numbers (like "369194", "B3900704", "831250") are already found in the WO context or activity log
+- ${isFollowUp ? 'Build on completed actions - use found part numbers for supplier searches, use manual links for specific troubleshooting, etc.' : 'Mix random actions: resolve parts, find manuals, send tech/customer updates - NO strict order'}
 - Reference actual customer/technician names and contact info
 - Use equipment make/model for targeted searches
 - Consider location for service provider searches
@@ -1149,7 +1225,13 @@ PartnerPlus Service Team`;
         const logEntry = await generateActivityLogEntry(action, result);
         
         // Show activity log section
-        document.getElementById('activityLogSection').style.display = 'block';
+        const activitySection = document.getElementById('activityLogSection');
+        if (activitySection) {
+          activitySection.style.display = 'block';
+        } else {
+          console.error('Activity log section not found!');
+          return;
+        }
         
         // Create log item
         const logItem = document.createElement('div');
@@ -1176,7 +1258,11 @@ PartnerPlus Service Team`;
         
         // Add to log (newest at bottom)
         const activityLog = document.getElementById('activityLog');
-        activityLog.appendChild(logItem);
+        if (activityLog) {
+          activityLog.appendChild(logItem);
+        } else {
+          console.error('Activity log container not found!');
+        }
         
         // Store result
         actionResults.push({ action, result, timestamp: Date.now() });
@@ -1186,20 +1272,22 @@ PartnerPlus Service Team`;
     }
 
     async function moveToCompleted(button, action, result) {
-      // Remove from active actions
+      // Start logging activity first (but don't await it yet)
+      const logActivityPromise = logActivity(action, result);
+      
+      // Remove from active actions simultaneously
       button.remove();
       
-      // Log the activity in work order
-      await logActivity(action, result);
+      // Wait for activity logging to complete
+      await logActivityPromise;
       
       updateCounts();
       
-      // Auto-generate follow-up actions if we're running low
+      // Auto-generate follow-up actions immediately when less than 4 actions remain
       const currentActionCount = document.querySelectorAll('.mobile-action-btn').length;
-      if (currentActionCount <= 3) { // Trigger when 3 or fewer actions remain
-        setTimeout(() => {
-          generateActionRecommendations(true); // Generate follow-up actions
-        }, 1500); // Small delay to let the UI update
+      if (currentActionCount < 4) { // Trigger when less than 4 actions remain
+        // Generate immediately without delay
+        generateActionRecommendations(true); // Generate follow-up actions
       }
     }
 
@@ -1260,8 +1348,8 @@ If no useful links or specific data, just summarize the key finding briefly.`;
     
     function getCurrentActionGap() {
       const currentCount = document.querySelectorAll('.mobile-action-btn').length;
-      const targetCount = 8;
-      return Math.max(2, targetCount - currentCount); // Always generate at least 2, up to fill the gap
+      const targetCount = 4;
+      return Math.max(1, targetCount - currentCount); // Always generate at least 1, up to maintain target of 4
     }
     
     function getActivityLogContext() {
@@ -1283,5 +1371,6 @@ If no useful links or specific data, just summarize the key finding briefly.`;
       return context;
     }
   </script>
+  </div>
 </body>
 </html>
