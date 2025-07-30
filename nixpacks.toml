@@ -1,10 +1,11 @@
 [phases.setup]
-nixPkgs = ["nodejs_20", "npm-9_x", "python3", "python3Packages.pip"]
+nixPkgs = ["nodejs_20", "npm-9_x", "python3", "python3Packages.pip", "python3Packages.virtualenv"]
 
 [phases.install]
 cmds = [
     "npm ci",
-    "cd manual-purchase-agent_20250513_125500_v15.6 && pip install -r requirements.txt || echo 'No requirements.txt found'"
+    "python3 -m pip install --upgrade pip",
+    "cd manual-purchase-agent_20250513_125500_v15.6 && python3 -m pip install -r requirements.txt"
 ]
 
 [start]

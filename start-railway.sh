@@ -6,7 +6,13 @@ echo "🚀 Starting PartnerPlus services on Railway..."
 # Start Flask purchase agent service in background
 echo "🐍 Starting Flask purchase agent service..."
 cd manual-purchase-agent_20250513_125500_v15.6
-python app.py &
+
+# Check if required modules are available
+echo "🔍 Checking Python environment..."
+python3 -c "import flask; print('✅ Flask is available')" || { echo "❌ Flask not found"; exit 1; }
+
+# Start Flask service
+python3 app.py &
 FLASK_PID=$!
 
 # Wait a moment for Flask to start
