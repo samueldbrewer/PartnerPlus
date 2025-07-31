@@ -635,10 +635,7 @@
       background-color: rgba(255, 255, 255, 0.1);
     }
     .nav-icon-button svg {
-      transition: transform 0.5s ease;
-    }
-    .nav-icon-button.spinning svg {
-      animation: spin 1s linear infinite;
+      transition: transform 0.2s ease;
     }
     @keyframes spin {
       from { transform: rotate(0deg); }
@@ -773,7 +770,6 @@
     // Handle refresh button
     document.getElementById('refreshWO').addEventListener('click', function() {
       const button = this;
-      button.classList.add('spinning');
       button.disabled = true;
       
       // Reset all data
@@ -784,11 +780,10 @@
       // Generate new work order
       generateRandomWorkOrder();
       
-      // Stop spinning after animation
+      // Re-enable button after a short delay
       setTimeout(() => {
-        button.classList.remove('spinning');
         button.disabled = false;
-      }, 1000);
+      }, 500);
     });
 
     function toggleWorkOrder() {
