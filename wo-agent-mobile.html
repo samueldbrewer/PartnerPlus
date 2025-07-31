@@ -940,8 +940,16 @@
           <div class="wo-section-header">📋 Issue Details</div>
           <div class="wo-section-content">
             <div class="wo-detail-item">
-              <span class="wo-detail-label">Description:</span>
-              <span id="woIssue">Loading...</span>
+              <span class="wo-detail-label">Dispatch Notes:</span>
+              <span id="woDispatchNotes">Loading...</span>
+            </div>
+            <div class="wo-detail-item">
+              <span class="wo-detail-label">Tech Notes:</span>
+              <span id="woTechNotes">Loading...</span>
+            </div>
+            <div class="wo-detail-item">
+              <span class="wo-detail-label">Suspected Parts:</span>
+              <span id="woSuspectedParts">Loading...</span>
             </div>
           </div>
         </div>
@@ -976,7 +984,9 @@
       document.getElementById('techEmail').textContent = workOrder.technicianEmail || 'N/A';
       
       // Issue Details section
-      document.getElementById('woIssue').textContent = workOrder.dispatchNotes || workOrder.description || 'No issue details available';
+      document.getElementById('woDispatchNotes').textContent = workOrder.dispatchNotes || workOrder.description || 'No dispatch notes available';
+      document.getElementById('woTechNotes').textContent = workOrder.serviceNotes || 'No tech notes available';
+      document.getElementById('woSuspectedParts').textContent = workOrder.suspectedParts ? workOrder.suspectedParts.join(', ') : 'No parts identified';
       
       document.getElementById('workOrderCard').classList.remove('hidden');
     }
