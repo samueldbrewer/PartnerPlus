@@ -361,8 +361,37 @@
       color: #2d2926;
     }
     
-    .activity-content a {
+    /* Style the activity header */
+    .activity-header {
+      font-weight: 600;
+      font-size: 16px;
       color: #2d2926;
+      display: block;
+      margin-bottom: 8px;
+    }
+    
+    .activity-content ul {
+      margin: 8px 0 0 0;
+      padding-left: 20px;
+      list-style: none;
+    }
+    
+    .activity-content li {
+      position: relative;
+      padding-left: 12px;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    
+    .activity-content li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #666;
+    }
+    
+    .activity-content a {
+      color: #c8102e;
       text-decoration: none;
       font-weight: 500;
     }
@@ -1534,25 +1563,53 @@ PartnerGPT Service Team`;
 
     async function generateActivityLogEntry(action, result) {
       try {
-        const prompt = `Create a clean work order activity entry for this action:
+        const prompt = `Create a structured activity log entry for this work order action.
 
 Action: ${action.name}
 Result: ${JSON.stringify(result, null, 2)}
 
-Instructions:
-- Write a brief, professional summary of what was accomplished
-- Include key details like part numbers, prices, contact info when available
-- Make URLs clickable using standard HTML link format
-- Use simple formatting - bold for emphasis, no markdown
-- Keep it concise and work-order appropriate
-- Do NOT include code blocks, markdown syntax, or HTML formatting in the visible text
+CRITICAL FORMATTING RULES:
+1. Create a SHORT HEADER (max 4-6 words) that summarizes the action
+2. Use one of these header patterns based on action type:
+   - Parts: "[Part Type] Part Number [Number]"
+   - Manuals: "Technical Manual [Make] [Model]"  
+   - Suppliers: "[Part Name] [Number] Supplier"
+   - Communications: "Emailed/Called [Name] [Topic]"
+   - Equipment Images: "Equipment Photo [Make] [Model]"
+   - Part Images: "[Part Type] Image [Number]"
+   - Service Providers: "Service Provider [Company]"
+   - Errors: "Error: [Brief Description]"
+3. List relevant links/details below the header as bullet points
+4. Keep headers VERY concise - no full sentences
+5. Format links as <a href="url" target="_blank">Link Text</a>
 
-Examples:
-• Found service manual for Hobart AM15 - <a href="manual-url" target="_blank">View Manual</a>
-• Located water filter part #00-067500-00072, 441 available in stock
-• Contacted Linda Carter at (206) 555-4321 regarding maintenance status
+EXAMPLES:
+Header: Technical Manual Hobart AM15
+• <a href="manual1.pdf" target="_blank">Installation Manual</a>
+• <a href="manual2.pdf" target="_blank">Parts Manual</a>
 
-Return only the clean, readable log entry text.`;
+Header: Door Seal Part 00-875643
+• Price: $45.99
+• Stock: 12 available
+• <a href="supplier.com/part" target="_blank">Order from Parts Town</a>
+
+Header: Emailed John Smith Update
+• Status: Awaiting parts delivery
+• ETA: Tomorrow 2PM
+
+Header: Heating Element 426635 Supplier
+• <a href="supplier1.com" target="_blank">WebstaurantStore - $89.99</a>
+• <a href="supplier2.com" target="_blank">Parts Town - $92.50</a>
+
+IMPORTANT: Structure your response EXACTLY like this:
+<div class="activity-header">[Your Header Here]</div>
+<ul>
+<li>[First bullet point]</li>
+<li>[Second bullet point if needed]</li>
+<li>[Third bullet point if needed]</li>
+</ul>
+
+Return ONLY the formatted HTML entry. No additional text.`;
 
         const response = await fetch('/api/chat', {
           method: 'POST',
