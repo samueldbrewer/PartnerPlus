@@ -1653,8 +1653,15 @@ app.get('/api/generate-work-order', async (req, res) => {
 Generate a unique and realistic work order with creative variety.
 
 REQUIREMENTS:
-- Focus on foodservice industry (restaurants, cafes, hotels, cafeterias, etc.)
-- Use real commercial equipment makes and models - just make and model
+- Focus on foodservice industry (restaurants, cafes, hotels, cafeterias, food trucks, etc.)
+- Create diverse equipment from these categories:
+  * HOT EQUIPMENT: grills, fryers, ovens, ranges, steamers, broilers, warmers, heated displays
+  * COLD EQUIPMENT: refrigerators, freezers, ice machines, prep tables, display cases, blast chillers
+  * BEVERAGE: coffee machines, espresso machines, juice dispensers, tea brewers, soda fountains
+  * PREP: mixers, slicers, food processors, grinders, scales, cutting boards
+  * WAREWASHING: dishwashers, glasswashers, pot sinks, disposal units
+  * VENTILATION: hoods, exhaust fans, make-up air units
+- Mix well-known commercial brands with generic/lesser-known manufacturers
 - Generate varied business names, addresses, and contact information  
 - Create diverse technician names with professional emails (firstname.lastname@partnerplus.com)
 - Write technical service notes in brief, spartan technician style
@@ -1662,7 +1669,7 @@ REQUIREMENTS:
 - Include realistic error codes or technical observations when relevant
 - Make suspected parts appropriate for the equipment and failure type
 
-Be creative and vary equipment types, business types, locations, issues, and scenarios.
+Be creative and vary equipment types across ALL categories, business types, locations, issues, and scenarios.
 
 FORMAT AS JSON with this exact structure:
 {
@@ -1685,13 +1692,15 @@ FORMAT AS JSON with this exact structure:
 
     // Add randomization to make each request unique
     const randomPrompts = [
-      'Generate a work order for a busy restaurant service call.',
-      'Create a work order for urgent foodservice equipment repair.',
-      'Generate a work order for a commercial kitchen equipment failure.',
-      'Create a service ticket for a foodservice establishment.',
-      'Generate a work order for equipment emergency repair.',
-      'Create a work order for routine equipment maintenance.',
-      'Generate a service request for commercial cooking equipment.'
+      'Generate a work order for a HOT equipment failure (grill, fryer, oven, etc).',
+      'Create a work order for COLD equipment breakdown (refrigerator, freezer, ice machine, etc).',
+      'Generate a work order for a BEVERAGE equipment issue (coffee, espresso, soda, etc).',
+      'Create a service ticket for PREP equipment problems (mixer, slicer, processor, etc).',
+      'Generate a work order for WAREWASHING equipment failure (dishwasher, disposal, etc).',
+      'Create a work order for VENTILATION system issues (hood, exhaust, etc).',
+      'Generate a service request for a unique or specialty foodservice equipment.',
+      'Create a work order for an urgent commercial kitchen breakdown.',
+      'Generate a work order mixing multiple equipment types in one location.'
     ];
     
     const randomPrompt = randomPrompts[Math.floor(Math.random() * randomPrompts.length)];

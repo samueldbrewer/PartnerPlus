@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>WO Agent Mobile - PartnerPlus</title>
+  <title>WO Agent Mobile - PartnerGPT</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
+  <!-- Cache buster: 2025-07-31-v5 -->
   <style>
     * {
       box-sizing: border-box;
@@ -189,18 +190,14 @@
     
     .wo-content {
       padding: 15px;
-      display: none;
-    }
-    
-    .wo-content.expanded {
       display: block;
     }
     
     .wo-quick-info {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 15px;
+      gap: 15px;
+      margin-bottom: 20px;
     }
     
     .wo-info-item {
@@ -211,7 +208,7 @@
     }
     
     .wo-info-label {
-      font-size: 11px;
+      font-size: 14px;
       color: #2d2926;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -219,8 +216,8 @@
     }
     
     .wo-info-value {
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 20px;
+      font-weight: 600;
       color: #2d2926;
     }
     
@@ -267,7 +264,7 @@
       color: #2d2926;
       padding: 10px 12px;
       font-weight: 600;
-      font-size: 13px;
+      font-size: 18px;
       border-bottom: 1px solid #dee2e6;
     }
     
@@ -287,7 +284,7 @@
     }
     
     .wo-detail-label {
-      font-size: 11px;
+      font-size: 15px;
       color: #2d2926;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -295,9 +292,9 @@
     }
     
     .wo-detail-item span:not(.wo-detail-label) {
-      font-size: 13px;
+      font-size: 16px;
       color: #2d2926;
-      line-height: 1.3;
+      line-height: 1.4;
     }
     
     .wo-parts-list {
@@ -334,6 +331,18 @@
       font-size: 12px;
       line-height: 1.4;
       border: 1px solid #e9ecef;
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     
     .activity-log-item.error {
@@ -375,32 +384,23 @@
       justify-content: space-between;
       align-items: flex-start;
       gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .activity-main-content:hover {
+      background: rgba(0, 0, 0, 0.02);
+      margin: 0 -12px;
+      padding: 0 12px;
+    }
+    
+    .activity-main-content:active {
+      opacity: 0.8;
     }
     
     .activity-content-left {
       flex: 1;
-    }
-    
-    .activity-raw-dropdown {
-      position: relative;
-      flex-shrink: 0;
-    }
-    
-    .activity-raw-toggle {
-      background: #6c757d;
-      color: white;
-      border: none;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 10px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    
-    .activity-raw-toggle:hover {
-      background: #495057;
     }
     
     .activity-raw-content {
@@ -489,6 +489,17 @@
     .mobile-action-btn.loading {
       background: #dee2e6;
       cursor: not-allowed;
+    }
+    
+    .mobile-action-btn.completing {
+      background: #28a745;
+      cursor: not-allowed;
+      opacity: 1 !important;
+    }
+    
+    .mobile-action-btn.completing .action-status {
+      color: white;
+      font-weight: bold;
     }
     
     .action-text {
@@ -606,6 +617,55 @@
     .hidden {
       display: none !important;
     }
+    
+    /* Refresh button styles */
+    .nav-icon-button {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-icon-button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    .nav-icon-button svg {
+      transition: transform 0.5s ease;
+    }
+    .nav-icon-button.spinning svg {
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Loading state styles */
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      gap: 20px;
+    }
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #c8102e;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    .loading-text {
+      color: #666;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -615,6 +675,12 @@
         <h1>PartnerGPT</h1>
         <div class="nav-center">WO</div>
         <div class="nav-links">
+          <button id="refreshWO" class="nav-icon-button" title="Generate New Work Order">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 4v6h6M23 20v-6h-6"/>
+              <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+            </svg>
+          </button>
           <a href="/partnerplus" class="nav-button">Chat</a>
         </div>
       </div>
@@ -622,34 +688,23 @@
   </div>
 
   <div class="main-content">
-    <div class="generate-section">
-      <button id="generateWO" class="generate-btn">Generate Work Order</button>
-    </div>
 
   <div id="workOrderCard" class="wo-card hidden">
     <div class="wo-header" onclick="toggleWorkOrder()">
       <div>
         <div class="wo-title" id="woTitle">Work Order</div>
       </div>
-      <div class="wo-toggle" id="woToggle">▼</div>
+      <div class="wo-toggle expanded" id="woToggle">▼</div>
     </div>
     <div class="wo-content" id="woContent">
       <div class="wo-quick-info">
         <div class="wo-info-item">
-          <div class="wo-info-label">Equipment</div>
-          <div class="wo-info-value" id="woEquipment">Loading...</div>
+          <div class="wo-info-label">Make</div>
+          <div class="wo-info-value" id="woMake">Loading...</div>
         </div>
         <div class="wo-info-item">
-          <div class="wo-info-label">Status</div>
-          <div class="wo-info-value" id="woStatus">In Progress</div>
-        </div>
-        <div class="wo-info-item">
-          <div class="wo-info-label">Duration</div>
-          <div class="wo-info-value" id="woDuration">2 hours</div>
-        </div>
-        <div class="wo-info-item">
-          <div class="wo-info-label">Type</div>
-          <div class="wo-info-value" id="woType">Service Call</div>
+          <div class="wo-info-label">Model</div>
+          <div class="wo-info-value" id="woModel">Loading...</div>
         </div>
       </div>
       
@@ -658,54 +713,27 @@
         <div class="wo-section-header">📍 Location & Contact</div>
         <div class="wo-section-content">
           <div class="wo-detail-item">
-            <span class="wo-detail-label">Customer:</span>
-            <span id="woCustomerName">Loading...</span>
-          </div>
-          <div class="wo-detail-item">
-            <span class="wo-detail-label">Address:</span>
-            <span id="woAddress">Loading...</span>
+            <span class="wo-detail-label">Location:</span>
+            <span id="woLocation">Loading...</span>
           </div>
           <div class="wo-detail-item">
             <span class="wo-detail-label">Contact:</span>
-            <span id="woLocationContact">Loading...</span>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Technician Section -->
-      <div class="wo-section">
-        <div class="wo-section-header">🔧 Assigned Technician</div>
-        <div class="wo-section-content">
-          <div class="wo-detail-item">
-            <span class="wo-detail-label">Name:</span>
-            <span id="woTechName">Loading...</span>
+            <span id="woContact">Loading...</span>
           </div>
           <div class="wo-detail-item">
             <span class="wo-detail-label">Phone:</span>
-            <span id="woTechPhone">Loading...</span>
-          </div>
-          <div class="wo-detail-item">
-            <span class="wo-detail-label">Email:</span>
-            <span id="woTechEmail">Loading...</span>
+            <span id="woPhone">Loading...</span>
           </div>
         </div>
       </div>
       
-      <!-- Service Details Section -->
+      <!-- Issue Details Section -->
       <div class="wo-section">
-        <div class="wo-section-header">📋 Service Details</div>
+        <div class="wo-section-header">📋 Issue Details</div>
         <div class="wo-section-content">
           <div class="wo-detail-item">
-            <span class="wo-detail-label">Issue:</span>
-            <span id="woIssue">Loading...</span>
-          </div>
-          <div class="wo-detail-item" id="woServiceNotesSection">
-            <span class="wo-detail-label">Tech Notes:</span>
-            <span id="woServiceNotes">Loading...</span>
-          </div>
-          <div class="wo-detail-item" id="woSuspectedPartsSection">
-            <span class="wo-detail-label">Suspected Parts:</span>
-            <div id="woSuspectedParts">Loading...</div>
+            <span class="wo-detail-label">Description:</span>
+            <div id="woIssue" style="margin-top: 5px;">Loading...</div>
           </div>
         </div>
       </div>
@@ -736,128 +764,224 @@
     let currentWorkOrder = null;
     let actionResults = [];
 
-    document.getElementById('generateWO').addEventListener('click', generateRandomWorkOrder);
+    // Auto-generate work order on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('DOMContentLoaded - starting work order generation');
+      generateRandomWorkOrder();
+    });
+    
+    // Handle refresh button
+    document.getElementById('refreshWO').addEventListener('click', function() {
+      const button = this;
+      button.classList.add('spinning');
+      button.disabled = true;
+      
+      // Reset all data
+      currentWorkOrder = null;
+      actionResults = [];
+      resetSections();
+      
+      // Generate new work order
+      generateRandomWorkOrder();
+      
+      // Stop spinning after animation
+      setTimeout(() => {
+        button.classList.remove('spinning');
+        button.disabled = false;
+      }, 1000);
+    });
 
     function toggleWorkOrder() {
       const content = document.getElementById('woContent');
       const toggle = document.getElementById('woToggle');
       
-      if (content.classList.contains('expanded')) {
-        content.classList.remove('expanded');
-        toggle.classList.remove('expanded');
-      } else {
-        content.classList.add('expanded');
+      if (content.style.display === 'none') {
+        content.style.display = 'block';
         toggle.classList.add('expanded');
+      } else {
+        content.style.display = 'none';
+        toggle.classList.remove('expanded');
       }
     }
 
     async function generateRandomWorkOrder() {
-      const generateBtn = document.getElementById('generateWO');
-      generateBtn.disabled = true;
-      generateBtn.textContent = 'Generating...';
+      console.log('generateRandomWorkOrder called');
+      // Show loading state in work order card  
+      const workOrderCard = document.getElementById('workOrderCard');
+      workOrderCard.classList.remove('hidden');
+      
+      // Show loading content
+      document.getElementById('woContent').innerHTML = `
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Generating work order...</div>
+        </div>
+      `;
 
-      // Reset all sections
+      // Reset other sections but keep WO card visible
       resetSections();
 
       try {
         const response = await fetch('/api/generate-work-order');
+        console.log('Work order response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const workOrder = await response.json();
+        console.log('Work order data:', workOrder);
         
         currentWorkOrder = workOrder;
         displayWorkOrder(workOrder);
         
-        // Auto-expand work order initially
-        setTimeout(() => {
-          const content = document.getElementById('woContent');
-          const toggle = document.getElementById('woToggle');
-          content.classList.add('expanded');
-          toggle.classList.add('expanded');
-        }, 500);
+        // Work order is already expanded by default
 
         // Generate action recommendations
         setTimeout(() => generateActionRecommendations(), 1000);
         
       } catch (error) {
         console.error('Error generating work order:', error);
-        alert('Failed to generate work order. Please try again.');
-      } finally {
-        generateBtn.disabled = false;
-        generateBtn.textContent = 'Generate New Work Order';
+        document.getElementById('woContent').innerHTML = `
+          <div style="text-align: center; padding: 20px; color: #dc3545;">
+            Failed to generate work order: ${error.message}<br>
+            Please try again.
+          </div>
+        `;
       }
     }
 
     function resetSections() {
-      // Reset work order
-      document.getElementById('workOrderCard').classList.add('hidden');
-      document.getElementById('woContent').classList.remove('expanded');
-      document.getElementById('woToggle').classList.remove('expanded');
+      // Work order stays visible and expanded
       
       // Reset actions
-      document.getElementById('actionsSection').classList.add('hidden');
-      document.getElementById('actionsGrid').innerHTML = '<div class="loading-placeholder">Generating recommendations<span class="loading-dots"></span></div>';
+      const actionsSection = document.getElementById('actionsSection');
+      if (actionsSection) {
+        actionsSection.classList.add('hidden');
+      }
+      
+      const actionsGrid = document.getElementById('actionsGrid');
+      if (actionsGrid) {
+        actionsGrid.innerHTML = '<div class="loading-placeholder">Generating recommendations<span class="loading-dots"></span></div>';
+      }
       
       // Reset activity log
-      document.getElementById('activityLogSection').style.display = 'none';
-      document.getElementById('activityLog').innerHTML = '';
+      const activityLogSection = document.getElementById('activityLogSection');
+      if (activityLogSection) {
+        activityLogSection.style.display = 'none';
+      }
+      
+      const activityLog = document.getElementById('activityLog');
+      if (activityLog) {
+        activityLog.innerHTML = '';
+      }
       
       // Reset data
       actionResults = [];
-      updateCounts();
+      
+      // Only call updateCounts if the function exists
+      if (typeof updateCounts === 'function') {
+        updateCounts();
+      }
     }
 
     function displayWorkOrder(workOrder) {
+      console.log('displayWorkOrder called with:', workOrder);
+      // Restore the work order content structure
+      document.getElementById('woContent').innerHTML = `
+        <div class="wo-quick-info">
+          <div class="wo-info-item">
+            <div class="wo-info-label">Make</div>
+            <div class="wo-info-value" id="woMake">Loading...</div>
+          </div>
+          <div class="wo-info-item">
+            <div class="wo-info-label">Model</div>
+            <div class="wo-info-value" id="woModel">Loading...</div>
+          </div>
+        </div>
+        <div class="wo-section">
+          <div class="wo-section-header">📍 Restaurant Details</div>
+          <div class="wo-section-content">
+            <div class="wo-detail-item">
+              <span class="wo-detail-label">Location:</span>
+              <span id="woLocation">Loading...</span>
+            </div>
+            <div class="wo-detail-item">
+              <span class="wo-detail-label">Address:</span>
+              <span id="woAddress">Loading...</span>
+            </div>
+            <div class="wo-detail-item">
+              <span class="wo-detail-label">Contact:</span>
+              <span id="woContact">Loading...</span>
+            </div>
+            <div class="wo-detail-item">
+              <span class="wo-detail-label">Phone:</span>
+              <span id="woPhone">Loading...</span>
+            </div>
+            <div class="wo-detail-item">
+              <span class="wo-detail-label">Email:</span>
+              <span id="woEmail">Loading...</span>
+            </div>
+          </div>
+        </div>
+        <div class="wo-section">
+          <div class="wo-section-header">🔧 Technician Details</div>
+          <div class="wo-section-content">
+            <div class="wo-detail-item">
+              <span class="wo-detail-label">Name:</span>
+              <span id="techName">Loading...</span>
+            </div>
+            <div class="wo-detail-item">
+              <span class="wo-detail-label">Phone:</span>
+              <span id="techPhone">Loading...</span>
+            </div>
+            <div class="wo-detail-item">
+              <span class="wo-detail-label">Email:</span>
+              <span id="techEmail">Loading...</span>
+            </div>
+          </div>
+        </div>
+        <div class="wo-section">
+          <div class="wo-section-header">📋 Issue Details</div>
+          <div class="wo-section-content">
+            <div class="wo-detail-item">
+              <span class="wo-detail-label">Description:</span>
+              <span id="woIssue">Loading...</span>
+            </div>
+          </div>
+        </div>
+        <div class="wo-section" id="activityLogSection" style="display: none;">
+          <div class="wo-section-header">📝 Activity Log</div>
+          <div class="wo-section-content">
+            <div id="activityLog" class="activity-log"></div>
+          </div>
+        </div>
+      `;
+      
       // Header info
       document.getElementById('woTitle').textContent = `WO #${workOrder.id}`;
       
-      // Quick info section
-      document.getElementById('woEquipment').textContent = workOrder.equipment;
-      document.getElementById('woStatus').textContent = workOrder.status || 'In Progress';
-      document.getElementById('woDuration').textContent = workOrder.estimatedDuration || '2 hours';
-      document.getElementById('woType').textContent = 'Service Call';
+      // Quick info section - split equipment into make and model
+      const equipmentParts = workOrder.equipment.split(' ');
+      const make = equipmentParts[0];
+      const model = equipmentParts.slice(1).join(' ');
+      document.getElementById('woMake').textContent = make;
+      document.getElementById('woModel').textContent = model;
       
       // Location & Contact section
-      document.getElementById('woCustomerName').textContent = workOrder.customer || workOrder.locationName;
-      document.getElementById('woAddress').textContent = workOrder.address;
-      
-      const locationContactEl = document.getElementById('woLocationContact');
-      if (workOrder.locationContactName && workOrder.locationContactPhone) {
-        locationContactEl.innerHTML = `
-          ${workOrder.locationContactName}<br>
-          ${workOrder.locationContactPhone}<br>
-          <span style="font-size: 11px; color: #2d2926;">${workOrder.locationContactEmail || ''}</span>
-        `;
-      } else {
-        locationContactEl.textContent = workOrder.contact || 'N/A';
-      }
+      document.getElementById('woLocation').textContent = workOrder.locationName || workOrder.customer || 'N/A';
+      document.getElementById('woAddress').textContent = workOrder.address || 'N/A';
+      document.getElementById('woContact').textContent = workOrder.locationContactName || workOrder.contact || 'N/A';
+      document.getElementById('woPhone').textContent = workOrder.locationContactPhone || 'N/A';
+      document.getElementById('woEmail').textContent = workOrder.locationContactEmail || 'N/A';
       
       // Technician section
-      document.getElementById('woTechName').textContent = workOrder.technicianName || workOrder.technician;
-      document.getElementById('woTechPhone').textContent = workOrder.technicianPhone || 'N/A';
-      document.getElementById('woTechEmail').textContent = workOrder.technicianEmail || 'N/A';
+      document.getElementById('techName').textContent = workOrder.technicianName || workOrder.technician || 'N/A';
+      document.getElementById('techPhone').textContent = workOrder.technicianPhone || 'N/A';
+      document.getElementById('techEmail').textContent = workOrder.technicianEmail || 'N/A';
       
-      // Service Details section
-      const issueText = workOrder.dispatchNotes || workOrder.description || 'No issue description available';
-      document.getElementById('woIssue').textContent = issueText;
-      
-      const serviceNotesEl = document.getElementById('woServiceNotes');
-      if (workOrder.serviceNotes) {
-        serviceNotesEl.textContent = workOrder.serviceNotes;
-        document.getElementById('woServiceNotesSection').style.display = 'flex';
-      } else {
-        document.getElementById('woServiceNotesSection').style.display = 'none';
-      }
-      
-      const suspectedPartsEl = document.getElementById('woSuspectedParts');
-      if (workOrder.suspectedParts && workOrder.suspectedParts.length > 0) {
-        suspectedPartsEl.innerHTML = `
-          <div class="wo-parts-list">
-            ${workOrder.suspectedParts.map(part => `<div>${part}</div>`).join('')}
-          </div>
-        `;
-        document.getElementById('woSuspectedPartsSection').style.display = 'flex';
-      } else {
-        document.getElementById('woSuspectedPartsSection').style.display = 'none';
-      }
+      // Issue Details section
+      document.getElementById('woIssue').textContent = workOrder.dispatchNotes || workOrder.description || 'No issue details available';
       
       document.getElementById('workOrderCard').classList.remove('hidden');
     }
@@ -898,7 +1022,17 @@ CRITICAL: Analyze the completed actions above and their detailed API responses t
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            message: `Generate exactly ${isFollowUp ? getCurrentActionGap() : '4'} intelligent recommended actions for this work order using available API tools:
+            message: `Generate exactly ${isFollowUp ? getCurrentActionGap() : '4'} recommended actions. 
+
+CRITICAL FORMAT REQUIREMENTS:
+- Output ONLY the action descriptions, one per line
+- NO introductory text like "Here are the actions" 
+- NO questions like "Would you like to proceed?"
+- NO explanatory text or context
+- NO numbered lists or bullet points
+- Just the pure action descriptions
+
+WORK ORDER:
 
 === COMPLETE WORK ORDER DETAILS ===
 WO Number: ${currentWorkOrder.workOrderNumber || 'WO-1023'}
@@ -968,7 +1102,9 @@ GENERATE DIVERSE ACTIONS LIKE:
 - "Search for [equipment] troubleshooting guides"
 - "Find local service providers for [equipment type] in [location]"`}
 
-Format: Concise action statements, 8-12 words each.`
+Format: Concise action statements, 8-12 words each.
+
+FINAL REMINDER: Output ONLY the ${isFollowUp ? getCurrentActionGap() : '4'} action descriptions, nothing else!`
           })
         });
 
@@ -1005,10 +1141,16 @@ Format: Concise action statements, 8-12 words each.`
           .replace(/^▶\s*/g, '') // Remove arrow markers
           .replace(/^\>\s*/g, '') // Remove quote markers
           .replace(/^Here are.*actions?:?/i, '') // Remove intro text
+          .replace(/^for the work order:?/i, '') // Remove "for the work order" text
+          .replace(/Would you like.*$/i, '') // Remove questions
           .replace(/If you'd like to proceed.*$/i, '') // Remove outro text
+          .replace(/^\*\*(.+)\*\*$/, '$1') // Remove bold markdown
           .trim();
           
-        if (cleanLine && cleanLine.length > 10 && !cleanLine.match(/^(Here|If)/i)) {
+        if (cleanLine && 
+            cleanLine.length > 10 && 
+            !cleanLine.match(/^(Here|If|Would|for the|Let me)/i) &&
+            !cleanLine.includes('?')) {  // Exclude questions
           // Determine action type based on keywords
           let type = 'general';
           const lowerLine = cleanLine.toLowerCase();
@@ -1272,7 +1414,7 @@ Status: Work in progress
 We will keep you informed of any developments.
 
 Best regards,
-PartnerPlus Service Team`;
+PartnerGPT Service Team`;
       } else if (actionName.toLowerCase().includes('parts')) {
         return `Dear ${customerName},
 
@@ -1284,7 +1426,7 @@ Required parts are being sourced and will be ordered shortly.
 We will contact you with delivery timeframes and next steps.
 
 Best regards,
-PartnerPlus Service Team`;
+PartnerGPT Service Team`;
       } else {
         return `Dear ${customerName},
 
@@ -1295,7 +1437,7 @@ ${actionName}
 We will keep you updated on progress.
 
 Best regards,
-PartnerPlus Service Team`;
+PartnerGPT Service Team`;
       }
     }
 
@@ -1332,15 +1474,9 @@ PartnerPlus Service Team`;
         
         logItem.innerHTML = `
           <div class="activity-timestamp">${timestamp}</div>
-          <div class="activity-main-content">
+          <div class="activity-main-content" onclick="toggleActivityRaw('${rawToggleId}')">
             <div class="activity-content-left">
               <div class="activity-content">${logEntry}</div>
-            </div>
-            <div class="activity-raw-dropdown">
-              <button class="activity-raw-toggle" onclick="toggleActivityRaw('${rawToggleId}')">
-                <span>Raw Data</span>
-                <span>▼</span>
-              </button>
             </div>
           </div>
           <div id="${rawToggleId}" class="activity-raw-content">
@@ -1364,23 +1500,31 @@ PartnerPlus Service Team`;
     }
 
     async function moveToCompleted(button, action, result) {
-      // Start logging activity first (but don't await it yet)
-      const logActivityPromise = logActivity(action, result);
+      // Show completing state
+      button.classList.add('completing');
+      button.querySelector('.action-status').innerHTML = '✓';
+      button.querySelector('.action-text').style.opacity = '0.6';
       
-      // Remove from active actions simultaneously
-      button.remove();
+      // Log the activity
+      await logActivity(action, result);
       
-      // Wait for activity logging to complete
-      await logActivityPromise;
+      // Fade out the button
+      button.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+      button.style.opacity = '0';
+      button.style.transform = 'scale(0.95)';
       
-      updateCounts();
-      
-      // Auto-generate follow-up actions immediately when less than 4 actions remain
-      const actionGap = getCurrentActionGap();
-      if (actionGap > 0) { // Only generate if we need actions to reach exactly 4
-        // Generate immediately without delay
-        generateActionRecommendations(true); // Generate follow-up actions
-      }
+      // Remove button after animation
+      setTimeout(() => {
+        button.remove();
+        updateCounts();
+        
+        // Auto-generate follow-up actions immediately when less than 4 actions remain
+        const actionGap = getCurrentActionGap();
+        if (actionGap > 0) { // Only generate if we need actions to reach exactly 4
+          // Generate immediately without delay
+          generateActionRecommendations(true); // Generate follow-up actions
+        }
+      }, 300);
     }
 
     async function generateActivityLogEntry(action, result) {
@@ -1424,11 +1568,6 @@ Return only the clean, readable log entry text.`;
       const rawContent = document.getElementById(toggleId);
       const isHidden = rawContent.style.display === 'none' || !rawContent.style.display;
       rawContent.style.display = isHidden ? 'block' : 'none';
-      
-      // Update button arrow
-      const button = rawContent.previousElementSibling;
-      const arrow = button.querySelector('span:last-child');
-      arrow.textContent = isHidden ? '▲' : '▼';
     }
 
     function updateCounts() {

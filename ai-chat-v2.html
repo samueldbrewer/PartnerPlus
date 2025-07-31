@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>PartnerPlus - AI Assistant</title>
+  <title>PartnerGPT - AI Assistant</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -823,9 +823,9 @@
       <div class="chat-messages" id="chatMessages">
         <div class="message assistant">
           <div class="message-content">
-            Welcome to PartnerPlus! I'm your AI assistant with access to all tools and APIs. I can help with parts research, supplier searches, equipment manuals, image search, email/SMS, web searches, and more. Just ask me anything!
+            Welcome to PartnerGPT! I'm your AI assistant with access to all tools and APIs. I can help with parts research, supplier searches, equipment manuals, image search, email/SMS, web searches, and more. Just ask me anything!
           </div>
-          <div class="message-meta">PartnerPlus AI</div>
+          <div class="message-meta">PartnerGPT AI</div>
         </div>
       </div>
 
@@ -1150,7 +1150,7 @@
       }
 
       buildSystemPrompt() {
-        return `You are a step-by-step tool-aware AI assistant for PartnerPlus. You excel at breaking complex requests into individual actionable steps.
+        return `You are a step-by-step tool-aware AI assistant for PartnerGPT. You excel at breaking complex requests into individual actionable steps.
 
 WORKFLOW APPROACH: Always work step-by-step for multi-step requests:
 - Step 1: Execute first action, wait for results
@@ -1191,8 +1191,11 @@ MANUALS & DOCUMENTATION:
 - GET /api/purchase-agent/manuals/search - Search equipment manuals (use query params: ?make=value&model=value&query=value)
 
 SEARCH TOOLS:
-- POST /api/purchase-agent/search/web - AI-powered web search (query)
-- POST /api/purchase-agent/search/serp - Raw Google search results (query)
+- POST /api/purchase-agent/search/web - AI-powered web search
+  Parameters: {query: "search question"}
+  Example: fetch('/api/purchase-agent/search/web', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({query: 'search term'})})
+- POST /api/purchase-agent/search/serp - Raw Google search results
+  Parameters: {query: "search question"}
 
 IMAGE SEARCH TOOLS:
 - POST /api/purchase-agent/equipment-image - Find equipment photos (make, model)
@@ -1231,7 +1234,7 @@ CRITICAL STEP-BY-STEP RULES:
    - If TASK COMPLETE: Summarize what was accomplished
    - For multi-step requests like "search and text", continue until ALL steps are done
 7. Always tell the user "I'll do this step by step" and show ONLY the first step initially
-8. Each API call must be completely independent - no chaining with .then()
+8. Each API call must be completely independent - DO NOT use .then() chains
 9. Format single API calls like this:
 
 \`\`\`javascript
@@ -1244,9 +1247,11 @@ fetch('/api/purchase-agent/parts/resolve', {
     model: '500'
   })
 })
-.then(response => response.json())
-.then(data => console.log(data))
-.catch(error => console.error('Error:', error));
+\`\`\`
+
+For GET requests:
+\`\`\`javascript
+fetch('/health')
 \`\`\`
 
 Always be helpful, accurate, and suggest the most appropriate tools for the user's needs.`;
@@ -1260,33 +1265,125 @@ Always be helpful, accurate, and suggest the most appropriate tools for the user
           // Show executing status
           this.addMessage('system', 'Executing API query...');
           
-          // Extract the URL and data from the query instead of using eval
-          let result;
+          let result; // Declare result variable
           
-          if (query.includes('/api/purchase-agent/equipment-image')) {
-            // Extract make and model from the query
-            const makeMatch = query.match(/make:\s*['"]([^'"]+)['"]/);
-            const modelMatch = query.match(/model:\s*['"]([^'"]+)['"]/);
+          // Log the query for debugging
+          console.log('Executing query:', query);
+          
+          // First try to match simple fetch calls (GET requests without options)
+          const simpleFetchMatch = query.match(/fetch\s*\(\s*['"`]([^'"`]+)['"`]\s*\)(?:\s*$|[^.])/);
+          
+          if (simpleFetchMatch) {
+            // Simple GET request
+            const url = simpleFetchMatch[1];
+            console.log('Simple GET request to:', url);
+            const response = await fetch(url);
+            result = await response.json();
+          } else {
+            // Check for GET requests with query parameters (common AI mistake)
+            const getWithParamsMatch = query.match(/fetch\s*\(\s*['"`]([^'"`]+\?[^'"`]+)['"`]\s*\)/);
             
-            if (makeMatch && modelMatch) {
-              const make = makeMatch[1];
-              const model = modelMatch[1];
+            if (getWithParamsMatch && (
+              getWithParamsMatch[1].includes('/api/purchase-agent/search/web?') ||
+              getWithParamsMatch[1].includes('/api/purchase-agent/search/serp?')
+            )) {
+              // Convert GET with params to POST with body for search endpoints
+              const url = getWithParamsMatch[1].split('?')[0];
+              const queryParam = getWithParamsMatch[1].split('query=')[1];
+              const decodedQuery = decodeURIComponent(queryParam || '');
               
-              // Make direct fetch call with proper JSON parsing
-              const response = await fetch('/api/purchase-agent/equipment-image', {
+              const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ make: make, model: model })
+                body: JSON.stringify({ query: decodedQuery })
+              });
+              
+              result = await response.json();
+            } else if (getWithParamsMatch) {
+              // Regular GET with query params
+              const url = getWithParamsMatch[1];
+              const response = await fetch(url);
+              result = await response.json();
+            } else {
+            // Extract URL and request body from the fetch call with options
+            // Updated regex to capture everything up to the .then() chain or end of statement
+            const fetchMatch = query.match(/fetch\s*\(\s*['"`]([^'"`]+)['"`]\s*,\s*\{([^}]+)\}\s*\)/s);
+            
+            if (fetchMatch) {
+              const url = fetchMatch[1];
+              const optionsString = '{' + fetchMatch[2] + '}';
+              
+              // Extract method
+              const methodMatch = optionsString.match(/method:\s*['"`](\w+)['"`]/);
+              const method = methodMatch ? methodMatch[1] : 'GET';
+              
+              // Extract body - handle multi-line object literals
+              const bodyMatch = optionsString.match(/body:\s*JSON\.stringify\s*\(([\s\S]+?)\)\s*(?:,|\})/);
+              let bodyData = {};
+              
+              if (bodyMatch) {
+                try {
+                  // Parse the object literal
+                  let objectStr = bodyMatch[1].trim();
+                  console.log('Raw body match:', objectStr);
+                  
+                  // Remove trailing comma if present
+                  if (objectStr.endsWith(',')) {
+                    objectStr = objectStr.slice(0, -1);
+                  }
+                  // Clean up the object string to handle multi-line formatting
+                  objectStr = objectStr.replace(/\n\s*/g, ' ');
+                  console.log('Cleaned object string:', objectStr);
+                  
+                  bodyData = eval('(' + objectStr + ')');
+                  console.log('Parsed body data:', bodyData);
+                } catch (e) {
+                  console.error('Error parsing body:', e);
+                  console.error('Body match was:', bodyMatch[1]);
+                  // Try a safer JSON parse approach
+                  try {
+                    // Convert single quotes to double quotes and parse
+                    const jsonStr = objectStr.replace(/'/g, '"').replace(/(\w+):/g, '"$1":');
+                    console.log('Trying JSON parse with:', jsonStr);
+                    bodyData = JSON.parse(jsonStr);
+                    console.log('JSON parse succeeded:', bodyData);
+                  } catch (e2) {
+                    console.error('JSON parse also failed:', e2);
+                  }
+                }
+              } else {
+                console.log('No body match found in options:', optionsString);
+              }
+              
+              // Make the actual fetch call
+              const response = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: method !== 'GET' ? JSON.stringify(bodyData) : undefined
               });
               
               result = await response.json();
             } else {
-              result = { error: 'Could not extract make/model from query' };
+              // Try to execute the query directly by removing console.log and catch
+              try {
+                // Remove .then(), .catch() chains and execute directly
+                let cleanQuery = query
+                  .replace(/\.then\([^)]*\)/g, '')
+                  .replace(/\.catch\([^)]*\)/g, '')
+                  .replace(/;$/, '');
+                
+                // If it's a fetch call, add .then(r => r.json())
+                if (cleanQuery.includes('fetch(')) {
+                  cleanQuery += '.then(response => response.json())';
+                }
+                
+                result = await eval(cleanQuery);
+              } catch (e) {
+                console.error('Error executing query:', e);
+                throw e;
+              }
             }
-          } else {
-            // Fallback to eval for other queries
-            const modifiedQuery = query.replace(/\.then\(data => console\.log\(data\)\)/, '.then(data => data)');
-            result = await eval(modifiedQuery);
+            }
           }
           
           // Remove the executing message
@@ -1296,15 +1393,15 @@ Always be helpful, accurate, and suggest the most appropriate tools for the user
             lastMessage.remove();
           }
           
-          // Format the result message based on the response
+          // Format the result message - just show raw response
           let resultMessage = 'Query executed successfully!\n\n**API Response:**\n';
           
           try {
             if (result && typeof result === 'object') {
               resultMessage += `\`\`\`json\n${JSON.stringify(result, null, 2)}\n\`\`\``;
               
-              // Add specific interpretation based on the endpoint
-              if (result.success && result.image && result.equipment_make) {
+              // Skip all the specific formatting - just pass raw response
+              if (false) {
               // Equipment image response
               resultMessage += `\n\n**Found Equipment Image:**\n`;
               resultMessage += `**Equipment:** ${result.equipment_make} ${result.equipment_model}\n`;
@@ -1529,7 +1626,7 @@ API Results: ${JSON.stringify(result, null, 2)}`;
         } else if (type === 'system') {
           metaDiv.textContent = 'System Response';
         } else {
-          metaDiv.textContent = 'PartnerPlus AI';
+          metaDiv.textContent = 'PartnerGPT AI';
         }
         
         messageDiv.appendChild(contentDiv);
@@ -1559,7 +1656,7 @@ API Results: ${JSON.stringify(result, null, 2)}`;
 
         const metaDiv = document.createElement('div');
         metaDiv.className = 'message-meta';
-        metaDiv.textContent = type === 'user' ? 'You' : 'PartnerPlus AI (typing...)';
+        metaDiv.textContent = type === 'user' ? 'You' : 'PartnerGPT AI (typing...)';
         
         messageDiv.appendChild(contentDiv);
         messageDiv.appendChild(metaDiv);
