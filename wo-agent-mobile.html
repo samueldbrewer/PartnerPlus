@@ -991,7 +991,7 @@
       `;
       
       // Header info
-      document.getElementById('woTitle').textContent = `WO #${workOrder.id}`;
+      document.getElementById('woTitle').textContent = workOrder.id;
       
       // Quick info section - split equipment into make and model
       const equipmentParts = workOrder.equipment.split(' ');
