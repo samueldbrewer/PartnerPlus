@@ -528,19 +528,96 @@
     }
     
     .mobile-action-btn.loading {
-      background: #dee2e6;
+      background: #f8f9fa;
       cursor: not-allowed;
+      color: #2d2926;
+      border: 1px solid #dee2e6;
+    }
+    
+    .progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, 
+        rgba(40, 167, 69, 0.2) 0%, 
+        rgba(32, 201, 151, 0.3) 50%, 
+        rgba(40, 167, 69, 0.2) 100%);
+      z-index: 0;
+      border-radius: 10px;
+      pointer-events: none;
+    }
+    
+    .mobile-action-btn.loading .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: -100px;
+      width: 100px;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.4), 
+        transparent);
+      animation: shimmer 1.5s infinite;
+    }
+    
+    .mobile-action-btn.completing .progress-fill::after {
+      display: none;
+    }
+    
+    @keyframes shimmer {
+      0% { right: -100px; }
+      100% { right: calc(100% + 100px); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.5; }
+    }
+    
+    .mobile-action-btn .action-text,
+    .mobile-action-btn .action-status {
+      position: relative;
+      z-index: 2;
     }
     
     .mobile-action-btn.completing {
       background: #28a745;
       cursor: not-allowed;
       opacity: 1 !important;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .mobile-action-btn.completing .action-text {
+      flex: 1;
+      position: relative;
+      z-index: 2;
     }
     
     .mobile-action-btn.completing .action-status {
       color: white;
       font-weight: bold;
+      flex-shrink: 0;
+      margin-left: 10px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .mobile-action-btn.completing .progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 0;
     }
     
     .action-text {
@@ -1324,10 +1401,84 @@ Respond with just the type.`
       updateCounts();
     }
 
+    // Timing service for realistic loading animations
+    function getExpectedLoadTime(actionType, actionName) {
+      // Base times in milliseconds (doubled for safety buffer)
+      const timings = {
+        part_resolution: { min: 20000, max: 40000 },  // 20-40s
+        parts_search: { min: 20000, max: 40000 },     // 20-40s
+        manual_search: { min: 30000, max: 60000 },    // 30-60s
+        supplier_search: { min: 4000, max: 10000 },   // 4-10s
+        service_search: { min: 6000, max: 12000 },    // 6-12s
+        email: { min: 2000, max: 4000 },              // 2-4s
+        sms: { min: 2000, max: 4000 },                // 2-4s
+        troubleshooting_search: { min: 16000, max: 30000 }, // 16-30s
+        general: { min: 4000, max: 8000 }             // 4-8s
+      };
+      
+      // Get timing for this action type
+      let timing = timings[actionType] || timings.general;
+      
+      // Adjust for specific keywords in action name
+      const lowerName = actionName.toLowerCase();
+      if (lowerName.includes('resolve') || lowerName.includes('oem')) {
+        // Part resolution takes longer
+        timing = timings.part_resolution;
+      } else if (lowerName.includes('troubleshoot')) {
+        timing = timings.troubleshooting_search;
+      }
+      
+      // Return random time within range
+      return timing.min + Math.random() * (timing.max - timing.min);
+    }
+    
+    function animateProgressBar(button, duration) {
+      // Create progress fill element and insert it as first child
+      const progressFill = document.createElement('div');
+      progressFill.className = 'progress-fill';
+      button.insertBefore(progressFill, button.firstChild);
+      
+      // Use requestAnimationFrame for smooth animation
+      const startTime = Date.now();
+      const maxProgress = 85; // Stop at 85% to leave room
+      let animationId;
+      
+      function updateProgress() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Use easing function for more realistic feel
+        const easedProgress = easeOutQuart(progress) * maxProgress;
+        progressFill.style.width = `${easedProgress}%`;
+        
+        if (progress < 1) {
+          animationId = requestAnimationFrame(updateProgress);
+        }
+      }
+      
+      animationId = requestAnimationFrame(updateProgress);
+      
+      return { 
+        stop: () => cancelAnimationFrame(animationId), 
+        progressFill 
+      };
+    }
+    
+    function easeOutQuart(t) {
+      return 1 - Math.pow(1 - t, 4);
+    }
+    
     async function executeAction(action, button, actionIndex) {
       button.classList.add('loading');
       button.disabled = true;
-      button.querySelector('.action-status').innerHTML = '<div class="mobile-spinner"></div>';
+      
+      // Start loading animation with expected duration
+      const expectedTime = getExpectedLoadTime(action.type, action.name);
+      const progressAnimation = animateProgressBar(button, expectedTime);
+      const progressFill = progressAnimation.progressFill;
+      
+      // Update status text
+      button.querySelector('.action-status').innerHTML = '<span style="font-size: 12px;">Processing...</span>';
 
       try {
         // Generate action parameters (now async)
@@ -1343,6 +1494,7 @@ Respond with just the type.`
           requestBody = JSON.stringify(actionConfig.params);
         }
 
+        const startTime = Date.now();
         const response = await fetch(url, {
           method: actionConfig.method,
           headers: actionConfig.method === 'POST' ? { 'Content-Type': 'application/json' } : {},
@@ -1351,11 +1503,29 @@ Respond with just the type.`
 
         const result = await response.json();
         
+        // Ensure minimum animation time for smooth UX
+        const elapsed = Date.now() - startTime;
+        const minTime = Math.min(expectedTime * 0.3, 2000); // At least 30% of expected or 2s
+        if (elapsed < minTime) {
+          await new Promise(resolve => setTimeout(resolve, minTime - elapsed));
+        }
+        
+        // Complete the progress bar to 100%
+        progressAnimation.stop();
+        if (progressFill) {
+          progressFill.style.transition = 'width 0.3s ease';
+          progressFill.style.width = '100%';
+        }
+        
+        // Brief pause before completing
+        await new Promise(resolve => setTimeout(resolve, 300));
+        
         // Move to completed (this will log the activity)
         await moveToCompleted(button, action, result);
         
       } catch (error) {
         console.error('Error executing action:', error);
+        progressAnimation.stop();
         const errorResult = { error: error.message };
         await moveToCompleted(button, action, errorResult);
       }
@@ -1736,10 +1906,27 @@ PartnerGPT Service Team`;
     }
 
     async function moveToCompleted(button, action, result) {
+      // Remove loading state
+      button.classList.remove('loading');
+      
+      // Update progress bar for completing state
+      const progressFill = button.querySelector('.progress-fill');
+      if (progressFill) {
+        progressFill.style.transition = 'all 0.3s ease';
+        progressFill.style.width = '100%';
+        progressFill.style.background = 'rgba(255, 255, 255, 0.1)';
+        progressFill.style.animation = 'none';
+        // Remove shimmer
+        const shimmer = progressFill.querySelector('::after');
+        if (shimmer) {
+          progressFill.style.setProperty('--shimmer-display', 'none');
+        }
+      }
+      
       // Show completing state
       button.classList.add('completing');
       button.querySelector('.action-status').innerHTML = '✓';
-      button.querySelector('.action-text').style.opacity = '0.6';
+      button.querySelector('.action-text').style.opacity = '0.9';
       
       // Log the activity
       await logActivity(action, result);
