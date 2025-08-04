@@ -1714,20 +1714,20 @@ Base the issue on real problems techs encounter:
 - Operator error: Incorrect settings, missed cleaning, overloading
 
 DISPATCH NOTES:
-Create exactly 3 bullet points capturing what the customer reported:
-• Main complaint (what's broken/not working)
-• Impact on business (can't cook, losing product, dinner rush, etc.)
-• Any details they noticed (sounds, smells, error codes, when it started)
+Create exactly 3 bullet points - write like a restaurant manager would speak:
+• Main problem in simple terms (e.g., "ice machine not making ice")
+• Business impact (e.g., "can't serve cold drinks" or "lunch service affected")
+• What they noticed (e.g., "making weird noise since yesterday")
 
-Keep each bullet concise but in the customer's voice - worried, frustrated, confused, calm, etc.
+Keep it brief - max 10 words per bullet. No technical terms.
 
 SERVICE NOTES:
-Create exactly 3 bullet points from the tech's initial inspection:
-• Primary diagnostic finding (measurements, test results, error codes)
-• Secondary observation (visual, audio, related components)
-• Initial diagnosis or next troubleshooting step
+Create exactly 3 bullet points - write like field tech shorthand:
+• Main finding (e.g., "compressor 0 psi" or "error code E3")
+• What was checked (e.g., "tested continuity - open" or "42°F box temp")
+• Next step (e.g., "need txv" or "replace start cap")
 
-Use technical shorthand: "Comp drawing 18A", "TXV superheat 3°F", "Evap fan seized", etc.
+Max 8 words per bullet. Use abbreviations: comp, evap, cond, txv, etc.
 
 SUSPECTED PARTS:
 List 2-3 most likely parts based on symptoms, using realistic part descriptions:

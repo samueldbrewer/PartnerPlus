@@ -1151,22 +1151,27 @@ CRITICAL: Each action must be something the system can EXECUTE to retrieve data:
 ✓ "Search troubleshooting for grinding noise" - System finds solutions
 ✓ "Find suppliers for part 2A-3847-05" - System gets supplier list
 ✓ "Email customer repair timeline update" - System sends email
+✓ "Text technician parts availability" - System sends SMS update
+✓ "Email customer cost estimate" - System sends pricing email
 
 ✗ "Check water pressure at inlet" - Requires physical presence
 ✗ "Inspect evaporator for damage" - Requires technician onsite
 ✗ "Review maintenance records" - Too vague, no API endpoint
 ✗ "Locate part numbers inside unit" - Requires physical inspection
 
+IMPORTANT: Include at least 1 communication action (email/text) every 3-4 actions to keep all parties informed.
+
 Focus on ${currentWorkOrder.suspectedParts ? `these suspected parts: ${currentWorkOrder.suspectedParts.join(', ')}` : 'identifying needed parts'}.
 
 ${isFollowUp ? 
   activityContext?.some(item => item.rawData?.includes('part_number') || item.rawData?.includes('similar_parts')) ?
-    `Part numbers found. Can now search suppliers/prices using specific part numbers.` :
-    `No parts identified yet. Focus on: resolving OEM numbers, getting manuals, researching symptoms.`
+    `Part numbers found. Mix: supplier searches, price checks, AND communication (email ETA, text tech updates).` :
+    `No parts identified yet. Mix: part resolution, manuals, AND communication (email status update, text questions).`
   : 
-  `Start with: resolving OEM part numbers for suspected parts, downloading service manual, researching the reported symptoms.`
+  `Start with: resolve parts, get manual, research symptoms, AND send initial customer email update.`
 }
 
+Remember: Balance technical actions with communication. Include emails/texts to customer and technician.
 Output only executable data retrieval actions, one per line.`
           })
         });
