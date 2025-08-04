@@ -1477,8 +1477,8 @@ Respond with just the type.`
       const progressAnimation = animateProgressBar(button, expectedTime);
       const progressFill = progressAnimation.progressFill;
       
-      // Update status text
-      button.querySelector('.action-status').innerHTML = '<span style="font-size: 12px;">Processing...</span>';
+      // Update status to spinning indicator
+      button.querySelector('.action-status').innerHTML = '<div class="mobile-spinner"></div>';
 
       try {
         // Generate action parameters (now async)
