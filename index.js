@@ -1648,28 +1648,104 @@ app.get('/api/generate-work-order', async (req, res) => {
   console.log('🔧 Work order generation requested');
   try {
     // Enhanced system prompt for realistic work order generation
-    const systemPrompt = `You are a work order generation system for a commercial foodservice equipment service company. 
+    const systemPrompt = `You are an experienced service dispatcher for a commercial foodservice equipment company. Your job is to create authentic, detailed work orders based on real service calls you might receive any day of the week.
 
-Generate a unique and realistic work order with creative variety.
+CONTEXT:
+You work for a regional service company covering restaurants, hotels, hospitals, schools, stadiums, food trucks, ghost kitchens, and other foodservice operations. It's a typical workday and calls are coming in with various equipment failures that need immediate attention.
 
-REQUIREMENTS:
-- Focus on foodservice industry (restaurants, cafes, hotels, cafeterias, food trucks, etc.)
-- Create diverse equipment from these categories:
-  * HOT EQUIPMENT: grills, fryers, ovens, ranges, steamers, broilers, warmers, heated displays
-  * COLD EQUIPMENT: refrigerators, freezers, ice machines, prep tables, display cases, blast chillers
-  * BEVERAGE: coffee machines, espresso machines, juice dispensers, tea brewers, soda fountains
-  * PREP: mixers, slicers, food processors, grinders, scales, cutting boards
-  * WAREWASHING: dishwashers, glasswashers, pot sinks, disposal units
-  * VENTILATION: hoods, exhaust fans, make-up air units
-- Mix well-known commercial brands with generic/lesser-known manufacturers
-- Generate varied business names, addresses, and contact information  
-- Create diverse technician names with professional emails (firstname.lastname@partnerplus.com)
-- Write technical service notes in brief, spartan technician style
-- Use proper commercial kitchen part terminology
-- Include realistic error codes or technical observations when relevant
-- Make suspected parts appropriate for the equipment and failure type
+CREATE A REALISTIC WORK ORDER:
+Think like a real dispatcher - consider:
+- Time of day/week (breakfast rush, dinner prep, weekend brunch, late night, early morning baker, etc.)
+- Urgency based on business type (hospital cafeteria vs coffee shop vs fine dining)
+- Equipment age and maintenance history (new under warranty, old reliable workhorse, problematic unit)
+- Customer personality (panicked first-time owner, experienced chef, frustrated manager, calm facilities director)
+- Geographic variety (downtown, suburbs, rural, tourist area, business district)
+- Seasonal factors (ice machine in summer, heating in winter, holiday rushes)
 
-Be creative and vary equipment types across ALL categories, business types, locations, issues, and scenarios.
+EQUIPMENT SELECTION:
+Select ONE piece of equipment from this list for the work order. Mix up your choices - don't always pick the same brands. Generate a realistic model number that fits the brand's naming conventions.
+
+🔥 HOT-SIDE (Cooking, Holding, Prep, Dishwashing):
+• Hobart - mixers (Legacy, HL series), slicers (Edge series), dishwashers (AM, CL series), food cutters
+• Rational AG - combi-ovens (SelfCookingCenter, iCombi Pro), Vario cooking systems
+• Vulcan - heavy-duty ranges, ovens, griddles, fryers (VC, VG, 1VK series)
+• Garland - precision ranges, convection ovens, grills (G, MCO, GF series)
+• Henny Penny - pressure fryers (PFE, PFG), open fryers (OFE), holding cabinets, combi steamers
+• Frymaster (Welbilt) - oil-saving fryers (MJ, FPPH), pasta cookers, holding equipment
+• Merrychef (Welbilt) - high-speed countertop ovens (eikon, conneX series)
+• American Range - rugged ranges, griddles, ovens (AR, ARTG series)
+• Blodgett - ovens and ranges (ZEPHAIRE, DFG, B series)
+• Southbend - robust ranges & ovens (S, GS, ES series)
+• Baxter (ITW) - rotating ovens, proofers (OV, PW series)
+• Electrolux Professional - modular cooking, combi ovens (air-o-steam, 900XP)
+• Robot Coupe - food processors (R, CL series), immersion blenders (MP series)
+• Waring Commercial - blenders (MX, CB series), processors (FP series)
+• Vollrath - induction ranges, warmers, serving systems
+
+❄️ COLD-SIDE (Refrigeration, Ice, Beverage):
+• True Manufacturing - reach-ins, freezers, prep tables (T, TPP, TSSU series)
+• Traulsen (ITW) - premium reach-ins, roll-ins (RHT, RRI, RLT series)
+• Hoshizaki - ice machines (KM, IM series), refrigerators (HR series)
+• Manitowoc Ice (Welbilt) - ice makers (IYT, IDT series), bins, dispensers
+• Ice-O-Matic - cube, flake, pearl ice (ICE, MFI, GEM series)
+• Scotsman - Prodigy ice machines, nugget ice (C, N series)
+• Taylor Company - soft-serve, frozen beverage, shake machines (C7, 342, 8756)
+• Beverage-Air - bar coolers, display cases, prep tables (BB, CDR, SPED series)
+• Nemco - food warmers, display cases (6000 series)
+• Everest/Dukers - value refrigeration (EBR, DSP series)
+• Turbo Air - reach-ins, prep tables (TSR, TPR series)
+• Continental - refrigerators, freezers (DL, D series)
+• Delfield - reach-ins, prep tables (GBR, UC series)
+• Master-Bilt - walk-ins, reach-ins (MB, BLG series)
+• Victory - refrigeration systems (RS, URS series)
+
+When generating the model number:
+- Use the brand's typical format (letters + numbers)
+- Make it sound real but don't copy exact models
+- Consider equipment age (newer units have different naming than 10+ year old units)
+
+AUTHENTIC FAILURE SCENARIOS:
+Base the issue on real problems techs encounter:
+- Monday morning: Weekend shutdown failures, pilot lights out, units that won't restart
+- Lunch rush: Overheating, overloaded equipment, temperature issues
+- After hours: Leaks discovered during cleaning, electrical trips, compressor failures
+- Seasonal: Condensation issues, frozen lines, overworked units
+- Age-related: Worn seals, scale buildup, bearing failures, control board issues
+- Operator error: Incorrect settings, missed cleaning, overloading
+
+DISPATCH NOTES:
+Create exactly 3 bullet points capturing what the customer reported:
+• Main complaint (what's broken/not working)
+• Impact on business (can't cook, losing product, dinner rush, etc.)
+• Any details they noticed (sounds, smells, error codes, when it started)
+
+Keep each bullet concise but in the customer's voice - worried, frustrated, confused, calm, etc.
+
+SERVICE NOTES:
+Create exactly 3 bullet points from the tech's initial inspection:
+• Primary diagnostic finding (measurements, test results, error codes)
+• Secondary observation (visual, audio, related components)
+• Initial diagnosis or next troubleshooting step
+
+Use technical shorthand: "Comp drawing 18A", "TXV superheat 3°F", "Evap fan seized", etc.
+
+SUSPECTED PARTS:
+List 2-3 most likely parts based on symptoms, using realistic part descriptions:
+- Include primary suspect and alternates: "Water inlet valve", "Fill valve solenoid coil", "Water level probe"
+- Be specific to the failure: "Rinse arm bearing assembly", "Wash pump seal kit", "Door latch strike plate"
+
+LOCATION & CONTACT REALISM:
+- Restaurant names that sound real: "The Brass Monkey", "Marino's Italian Kitchen", "Seoul Food Express"
+- Addresses in actual cities with realistic street names
+- Contact names matching the area's demographics
+- Believable email formats: firstname@restaurant.com or manager.location@chain.com
+
+TECHNICIAN ASSIGNMENT:
+- Assign based on expertise: Senior tech for complex diagnosis, newer tech for simple repairs
+- Consider location: Tech already in the area, specialist for specific brands
+- Realistic names and experience levels
+
+Remember: Every work order tells a story - the customer's problem, the business impact, the technical challenge, and the human element. Make it feel like a real Monday morning (or Friday night) service call.
 
 FORMAT AS JSON with this exact structure:
 {
@@ -1684,30 +1760,32 @@ FORMAT AS JSON with this exact structure:
   "technicianPhone": "[Phone]",
   "technicianEmail": "[Email]",
   "status": "In Progress",
-  "dispatchNotes": "[Customer complaint and dispatch details]",
-  "serviceNotes": "[Tech's initial diagnosis in spartan technical style]",
+  "dispatchNotes": "• [Main complaint]\n• [Business impact]\n• [Customer observations]",
+  "serviceNotes": "• [Primary diagnostic finding]\n• [Secondary observation]\n• [Initial diagnosis/next step]",
   "suspectedFailure": "[Brief technical description]",
   "suspectedParts": ["part1", "part2", "part3"]
 }`;
 
-    // Add randomization to make each request unique
-    const randomPrompts = [
-      'Generate a work order for a HOT equipment failure (grill, fryer, oven, etc).',
-      'Create a work order for COLD equipment breakdown (refrigerator, freezer, ice machine, etc).',
-      'Generate a work order for a BEVERAGE equipment issue (coffee, espresso, soda, etc).',
-      'Create a service ticket for PREP equipment problems (mixer, slicer, processor, etc).',
-      'Generate a work order for WAREWASHING equipment failure (dishwasher, disposal, etc).',
-      'Create a work order for VENTILATION system issues (hood, exhaust, etc).',
-      'Generate a service request for a unique or specialty foodservice equipment.',
-      'Create a work order for an urgent commercial kitchen breakdown.',
-      'Generate a work order mixing multiple equipment types in one location.'
+    // Randomize equipment categories to ensure variety
+    const equipmentCategories = [
+      'a cooking equipment failure (range, oven, fryer, grill, griddle)',
+      'a refrigeration breakdown (reach-in, walk-in, prep table, freezer)',
+      'an ice machine problem',
+      'a dishwasher malfunction',
+      'a food prep equipment issue (mixer, slicer, processor)',
+      'a beverage equipment failure (coffee, soft serve, frozen drink)',
+      'a warming/holding equipment problem',
+      'a ventilation or exhaust issue',
+      'a combi-oven or steamer breakdown',
+      'a specialty cooking equipment failure'
     ];
     
-    const randomPrompt = randomPrompts[Math.floor(Math.random() * randomPrompts.length)];
+    const randomCategory = equipmentCategories[Math.floor(Math.random() * equipmentCategories.length)];
+    const randomPrompt = `Generate a new work order for ${randomCategory}. Select from the equipment brands provided and create an authentic scenario.`;
     
     console.log('🤖 Calling OpenAI with prompt:', randomPrompt);
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-4.1-mini-2025-04-14',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: randomPrompt }
@@ -1764,17 +1842,17 @@ FORMAT AS JSON with this exact structure:
       contact: 'John Smith (502) 555-0123',
       locationContactName: 'John Smith',
       locationContactPhone: '(502) 555-0123',
-      locationContactEmail: 'manager@downtowngrillhouse.com',
+      locationContactEmail: 'john.smith@downtowngrillhouse.com',
       technician: 'Mike Johnson',
       technicianName: 'Mike Johnson',
       technicianPhone: '(502) 555-0234',
       technicianEmail: 'mike.johnson@partnerplus.com',
       status: 'In Progress',
       description: 'Dishwasher not completing wash cycle',
-      dispatchNotes: 'Customer reports dishwasher stops mid-cycle, error code E2 displayed. Machine is 5 years old, last serviced 6 months ago. Kitchen manager requests urgent repair.',
-      serviceNotes: 'E2 code indicates wash pump failure. Pump motor drawing high amps, bearings shot. Water not circulating properly. Need to replace wash pump assembly.',
-      suspectedFailure: 'Wash pump motor failure',
-      suspectedParts: ['Wash pump assembly', 'Pump seal kit', 'Motor capacitor'],
+      dispatchNotes: 'Our dishwasher keeps stopping in the middle of the cycle and shows an E2 error. We really need this fixed ASAP, dinner service is tonight.',
+      serviceNotes: 'E2 error - wash pump motor failure. Checking amps - running high. Bearings shot. No water circulation.',
+      suspectedFailure: 'Wash pump motor bearing failure',
+      suspectedParts: ['Wash pump assembly 00-875643', 'Pump seal kit 00-875644', 'Motor capacitor 00-875645'],
       estimatedDuration: '2 hours',
       parts: [],
       notes: []

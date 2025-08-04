@@ -279,6 +279,18 @@
       gap: 2px;
     }
     
+    /* Add extra spacing for Issue Details section items */
+    .issue-details-item {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .issue-details-item:last-child {
+      margin-bottom: 0;
+    }
+    
     .wo-detail-item:last-child {
       margin-bottom: 0;
     }
@@ -968,15 +980,15 @@
         <div class="wo-section">
           <div class="wo-section-header">📋 Issue Details</div>
           <div class="wo-section-content">
-            <div class="wo-detail-item">
+            <div class="issue-details-item">
               <span class="wo-detail-label">Dispatch Notes:</span>
               <span id="woDispatchNotes">Loading...</span>
             </div>
-            <div class="wo-detail-item">
+            <div class="issue-details-item">
               <span class="wo-detail-label">Tech Notes:</span>
               <span id="woTechNotes">Loading...</span>
             </div>
-            <div class="wo-detail-item">
+            <div class="issue-details-item">
               <span class="wo-detail-label">Suspected Parts:</span>
               <span id="woSuspectedParts">Loading...</span>
             </div>
@@ -993,10 +1005,33 @@
       // Header info
       document.getElementById('woTitle').textContent = workOrder.id;
       
-      // Quick info section - split equipment into make and model
-      const equipmentParts = workOrder.equipment.split(' ');
-      const make = equipmentParts[0];
-      const model = equipmentParts.slice(1).join(' ');
+      // Quick info section - smart split for multi-word brands
+      const multiWordBrands = [
+        'Henny Penny', 'American Range', 'True Manufacturing', 'Turbo Air', 
+        'Master-Bilt', 'Robot Coupe', 'Waring Commercial', 'Electrolux Professional',
+        'Rational AG', 'Ice-O-Matic', 'Manitowoc Ice', 'Taylor Company',
+        'Beverage-Air', 'Alto-Shaam', 'APW Wyott'
+      ];
+      
+      let make = '';
+      let model = '';
+      
+      // Check if equipment starts with a multi-word brand
+      const equipmentLower = workOrder.equipment.toLowerCase();
+      const foundBrand = multiWordBrands.find(brand => 
+        equipmentLower.startsWith(brand.toLowerCase())
+      );
+      
+      if (foundBrand) {
+        make = foundBrand;
+        model = workOrder.equipment.substring(foundBrand.length).trim();
+      } else {
+        // Default to first word as make
+        const equipmentParts = workOrder.equipment.split(' ');
+        make = equipmentParts[0];
+        model = equipmentParts.slice(1).join(' ');
+      }
+      
       document.getElementById('woMake').textContent = make;
       document.getElementById('woModel').textContent = model;
       
@@ -1012,15 +1047,63 @@
       document.getElementById('techPhone').textContent = workOrder.technicianPhone || 'N/A';
       document.getElementById('techEmail').textContent = workOrder.technicianEmail || 'N/A';
       
-      // Issue Details section
-      document.getElementById('woDispatchNotes').textContent = workOrder.dispatchNotes || workOrder.description || 'No dispatch notes available';
-      document.getElementById('woTechNotes').textContent = workOrder.serviceNotes || 'No tech notes available';
+      // Issue Details section - format bullet points
+      const formatBulletPoints = (text) => {
+        if (!text) return 'No notes available';
+        // Split by bullet points and wrap in list
+        const bullets = text.split('•').filter(b => b.trim());
+        if (bullets.length > 1) {
+          return '<ul style="margin: 0; padding-left: 20px;">' + 
+                 bullets.map(b => `<li>${b.trim()}</li>`).join('') + 
+                 '</ul>';
+        }
+        return text;
+      };
+      
+      document.getElementById('woDispatchNotes').innerHTML = formatBulletPoints(workOrder.dispatchNotes || workOrder.description);
+      document.getElementById('woTechNotes').innerHTML = formatBulletPoints(workOrder.serviceNotes);
       document.getElementById('woSuspectedParts').textContent = workOrder.suspectedParts ? workOrder.suspectedParts.join(', ') : 'No parts identified';
       
       document.getElementById('workOrderCard').classList.remove('hidden');
     }
 
-    async function generateActionRecommendations(isFollowUp = false) {
+    // New 1-in-1-out replacement queue to handle concurrent completions
+    let replacementQueue = [];
+    let isProcessingReplacements = false;
+    
+    async function generateSingleReplacementAction() {
+      // Add to queue
+      replacementQueue.push(Date.now());
+      
+      // Process queue if not already processing
+      if (!isProcessingReplacements) {
+        processReplacementQueue();
+      }
+    }
+    
+    async function processReplacementQueue() {
+      if (isProcessingReplacements || replacementQueue.length === 0) {
+        return;
+      }
+      
+      isProcessingReplacements = true;
+      
+      while (replacementQueue.length > 0) {
+        replacementQueue.shift(); // Remove from queue
+        
+        // Check if we still need a replacement
+        const currentGap = getCurrentActionGap();
+        if (currentGap > 0) {
+          await generateActionRecommendations(true, true); // Generate exactly 1 action
+          // Small delay to prevent API rate limiting
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+      
+      isProcessingReplacements = false;
+    }
+    
+    async function generateActionRecommendations(isFollowUp = false, singleReplacement = false) {
       document.getElementById('actionsSection').classList.remove('hidden');
       
       try {
@@ -1056,97 +1139,43 @@ CRITICAL: Analyze the completed actions above and their detailed API responses t
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            message: `Generate exactly ${isFollowUp ? getCurrentActionGap() : '4'} recommended actions. 
+            message: `You're managing work order for: ${currentWorkOrder.equipment} with issue: ${currentWorkOrder.dispatchNotes || currentWorkOrder.description || 'service issue'}
 
-CRITICAL FORMAT REQUIREMENTS:
-- Output ONLY the action descriptions, one per line
-- NO introductory text like "Here are the actions" 
-- NO questions like "Would you like to proceed?"
-- NO explanatory text or context
-- NO numbered lists or bullet points
-- Just the pure action descriptions
+${activityContextText ? `Previous data retrieved shown above. Review what information has already been gathered.` : ''}
 
-WORK ORDER:
+Generate ${isFollowUp ? (singleReplacement ? '1' : getCurrentActionGap()) : '4'} data retrieval actions.
 
-=== COMPLETE WORK ORDER DETAILS ===
-WO Number: ${currentWorkOrder.workOrderNumber || 'WO-1023'}
-Equipment: ${currentWorkOrder.equipment}
-Model: ${currentWorkOrder.model || 'Unknown model'}
-Serial: ${currentWorkOrder.serial || 'Unknown serial'}
-Status: ${currentWorkOrder.status || 'In Progress'}
-Duration: ${currentWorkOrder.duration || 'Unknown'}
-Type: ${currentWorkOrder.type || 'Service Call'}
+CRITICAL: Each action must be something the system can EXECUTE to retrieve data:
+✓ "Resolve evaporator motor OEM part number" - System finds part number
+✓ "Download service manual for KM-150BAH" - System retrieves manual
+✓ "Search troubleshooting for grinding noise" - System finds solutions
+✓ "Find suppliers for part 2A-3847-05" - System gets supplier list
+✓ "Email customer repair timeline update" - System sends email
 
-ISSUE DESCRIPTION:
-${currentWorkOrder.dispatchNotes || currentWorkOrder.description}
+✗ "Check water pressure at inlet" - Requires physical presence
+✗ "Inspect evaporator for damage" - Requires technician onsite
+✗ "Review maintenance records" - Too vague, no API endpoint
+✗ "Locate part numbers inside unit" - Requires physical inspection
 
-CUSTOMER & LOCATION:
-Customer: ${currentWorkOrder.customer || currentWorkOrder.locationName}
-Address: ${currentWorkOrder.address}
-Contact: ${currentWorkOrder.locationContactName}
-Phone: ${currentWorkOrder.locationContactPhone}
-Email: ${currentWorkOrder.locationContactEmail}
-
-TECHNICIAN ASSIGNMENT:
-Technician: ${currentWorkOrder.technicianName}
-Phone: ${currentWorkOrder.technicianPhone}
-Email: ${currentWorkOrder.technicianEmail}
-
-SERVICE DETAILS:
-Technician Notes: ${currentWorkOrder.serviceNotes || 'No tech notes yet'}
-Suspected Parts: ${(currentWorkOrder.suspectedParts || []).join(', ') || 'None identified yet'}
-Priority: ${currentWorkOrder.priority || 'Standard'}${activityContextText}
-
-AVAILABLE API TOOLS TO USE:
-- /api/purchase-agent/parts/resolve - Find OEM part number for ONE specific part description
-- /api/purchase-agent/suppliers/search - Find suppliers and pricing for parts
-- /api/purchase-agent/manuals/search - Get technical manuals and documentation
-- /api/purchase-agent/search/web - AI web search for technical info
-- /api/purchase-agent/service/search - Find local service providers
-- /api/email/send - Send status updates, quotes, or notifications
-- /api/sms/send - Send urgent alerts or assignments
-- /api/orchestrator/objective - Create multi-step workflows
+Focus on ${currentWorkOrder.suspectedParts ? `these suspected parts: ${currentWorkOrder.suspectedParts.join(', ')}` : 'identifying needed parts'}.
 
 ${isFollowUp ? 
-`FOLLOW-UP ACTION GENERATION RULES:
-1. LEVERAGE COMPLETED WORK: Extract specific part numbers, prices, supplier names, manual references, and technical details from the completed actions above
-2. LOGICAL NEXT STEPS: Generate actions that logically follow from discoveries (e.g., if part found → search suppliers, if manual found → reference specific pages, if suppliers found → compare prices)
-3. USE SPECIFIC DATA: Reference exact part numbers, supplier names, prices, manual page numbers, error codes from the raw API responses
-4. AVOID REPETITION: Never suggest actions that duplicate completed work
-5. PROGRESS WORKFLOW: Move toward order placement, scheduling, customer communication, or technical resolution
+  activityContext?.some(item => item.rawData?.includes('part_number') || item.rawData?.includes('similar_parts')) ?
+    `Part numbers found. Can now search suppliers/prices using specific part numbers.` :
+    `No parts identified yet. Focus on: resolving OEM numbers, getting manuals, researching symptoms.`
+  : 
+  `Start with: resolving OEM part numbers for suspected parts, downloading service manual, researching the reported symptoms.`
+}
 
-EXAMPLES OF INTELLIGENT FOLLOW-UP ACTIONS:
-- "Compare suppliers for thermocouple 00-920883-00003 and send quote to Clara"
-- "Use service manual page 15 to troubleshoot E03 error code"  
-- "Order heating element from WebstaurantStore ($47.99) for next-day delivery"
-- "Schedule callback with technician after parts arrive"
-- "Email Clara Thompson repair timeline and cost estimate"` 
-: 
-`INITIAL ACTION GENERATION RULES:
-1. SMART PRIORITIZATION: Start with part resolution for suspected parts, then manuals for troubleshooting
-2. CONTEXT AWARENESS: Use actual equipment make/model, customer names, technician info, and service notes
-3. VARIETY: Mix part resolution, manual searches, and communication actions
-4. NO SUPPLIER SEARCHES: Only suggest supplier searches if explicit part numbers are available
-5. RELEVANCE: All actions must directly relate to the reported issue and suspected parts
-
-GENERATE DIVERSE ACTIONS LIKE:
-- "Resolve [specific part] part number for [exact equipment model]"
-- "Find service manual for [equipment] to diagnose [error code/symptom]"  
-- "Send status update to [customer name] about [specific issue]"
-- "Search for [equipment] troubleshooting guides"
-- "Find local service providers for [equipment type] in [location]"`}
-
-Format: Concise action statements, 8-12 words each.
-
-FINAL REMINDER: Output ONLY the ${isFollowUp ? getCurrentActionGap() : '4'} action descriptions, nothing else!`
+Output only executable data retrieval actions, one per line.`
           })
         });
 
         const data = await response.json();
         const actionsText = data.response;
         
-        // Parse actions from AI response
-        const actions = parseActionsFromText(actionsText);
+        // Parse actions from AI response (now async)
+        const actions = await parseActionsFromText(actionsText);
         
         if (isFollowUp) {
           // Append to existing actions
@@ -1164,11 +1193,13 @@ FINAL REMINDER: Output ONLY the ${isFollowUp ? getCurrentActionGap() : '4'} acti
       }
     }
 
-    function parseActionsFromText(text) {
+    async function parseActionsFromText(text) {
       const lines = text.split('\n').filter(line => line.trim());
       const actions = [];
       
-      lines.forEach(line => {
+      const seenActions = new Set(); // Track unique actions
+      
+      for (const line of lines) {
         // Clean up markdown formatting, arrows, and other unwanted characters
         const cleanLine = line
           .replace(/^\d+\.?\s*|\*\s*|-\s*/g, '') // Remove bullets and numbers
@@ -1181,40 +1212,76 @@ FINAL REMINDER: Output ONLY the ${isFollowUp ? getCurrentActionGap() : '4'} acti
           .replace(/^\*\*(.+)\*\*$/, '$1') // Remove bold markdown
           .trim();
           
+        // Check for duplicates using normalized comparison
+        const normalizedLine = cleanLine.toLowerCase().replace(/[^a-z0-9]/g, '');
+        
         if (cleanLine && 
             cleanLine.length > 10 && 
             !cleanLine.match(/^(Here|If|Would|for the|Let me)/i) &&
-            !cleanLine.includes('?')) {  // Exclude questions
-          // Determine action type based on keywords
-          let type = 'general';
-          const lowerLine = cleanLine.toLowerCase();
+            !cleanLine.includes('?') &&
+            !seenActions.has(normalizedLine)) {  // Exclude duplicates
+          // Smart action classification - let AI understand intent
+          const type = await intelligentlyClassifyAction(cleanLine);
           
-          if (lowerLine.includes('resolve') || lowerLine.includes('oem') || lowerLine.includes('part number')) {
-            type = 'parts_search';
-          } else if (lowerLine.includes('supplier') || lowerLine.includes('vendor') || lowerLine.includes('pricing')) {
-            type = 'supplier_search';
-          } else if (lowerLine.includes('manual') || lowerLine.includes('documentation') || lowerLine.includes('retrieve')) {
-            type = 'manual_search';
-          } else if (lowerLine.includes('web search') || lowerLine.includes('troubleshooting') || lowerLine.includes('search for')) {
-            type = 'web_search';
-          } else if (lowerLine.includes('email') || lowerLine.includes('notify') || lowerLine.includes('status update')) {
-            type = 'email';
-          } else if (lowerLine.includes('sms') || lowerLine.includes('text') || lowerLine.includes('urgent')) {
-            type = 'sms';
-          } else if (lowerLine.includes('service provider') || lowerLine.includes('local service') || lowerLine.includes('backup')) {
-            type = 'service_search';
-          } else if (lowerLine.includes('workflow') || lowerLine.includes('multi-step') || lowerLine.includes('create')) {
-            type = 'orchestrator';
-          }
-          
+          seenActions.add(normalizedLine); // Mark as seen
           actions.push({
             name: cleanLine,
             type: type
           });
         }
-      });
+      }
       
       return actions.slice(0, 8); // Limit to 8 actions
+    }
+    
+    async function intelligentlyClassifyAction(actionText) {
+      // Simple keyword check first for obvious cases (faster)
+      const lower = actionText.toLowerCase();
+      
+      if (lower.includes('email')) return 'email';
+      if (lower.includes('text') || lower.includes('sms')) return 'sms';
+      if (lower.includes('manual') || lower.includes('documentation')) return 'manual_search';
+      if (lower.includes('resolve') && lower.includes('oem')) return 'parts_search';
+      if (lower.includes('price') || lower.includes('supplier')) return 'supplier_search';
+      if (lower.includes('service provider') || lower.includes('repair shop')) return 'service_search';
+      
+      // For ambiguous cases, use AI
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: `What type of service action is this: "${actionText}"?
+
+Choose one:
+- parts (finding part numbers)
+- suppliers (comparing prices/suppliers)  
+- manual (technical docs)
+- web (research/troubleshooting)
+- service (repair shops)
+- email/sms (communication)
+- general (other)
+
+Respond with just the type.`
+          })
+        });
+        const data = await response.json();
+        const type = data.response?.toLowerCase().trim();
+        
+        // Map to our internal types
+        if (type?.includes('parts')) return 'parts_search';
+        if (type?.includes('supplier')) return 'supplier_search';
+        if (type?.includes('manual')) return 'manual_search';
+        if (type?.includes('web')) return 'web_search';
+        if (type?.includes('service')) return 'service_search';
+        if (type?.includes('email')) return 'email';
+        if (type?.includes('sms')) return 'sms';
+        
+        return 'general';
+      } catch (error) {
+        console.error('Classification failed:', error);
+        return 'general';
+      }
     }
 
     function displayMobileActions(actions) {
@@ -1258,8 +1325,8 @@ FINAL REMINDER: Output ONLY the ${isFollowUp ? getCurrentActionGap() : '4'} acti
       button.querySelector('.action-status').innerHTML = '<div class="mobile-spinner"></div>';
 
       try {
-        // Generate action parameters (simplified for mobile)
-        const actionConfig = generateActionConfig(action.type, action.name);
+        // Generate action parameters (now async)
+        const actionConfig = await generateActionConfig(action.type, action.name);
         
         let url = actionConfig.endpoint;
         let requestBody = null;
@@ -1289,11 +1356,24 @@ FINAL REMINDER: Output ONLY the ${isFollowUp ? getCurrentActionGap() : '4'} acti
       }
     }
 
-    function generateActionConfig(actionType, actionName) {
+    async function generateActionConfig(actionType, actionName) {
       const zipMatch = currentWorkOrder.address?.match(/\b\d{5}\b/);
       const zipCode = zipMatch ? zipMatch[0] : "12345";
-      const equipmentParts = currentWorkOrder.equipment.split(' ');
-      const make = equipmentParts[0] || "Unknown";
+      
+      // Smart split for multi-word brands
+      const multiWordBrands = [
+        'Henny Penny', 'American Range', 'True Manufacturing', 'Turbo Air', 
+        'Master-Bilt', 'Robot Coupe', 'Waring Commercial', 'Electrolux Professional',
+        'Rational AG', 'Ice-O-Matic', 'Manitowoc Ice', 'Taylor Company',
+        'Beverage-Air', 'Alto-Shaam', 'APW Wyott'
+      ];
+      
+      const equipmentLower = currentWorkOrder.equipment.toLowerCase();
+      const foundBrand = multiWordBrands.find(brand => 
+        equipmentLower.startsWith(brand.toLowerCase())
+      );
+      
+      const make = foundBrand || currentWorkOrder.equipment.split(' ')[0] || "Unknown";
 
       const configs = {
         parts_search: {
@@ -1305,17 +1385,38 @@ FINAL REMINDER: Output ONLY the ${isFollowUp ? getCurrentActionGap() : '4'} acti
             model: currentWorkOrder.equipment
           }
         },
-        supplier_search: {
-          endpoint: '/api/purchase-agent/suppliers/search',
-          method: 'POST',
-          params: {
-            partNumber: extractPartNumberFromAction(actionName) || 'GENERIC-PART',
-            options: { make: make, limit: 5 }
+        supplier_search: async () => {
+          // Extract part number and validate it exists
+          const partNumber = await intelligentlyExtractPart(actionName);
+          
+          // Check if we have a valid part number (not generic)
+          if (!partNumber || partNumber === 'general part' || partNumber === 'replacement part' || 
+              partNumber.length < 3 || !partNumber.match(/[0-9]/) || partNumber === 'unknown') {
+            // No valid part number - return error config
+            return {
+              endpoint: '/api/chat',
+              method: 'POST',
+              params: {
+                message: `Cannot search for suppliers without a specific part number. Please resolve the OEM part number first for ${currentWorkOrder.equipment}.`
+              }
+            };
           }
+          
+          return {
+            endpoint: '/api/purchase-agent/suppliers/search',
+            method: 'POST',
+            params: {
+              partNumber: partNumber,  // Changed from part_number to partNumber to match Node.js API
+              options: {
+                make: make,
+                limit: 5
+              }
+            }
+          };
         },
         service_search: {
-          endpoint: '/api/purchase-agent/service/search',
-          method: 'GET',
+          endpoint: '/api/purchase-agent/service-search',  // Fixed endpoint path
+          method: 'POST',  // Changed from GET to POST to match Node.js API
           params: {
             zipCode: zipCode,
             make: make
@@ -1369,6 +1470,11 @@ FINAL REMINDER: Output ONLY the ${isFollowUp ? getCurrentActionGap() : '4'} acti
         }
       };
 
+      // Handle async supplier_search function
+      if (actionType === 'supplier_search') {
+        return await configs.supplier_search();
+      }
+      
       return configs[actionType] || configs.general;
     }
 
@@ -1389,28 +1495,119 @@ FINAL REMINDER: Output ONLY the ${isFollowUp ? getCurrentActionGap() : '4'} acti
       return actionName.split(' ').slice(0, 3).join(' ');
     }
 
-    function extractPartNumberFromAction(actionName) {
-      // Look for common part number patterns
-      const partNumberPattern = /[A-Z0-9]{3,}-?[A-Z0-9]{2,}/gi;
-      const matches = actionName.match(partNumberPattern);
-      if (matches) {
-        return matches[0];
+    async function intelligentlyExtractPart(actionText) {
+      // First check activity log for discovered part numbers
+      const activityItems = document.querySelectorAll('.activity-raw-content pre');
+      let discoveredParts = [];
+      
+      activityItems.forEach(item => {
+        const content = item.textContent;
+        // Look for part numbers in previous results
+        const partMatches = content.match(/"part_number":\s*"([^"]+)"/g);
+        if (partMatches) {
+          partMatches.forEach(match => {
+            const part = match.match(/"([^"]+)"$/)?.[1];
+            if (part && part !== 'null' && part !== 'None') {
+              discoveredParts.push(part);
+            }
+          });
+        }
+        // Check recommended_result for part numbers
+        const recommendedMatch = content.match(/"recommended_result".*?"part_number":\s*"([^"]+)"/g);
+        if (recommendedMatch) {
+          recommendedMatch.forEach(match => {
+            const part = match.match(/"([^"]+)"$/)?.[1];
+            if (part && part !== 'null' && part !== 'None') {
+              discoveredParts.push(part);
+            }
+          });
+        }
+        
+        // Also check similar_parts
+        const similarMatches = content.match(/"similar_parts".*?"part_number":\s*"([^"]+)"/g);
+        if (similarMatches) {
+          similarMatches.forEach(match => {
+            const part = match.match(/"([^"]+)"$/)?.[1];
+            if (part) discoveredParts.push(part);
+          });
+        }
+      });
+      
+      // First try to extract part number directly from action text
+      // Match patterns like "for part 765071196" or "part 4A5096-01"
+      const directPartMatch = actionText.match(/(?:for\s+part|part)\s+([A-Z0-9][A-Z0-9-]+)/i);
+      if (directPartMatch && directPartMatch[1]) {
+        console.log('Found part in action text:', directPartMatch[1]);
+        return directPartMatch[1];
       }
       
-      // Extract from suspected parts if available
-      if (currentWorkOrder.suspectedParts && currentWorkOrder.suspectedParts.length > 0) {
-        return currentWorkOrder.suspectedParts[0];
+      // Try simple pattern matching for common part formats
+      const partPatterns = [
+        /\b([0-9]{6,10})\b/,  // 765071196
+        /\b([0-9A-Z]{2}[0-9]{4}-[0-9]{2})\b/,  // 4A5096-01
+        /\b([0-9]{5}[A-Z])\b/,  // 45764A
+        /\b([0-9]{2}-[0-9]{6})\b/  // 00-426635
+      ];
+      
+      for (const pattern of partPatterns) {
+        const match = actionText.match(pattern);
+        if (match) {
+          console.log('Pattern matched part:', match[1]);
+          return match[1];
+        }
       }
       
-      // Fallback to generic search terms from action
-      const lowerAction = actionName.toLowerCase();
-      if (lowerAction.includes('thermocouple')) return 'THERMOCOUPLE';
-      if (lowerAction.includes('control board')) return 'CONTROL-BOARD';
-      if (lowerAction.includes('temp sensor')) return 'TEMP-SENSOR';
-      if (lowerAction.includes('ignitor')) return 'IGNITOR';
-      if (lowerAction.includes('valve')) return 'GAS-VALVE';
+      // If we found parts in history, try to match with action text
+      if (discoveredParts.length > 0) {
+        console.log('Discovered parts from history:', discoveredParts);
+        for (const part of discoveredParts) {
+          if (actionText.includes(part)) {
+            console.log('Matched part from history:', part);
+            return part;
+          }
+        }
+        // If action doesn't specify, use most recent discovered part
+        if (actionText.toLowerCase().includes('price') || actionText.toLowerCase().includes('supplier')) {
+          console.log('Using most recent part:', discoveredParts[discoveredParts.length - 1]);
+          return discoveredParts[discoveredParts.length - 1];
+        }
+      }
       
-      return 'GENERIC-PART';
+      // Let AI extract from action text
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: `Extract the part number from: "${actionText}"
+
+Look for specific part numbers like 45764A, 00-426635, etc.
+If no specific part number is mentioned, return "unknown".
+
+Respond with only the part number or "unknown".`
+          })
+        });
+        const data = await response.json();
+        const part = data.response?.trim();
+        
+        if (part && part !== 'unknown' && part !== 'general part') {
+          return part;
+        }
+      } catch (error) {
+        console.error('Part extraction failed:', error);
+      }
+      
+      return 'unknown';
+    }
+    
+    function extractPartFromAction(actionName) {
+      // Keep simple version for non-async uses
+      const lower = actionName.toLowerCase();
+      if (lower.includes('thermostat')) return 'thermostat';
+      if (lower.includes('element')) return 'heating element';
+      if (lower.includes('board')) return 'control board';
+      if (lower.includes('sensor')) return 'sensor';
+      return actionName.split(' ').slice(0, 3).join(' ');
     }
 
     function formatPhoneNumber(phone) {
@@ -1555,8 +1752,8 @@ PartnerGPT Service Team`;
         // Auto-generate follow-up actions immediately when less than 4 actions remain
         const actionGap = getCurrentActionGap();
         if (actionGap > 0) { // Only generate if we need actions to reach exactly 4
-          // Generate immediately without delay
-          generateActionRecommendations(true); // Generate follow-up actions
+          // Use 1-in-1-out system - generate exactly one replacement
+          generateSingleReplacementAction();
         }
       }, 300);
     }

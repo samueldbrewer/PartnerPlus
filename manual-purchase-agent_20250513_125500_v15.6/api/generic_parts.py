@@ -231,7 +231,7 @@ class GenericPartsFinder:
             # Handle both new and old OpenAI clients - using GPT-4.1-Nano
             if USING_NEW_OPENAI_CLIENT:
                 response = self.openai_client.chat.completions.create(
-                    model="gpt-4o-mini",
+                    model="gpt-4.1-mini-2025-04-14",
                     messages=[
                         {"role": "system", "content": "You are an expert in automotive and industrial parts cross-referencing using GPT-4.1-Nano's enhanced analytical capabilities. Analyze search results to find compatible generic alternatives to OEM parts with comprehensive analysis."},
                         {"role": "user", "content": prompt}
@@ -243,7 +243,7 @@ class GenericPartsFinder:
                 # Legacy OpenAI client - using GPT-4.1-Nano
                 import openai
                 response = openai.ChatCompletion.create(
-                    model="gpt-4o-mini",
+                    model="gpt-4.1-mini-2025-04-14",
                     messages=[
                         {"role": "system", "content": "You are an expert in automotive and industrial parts cross-referencing using GPT-4.1-Nano's enhanced analytical capabilities. Analyze search results to find compatible generic alternatives to OEM parts with comprehensive analysis."},
                         {"role": "user", "content": prompt}

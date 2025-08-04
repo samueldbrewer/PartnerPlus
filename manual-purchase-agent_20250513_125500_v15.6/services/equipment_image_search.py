@@ -152,7 +152,7 @@ def ai_select_best_equipment_image(make, model, image_results):
         # Get AI selection
         if USING_NEW_OPENAI_CLIENT:
             response = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-4.1-mini-2025-04-14",
                 messages=[
                     {"role": "system", "content": "You are an expert at analyzing equipment images and identifying authentic, complete equipment photos from search results."},
                     {"role": "user", "content": prompt}
@@ -164,7 +164,7 @@ def ai_select_best_equipment_image(make, model, image_results):
         else:
             import openai
             response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",
+                model="gpt-4.1-mini-2025-04-14",
                 messages=[
                     {"role": "system", "content": "You are an expert at analyzing equipment images and identifying authentic, complete equipment photos from search results."},
                     {"role": "user", "content": prompt}

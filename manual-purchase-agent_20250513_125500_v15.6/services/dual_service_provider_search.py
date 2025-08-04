@@ -77,7 +77,7 @@ def get_industry_search_terms(equipment_make, equipment_model):
         # Get AI analysis of equipment industry
         if USING_NEW_OPENAI_CLIENT:
             response = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-4.1-mini-2025-04-14",
                 messages=[
                     {"role": "system", "content": "You are an expert equipment industry analyst who categorizes equipment into service industries and generates optimal search terms for finding qualified service providers."},
                     {"role": "user", "content": industry_prompt}
@@ -89,7 +89,7 @@ def get_industry_search_terms(equipment_make, equipment_model):
         else:
             import openai
             response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",
+                model="gpt-4.1-mini-2025-04-14",
                 messages=[
                     {"role": "system", "content": "You are an expert equipment industry analyst who categorizes equipment into service industries and generates optimal search terms for finding qualified service providers."},
                     {"role": "user", "content": industry_prompt}
@@ -541,7 +541,7 @@ def ai_service_provider_arbitrator(serpapi_results, gpt_results, equipment_make,
         # Get arbitrator decision (WITHOUT web search)
         if USING_NEW_OPENAI_CLIENT:
             response = client.chat.completions.create(
-                model="gpt-4o-mini",  # Use nano for arbitration, no web search needed
+                model="gpt-4.1-mini-2025-04-14",  # Use nano for arbitration, no web search needed
                 messages=[
                     {"role": "system", "content": "You are an expert AI arbitrator who analyzes different service provider search results to select the most qualified and appropriate service provider for equipment maintenance and repair. You do not have web search capabilities - you analyze only the provided search results to make your decision."},
                     {"role": "user", "content": arbitrator_prompt}
@@ -553,7 +553,7 @@ def ai_service_provider_arbitrator(serpapi_results, gpt_results, equipment_make,
         else:
             import openai
             response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",
+                model="gpt-4.1-mini-2025-04-14",
                 messages=[
                     {"role": "system", "content": "You are an expert AI arbitrator who analyzes different service provider search results to select the most qualified and appropriate service provider for equipment maintenance and repair. You do not have web search capabilities - you analyze only the provided search results to make your decision."},
                     {"role": "user", "content": arbitrator_prompt}
@@ -733,7 +733,7 @@ def ai_service_provider_arbitrator_multiple(serpapi_results, gpt_results, equipm
         # Get arbitrator ranking (WITHOUT web search)
         if USING_NEW_OPENAI_CLIENT:
             response = client.chat.completions.create(
-                model="gpt-4o-mini",  # Use nano for arbitration, no web search needed
+                model="gpt-4.1-mini-2025-04-14",  # Use nano for arbitration, no web search needed
                 messages=[
                     {"role": "system", "content": "You are an expert AI arbitrator who ranks service provider search results to help users find the most qualified and appropriate service providers for their equipment. You analyze search results to provide comprehensive rankings based on expertise, authorization, and service quality."},
                     {"role": "user", "content": arbitrator_prompt}
@@ -745,7 +745,7 @@ def ai_service_provider_arbitrator_multiple(serpapi_results, gpt_results, equipm
         else:
             import openai
             response = openai.ChatCompletion.create(
-                model="gpt-4o-mini",
+                model="gpt-4.1-mini-2025-04-14",
                 messages=[
                     {"role": "system", "content": "You are an expert AI arbitrator who ranks service provider search results to help users find the most qualified and appropriate service providers for their equipment. You analyze search results to provide comprehensive rankings based on expertise, authorization, and service quality."},
                     {"role": "user", "content": arbitrator_prompt}
